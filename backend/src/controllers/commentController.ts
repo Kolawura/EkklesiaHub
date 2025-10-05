@@ -1,0 +1,51 @@
+import { Request, Response } from "express";
+import * as commentService from "../services/commentService";
+
+export const createComment = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const { content, postId, parentId } = req.body;
+    const comment = await commentService.createComment({
+      content,
+      authorId: userId,
+      postId,
+      parentId,
+    });
+    res.status(201).json(comment);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getCommentsByPost = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.params;
+    const comments = await commentService.getCommentsByPost(postId);
+    res.json(comments);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateComment = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const { id } = req.params;
+    const { content } = req.body;
+    const updated = await commentService.updateComment(id, content, userId);
+    res.json(updated);
+  } catch (error: any) {
+    res.status(403).json({ message: error.message });
+  }
+};
+
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const { id } = req.params;
+    await commentService.deleteComment(id, userId);
+    res.json({ message: "Comment deleted" });
+  } catch (error: any) {
+    res.status(403).json({ message: error.message });
+  }
+};

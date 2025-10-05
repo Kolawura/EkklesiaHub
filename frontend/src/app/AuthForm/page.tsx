@@ -67,7 +67,7 @@ const AuthForm = () => {
 
           <CardContent className="space-y-4">
             <TabsContent value="login" className="space-y-4 mt-0">
-              <div className="space-y-2">
+              <div className="space-y-2 text-center">
                 <CardTitle className="text-xl text-card-foreground">
                   Sign in to your account
                 </CardTitle>
@@ -166,7 +166,7 @@ const AuthForm = () => {
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-4 mt-0">
-              <div className="space-y-2">
+              <div className="space-y-2 text-center">
                 <CardTitle className="text-xl text-card-foreground">
                   Create your account
                 </CardTitle>

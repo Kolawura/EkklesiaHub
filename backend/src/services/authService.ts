@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { prisma } from "../db/prisma";
 import { comparePassword, hashPassword } from "../utils/hashPassword";
 import { generateToken } from "../utils/token";
