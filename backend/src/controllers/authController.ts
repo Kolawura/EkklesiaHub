@@ -14,11 +14,15 @@ export const registerUser = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
-    res
-      .status(200)
-      .json({ message: "User Registration Successful", data: user });
+    res.status(200).json({
+      success: true,
+      message: "User Registration Successful",
+      data: user,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Registration failed", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Registration failed", error });
   }
 };
 
@@ -38,8 +42,42 @@ export const loginUser = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
-    res.status(200).json({ message: "Login Successful", data: user });
+    res
+      .status(200)
+      .json({ success: true, message: "Login Successful", data: user });
   } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err }); // Fixed to return error message
+    res
+      .status(500)
+      .json({ success: false, message: "Login failed", error: err }); // Fixed to return error message
+  }
+};
+
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({ success: true, message: "Logout Successful" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Logout failed", error: err });
+  }
+};
+
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch user", error: err });
   }
 };
