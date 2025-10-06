@@ -6,7 +6,7 @@ import {
   getAllCommunities,
   getCommunityById,
   getUserCommunities,
-  getCommunityUsers,
+  getCommunityMembers,
   getCommunityPosts,
   updateCommunityInfo,
   updateMembershipRole,
@@ -17,18 +17,18 @@ import { protectRoute } from "../middlewares/authMiddleware";
 const router = express.Router();
 
 // Public
-router.get("/", getAllCommunities);
-router.get("/:id", getCommunityById);
-router.get("/:id/posts", getCommunityPosts);
+router.get("/get", getAllCommunities);
+router.get("/get/:id", getCommunityById);
+router.get("/posts/:id", getCommunityPosts);
 
 // Protected
 router.post("/", protectRoute, createCommunity);
-router.post("/:id/join", protectRoute, joinCommunity);
-router.post("/:id/leave", protectRoute, leaveCommunity);
-router.get("/user/me", protectRoute, getUserCommunities);
-router.get("/:id/members", protectRoute, getCommunityUsers);
-router.put("/:id", protectRoute, updateCommunityInfo);
-router.put("/:id/members/role", protectRoute, updateMembershipRole);
-router.delete("/:id", protectRoute, deleteCommunity);
+router.post("/join:id", protectRoute, joinCommunity);
+router.post("/leave/:id", protectRoute, leaveCommunity);
+router.get("/get/user", protectRoute, getUserCommunities);
+router.get("/get/members/:id", protectRoute, getCommunityMembers);
+router.put("/info/update:id", protectRoute, updateCommunityInfo);
+router.put("/members/update/:id", protectRoute, updateMembershipRole);
+router.delete("/delete/:id", protectRoute, deleteCommunity);
 
 export default router;

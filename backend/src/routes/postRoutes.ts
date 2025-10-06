@@ -13,9 +13,9 @@ router.get("/:communityId", postController.getPostsByCommunity);
 
 // Protected routes (must be logged in)
 router.post("/", protectRoute, postController.createPost);
-router.patch("/:id/publish", protectRoute, postController.publishPost);
-router.patch("/:id/archive", protectRoute, postController.archivePost);
-router.put("/:id", protectRoute, postController.updatePost);
-router.delete("/:id", protectRoute, postController.deletePost);
+router.patch("/publish/:id", protectRoute, postController.publishPost);
+router.patch("/archive/:id", protectRoute, postController.archivePost);
+router.put("/update/:id", protectRoute, postController.updatePost);
+router.delete("/delete/:id", protectRoute, postController.deletePost);
 
 export default router;

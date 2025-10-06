@@ -18,9 +18,9 @@ export const createPost = async (req: Request, res: Response) => {
       tagIds,
     });
 
-    res.status(201).json({ message: "Post created", post });
+    res.status(201).json({ success: true, message: "Post created", post });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -29,9 +29,9 @@ export const publishPost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     const post = await postService.publishPost(id, userId);
-    res.json({ message: "Post published", post });
+    res.status(200).json({ success: true, message: "Post published", post });
   } catch (error: any) {
-    res.status(403).json({ message: error.message });
+    res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -40,9 +40,9 @@ export const archivePost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     const post = await postService.archivePost(id, userId);
-    res.json({ message: "Post archived", post });
+    res.status(200).json({ success: true, message: "Post archived", post });
   } catch (error: any) {
-    res.status(403).json({ message: error.message });
+    res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -61,18 +61,18 @@ export const getPosts = async (req: Request, res: Response) => {
       status: status as string,
     });
 
-    res.json(result);
+    res.status(200).json({ success: true, result });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const post = await postService.getPostBySlug(req.params.slug);
-    res.json(post);
+    res.status(200).json({ success: true, post });
   } catch (error: any) {
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ success: false, message: error.message });
   }
 };
 
@@ -80,10 +80,11 @@ export const updatePost = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     const { id } = req.params;
-    const updated = await postService.updatePost(id, req.body, userId);
-    res.json(updated);
+    const updates = req.body;
+    const updated = await postService.updatePost(id, updates, userId);
+    res.status(200).json({ success: true, updated });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -92,9 +93,9 @@ export const deletePost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     await postService.deletePost(id, userId);
-    res.json({ message: "Post deleted" });
+    res.status(200).json({ success: true, message: "Post deleted" });
   } catch (error: any) {
-    res.status(403).json({ message: error.message });
+    res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -102,9 +103,9 @@ export const getPostsByAuthor = async (req: Request, res: Response) => {
   try {
     const { authorId } = req.params;
     const posts = await postService.getPostsByAuthor(authorId);
-    res.json(posts);
+    res.status(200).json({ success: true, posts });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -112,8 +113,8 @@ export const getPostsByCommunity = async (req: Request, res: Response) => {
   try {
     const { communityId } = req.params;
     const posts = await postService.getPostsByCommunity(communityId);
-    res.json(posts);
+    res.status(200).json({ success: true, posts });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

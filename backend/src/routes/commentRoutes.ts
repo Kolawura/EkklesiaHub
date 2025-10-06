@@ -10,7 +10,7 @@ router.get("/post/:postId", commentController.getCommentsByPost);
 
 // Protected
 router.post("/", protectRoute, commentController.createComment);
-router.put("/:id", protectRoute, commentController.updateComment);
-router.delete("/:id", protectRoute, commentController.deleteComment);
+router.put("/update/:id", protectRoute, commentController.updateComment);
+router.delete("/delete/:id", protectRoute, commentController.deleteComment);
 
 export default router;

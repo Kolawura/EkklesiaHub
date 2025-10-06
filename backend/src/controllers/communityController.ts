@@ -87,10 +87,10 @@ export const getUserCommunities = async (req: Request, res: Response) => {
   }
 };
 
-export const getCommunityUsers = async (req: Request, res: Response) => {
+export const getCommunityMembers = async (req: Request, res: Response) => {
   try {
     const { communityId } = req.params;
-    const users = await communityService.getCommunityUsers(communityId);
+    const users = await communityService.getCommunityMembers(communityId);
     res.status(200).json({ success: true, users });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });

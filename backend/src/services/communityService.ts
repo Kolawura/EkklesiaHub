@@ -110,7 +110,7 @@ export const getUserCommunities = async (userId: string) => {
   return users;
 };
 
-export const getCommunityUsers = async (communityId: string) => {
+export const getCommunityMembers = async (communityId: string) => {
   const members = await prisma.communityMembership.findMany({
     where: { communityId },
     include: {

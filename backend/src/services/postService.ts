@@ -35,6 +35,11 @@ export const publishPost = async (id: string, userId: string) => {
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) throw new Error("Post not found");
   if (post.authorId !== userId) throw new Error("Not authorized");
+  // check if post is published
+  const check = await prisma.post.findUnique({
+    where: { id, status: "PUBLISHED" },
+  });
+  if (check) throw new Error("Cannot publish an already published post");
   const publishPost = await prisma.post.update({
     where: { id },
     data: { status: "PUBLISHED" },
