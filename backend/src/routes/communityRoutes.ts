@@ -25,7 +25,7 @@ router.get("/posts/:id", getCommunityPosts);
 router.post("/", protectRoute, createCommunity);
 router.post("/join:id", protectRoute, joinCommunity);
 router.post("/leave/:id", protectRoute, leaveCommunity);
-router.get("/get/user", protectRoute, getUserCommunities);
+router.get("/get/communities", protectRoute, getUserCommunities);
 router.get("/get/members/:id", protectRoute, getCommunityMembers);
 router.put("/info/update:id", protectRoute, updateCommunityInfo);
 router.put("/members/update/:id", protectRoute, updateMembershipRole);
