@@ -25,7 +25,7 @@ export const createCommunity = async (req: Request, res: Response) => {
 export const joinCommunity = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId; // Assuming userId is set in the request by authentication middleware
-    const { communityId } = req.body;
+    const { communityId } = req.params;
     if (!communityId)
       return res.status(400).json({ message: "Community ID is required" });
     const membership = await communityService.joinCommunity(
@@ -45,7 +45,7 @@ export const joinCommunity = async (req: Request, res: Response) => {
 export const leaveCommunity = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const { communityId } = req.body;
+    const { communityId } = req.params;
     if (!communityId)
       return res.status(400).json({ message: "Community ID is required" });
     const result = await communityService.leaveCommunity(communityId, userId);
@@ -81,7 +81,7 @@ export const getUserCommunities = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     const communities = await communityService.getUserCommunities(userId);
-    res.status(200).json({ succe: true, communities });
+    res.status(200).json({ success: true, communities });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
