@@ -27,10 +27,13 @@ export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     if (!email || !password)
       res.status(400).json({ message: "All fields are required" });
+
     const isUser = await findUserByEmail(email);
     if (!isUser) res.status(400).json({ message: "User not found" });
+
     const { user, token } = await login(email, password);
     if (!user) res.status(400).json({ message: "Invalid email or password" });
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

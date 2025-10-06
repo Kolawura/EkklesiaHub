@@ -7,12 +7,18 @@ export const register = async (
   email: string,
   password: string
 ) => {
+  const existingUser = await prisma.user.findFirst({
+    where: { OR: [{ email }, { username }] },
+  });
+  if (existingUser) throw new Error("User already exists");
+
   const hashedPassword = await hashPassword(password);
   const user = await prisma.user.create({
     data: { username, email, password: hashedPassword },
   });
   const token = generateToken(user.id);
-  return { user, token };
+  const { password: _, ...userWithoutPassword } = user;
+  return { user: userWithoutPassword, token };
 };
 
 export const login = async (email: string, password: string) => {
@@ -21,7 +27,8 @@ export const login = async (email: string, password: string) => {
   const passwordMatch = await comparePassword(password, user.password);
   if (!passwordMatch) throw new Error("Invalid credentials");
   const token = generateToken(user.id);
-  return { user, token };
+  const { password: _, ...userWithoutPassword } = user;
+  return { user: userWithoutPassword, token };
 };
 
 export const findUserByEmail = async (email: string) => {
