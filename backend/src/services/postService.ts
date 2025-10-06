@@ -53,19 +53,81 @@ export const archivePost = async (id: string, userId: string) => {
   return archivePost;
 };
 
-export const getAllPosts = async () => {
-  return await prisma.post.findMany({
-    where: { status: "PUBLISHED" },
-    include: {
-      author: true,
-      community: true,
-      tags: true,
-      comments: true,
-      reactions: true,
-      bookmarks: true,
+export const getAllPosts = async (params?: {
+  search?: string;
+  tagId?: string;
+  communityId?: string;
+  authorId?: string;
+  page?: number;
+  limit?: number;
+  status?: string;
+}) => {
+  const {
+    search = "",
+    tagId,
+    communityId,
+    authorId,
+    page = 1,
+    limit = 10,
+    status = "PUBLISHED",
+  } = params || {};
+
+  const skip = (page - 1) * limit;
+
+  const whereCondition: any = {
+    status,
+    ...(search && {
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ],
+    }),
+    ...(authorId && { authorId }),
+    ...(communityId && { communityId }),
+    ...(tagId && {
+      tags: { some: { id: tagId } }, // filter posts that have the tag
+    }),
+  };
+
+  // Fetch posts + total count concurrently
+  const [posts, totalCount] = await Promise.all([
+    prisma.post.findMany({
+      where: whereCondition,
+      include: {
+        author: { select: { id: true, username: true } },
+        community: { select: { id: true, name: true } },
+        tags: true,
+        comments: {
+          where: { parentId: null },
+          include: {
+            author: { select: { id: true, username: true } },
+            replies: {
+              include: {
+                author: { select: { id: true, username: true } },
+              },
+            },
+          },
+        },
+        reactions: true,
+        bookmarks: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+
+    prisma.post.count({ where: whereCondition }),
+  ]);
+
+  return {
+    posts,
+    pagination: {
+      total: totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
     },
-    orderBy: { createdAt: "desc" },
-  });
+  };
 };
 
 export const getPostBySlug = async (slug: string) => {
@@ -75,7 +137,12 @@ export const getPostBySlug = async (slug: string) => {
       author: true,
       community: true,
       tags: true,
-      comments: true,
+      comments: {
+        include: {
+          author: true,
+          replies: true,
+        },
+      },
       reactions: true,
       bookmarks: true,
     },
@@ -117,7 +184,7 @@ export const getPostsByAuthor = async (authorId: string) => {
   const post = await prisma.post.findMany({
     where: { authorId },
   });
-  if (!post) throw new Error("Posts not found");
+  if (post.length === 0) throw new Error("Posts not found");
   return post;
 };
 
@@ -125,6 +192,6 @@ export const getPostsByCommunity = async (communityId: string) => {
   const post = await prisma.post.findMany({
     where: { communityId: communityId },
   });
-  if (!post) throw new Error("no community post available");
+  if (post.length === 0) throw new Error("no community post available");
   return post;
 };

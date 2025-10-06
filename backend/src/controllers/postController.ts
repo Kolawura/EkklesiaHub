@@ -48,8 +48,20 @@ export const archivePost = async (req: Request, res: Response) => {
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await postService.getAllPosts();
-    res.json(posts);
+    const { search, tagId, communityId, authorId, page, limit, status } =
+      req.query;
+
+    const result = await postService.getAllPosts({
+      search: search as string,
+      tagId: tagId as string,
+      communityId: communityId as string,
+      authorId: authorId as string,
+      page: Number(page),
+      limit: Number(limit),
+      status: status as string,
+    });
+
+    res.json(result);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
