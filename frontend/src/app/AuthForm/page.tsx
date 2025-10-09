@@ -15,21 +15,47 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/Tabs";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { loginMutation, registerMutation, isLoadingUser } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email") as string;
+    const password = form.get("password") as string;
+
+    loginMutation.mutate({ email, password });
+  };
+
+  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const fullName = (form.get("name") as string)?.trim();
+    const email = form.get("signup-email") as string;
+    const password = form.get("signup-password") as string;
+
+    // Split full name into first and last
+    const [firstName, ...last] = fullName.split(" ");
+    const lastName = last.join(" ") || "";
+
+    // username could be derived from first name or email prefix
+    const username = email.split("@")[0];
+
+    registerMutation.mutate({
+      firstName,
+      lastName,
+      email,
+      username,
+      password,
+    });
   };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center space-x-2 mb-6">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -46,6 +72,8 @@ const AuthForm = () => {
           Secure, fast, and beautifully designed for modern applications
         </p>
       </div>
+
+      {/* Tabs */}
       <Card className="border-border w-1/3 mx-auto">
         <Tabs defaultValue="login" className="w-full">
           <CardHeader className="space-y-4">
@@ -66,6 +94,7 @@ const AuthForm = () => {
           </CardHeader>
 
           <CardContent className="space-y-4">
+            {/* LOGIN FORM */}
             <TabsContent value="login" className="space-y-4 mt-0">
               <div className="space-y-2 text-center">
                 <CardTitle className="text-xl text-card-foreground">
@@ -76,34 +105,32 @@ const AuthForm = () => {
                 </CardDescription>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-card-foreground">
-                    Email
-                  </Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
+                      name="email"
                       type="email"
-                      placeholder="Enter your email"
-                      className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
                       required
+                      placeholder="Enter your email"
+                      className="pl-10"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-card-foreground">
-                    Password
-                  </Label>
+                  <Label htmlFor="password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
+                      name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
-                      className="pl-10 pr-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      className="pl-10 pr-10"
                       required
                     />
                     <Button
@@ -114,57 +141,25 @@ const AuthForm = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        <EyeOff className="h-4 w-4" />
                       ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        <Eye className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      id="remember"
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-border bg-input accent-primary"
-                    />
-                    <Label
-                      htmlFor="remember"
-                      className="text-sm text-muted-foreground"
-                    >
-                      Remember me
-                    </Label>
-                  </div>
-                  <Button
-                    variant="link"
-                    className="px-0 text-primary hover:text-primary/80"
-                  >
-                    Forgot password?
-                  </Button>
-                </div>
-
                 <Button
                   type="submit"
-                  onClick={() => {}}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading}
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  disabled={loginMutation.isPending}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                      <span>Signing in...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <span>Sign In</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  )}
+                  {loginMutation.isPending ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
             </TabsContent>
 
+            {/* REGISTER FORM */}
             <TabsContent value="signup" className="space-y-4 mt-0">
               <div className="space-y-2 text-center">
                 <CardTitle className="text-xl text-card-foreground">
@@ -175,56 +170,47 @@ const AuthForm = () => {
                 </CardDescription>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-card-foreground">
-                    Full Name
-                  </Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="name"
+                      name="name"
                       type="text"
-                      placeholder="Enter your full name"
-                      className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
                       required
+                      placeholder="Enter your full name"
+                      className="pl-10"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="signup-email"
-                    className="text-card-foreground"
-                  >
-                    Email
-                  </Label>
+                  <Label htmlFor="signup-email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-email"
+                      name="signup-email"
                       type="email"
-                      placeholder="Enter your email"
-                      className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
                       required
+                      placeholder="Enter your email"
+                      className="pl-10"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="signup-password"
-                    className="text-card-foreground"
-                  >
-                    Password
-                  </Label>
+                  <Label htmlFor="signup-password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-password"
+                      name="signup-password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Create a strong password"
-                      className="pl-10 pr-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
+                      className="pl-10 pr-10"
                       required
                     />
                     <Button
@@ -235,55 +221,22 @@ const AuthForm = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        <EyeOff className="h-4 w-4" />
                       ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        <Eye className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="terms"
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-border bg-input accent-primary"
-                    required
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    I agree to the{" "}
-                    <Link
-                      href={"/terms"}
-                      className="px-0 h-auto text-primary hover:text-primary/80 font-bold"
-                    >
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      href={"/privacy"}
-                      className="px-0 h-auto text-primary hover:text-primary/80 font-bold"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </span>
-                </div>
-
                 <Button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading}
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  disabled={registerMutation.isPending}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                      <span>Creating account...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <span>Create Account</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  )}
+                  {registerMutation.isPending
+                    ? "Creating account..."
+                    : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
