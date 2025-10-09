@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import bookmarkRoutes from "./routes/bookmarkRoutes";
 import commentRoutes from "./routes/commentRoutes";
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(generalLimiter);
-
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.get("/", (req: Request, res: Response) => {
   res.send("EkklesiaHub Backend is running 🚀");
 });
