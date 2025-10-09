@@ -12,13 +12,13 @@ export const createCommunity = async (req: Request, res: Response) => {
       description,
       userId
     );
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Community created successfully",
       community,
     });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -32,13 +32,13 @@ export const joinCommunity = async (req: Request, res: Response) => {
       communityId,
       userId
     );
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Joined community successfully",
       membership,
     });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -49,9 +49,9 @@ export const leaveCommunity = async (req: Request, res: Response) => {
     if (!communityId)
       return res.status(400).json({ message: "Community ID is required" });
     const result = await communityService.leaveCommunity(communityId, userId);
-    res.status(200).json({ success: true, ...result });
+    return res.status(200).json({ success: true, ...result });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -61,9 +61,9 @@ export const getAllCommunities = async (req: Request, res: Response) => {
     const communities = await communityService.getAllCommunities(
       search as string
     );
-    res.status(200).json({ success: true, communities });
+    return res.status(200).json({ success: true, communities });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -71,9 +71,9 @@ export const getCommunityById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const community = await communityService.getCommunityById(id);
-    res.status(200).json({ success: true, community });
+    return res.status(200).json({ success: true, community });
   } catch (error: any) {
-    res.status(404).json({ success: false, message: error.message });
+    return res.status(404).json({ success: false, message: error.message });
   }
 };
 
@@ -81,9 +81,9 @@ export const getUserCommunities = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     const communities = await communityService.getUserCommunities(userId);
-    res.status(200).json({ success: true, communities });
+    return res.status(200).json({ success: true, communities });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -91,9 +91,9 @@ export const getCommunityMembers = async (req: Request, res: Response) => {
   try {
     const { communityId } = req.params;
     const users = await communityService.getCommunityMembers(communityId);
-    res.status(200).json({ success: true, users });
+    return res.status(200).json({ success: true, users });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -107,13 +107,13 @@ export const getCommunityPosts = async (req: Request, res: Response) => {
       parseInt(limit as string, 10),
       search as string
     );
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Posts fetched successfully",
       ...results,
     });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -127,13 +127,13 @@ export const updateCommunityInfo = async (req: Request, res: Response) => {
       data,
       userId
     );
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Community updated successfully",
       updatedCommunity,
     });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -151,13 +151,13 @@ export const updateMembershipRole = async (req: Request, res: Response) => {
       newRole,
       userId
     );
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Member role updated successfully",
       updatedMember,
     });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -166,8 +166,8 @@ export const deleteCommunity = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     const result = await communityService.deleteCommunity(id, userId);
-    res.status(200).json({ success: true, ...result });
+    return res.status(200).json({ success: true, ...result });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };

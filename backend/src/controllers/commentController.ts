@@ -33,9 +33,9 @@ export const updateComment = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { content } = req.body;
     const updated = await commentService.updateComment(id, content, userId);
-    res.json({ success: true, message: "Comment Updated", updated });
+    return res.json({ success: true, message: "Comment Updated", updated });
   } catch (error: any) {
-    res.status(403).json({ success: false, message: error.message });
+    return res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -44,8 +44,8 @@ export const deleteComment = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     await commentService.deleteComment(id, userId);
-    res.json({ message: "Comment deleted" });
+    return res.json({ message: "Comment deleted" });
   } catch (error: any) {
-    res.status(403).json({ success: false, message: error.message });
+    return res.status(403).json({ success: false, message: error.message });
   }
 };

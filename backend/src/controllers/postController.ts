@@ -3,7 +3,7 @@ import * as postService from "../services/postService";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId; // set by auth middleware
+    const userId = (req as any).userId;
     const { title, slug, content, coverImage, status, communityId, tagIds } =
       req.body;
 
@@ -18,9 +18,11 @@ export const createPost = async (req: Request, res: Response) => {
       tagIds,
     });
 
-    res.status(201).json({ success: true, message: "Post created", post });
+    return res
+      .status(201)
+      .json({ success: true, message: "Post created", post });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -29,9 +31,11 @@ export const publishPost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     const post = await postService.publishPost(id, userId);
-    res.status(200).json({ success: true, message: "Post published", post });
+    return res
+      .status(200)
+      .json({ success: true, message: "Post published", post });
   } catch (error: any) {
-    res.status(403).json({ success: false, message: error.message });
+    return res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -40,9 +44,11 @@ export const archivePost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     const post = await postService.archivePost(id, userId);
-    res.status(200).json({ success: true, message: "Post archived", post });
+    return res
+      .status(200)
+      .json({ success: true, message: "Post archived", post });
   } catch (error: any) {
-    res.status(403).json({ success: false, message: error.message });
+    return res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -61,18 +67,18 @@ export const getPosts = async (req: Request, res: Response) => {
       status: status as string,
     });
 
-    res.status(200).json({ success: true, result });
+    return res.status(200).json({ success: true, result });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const post = await postService.getPostBySlug(req.params.slug);
-    res.status(200).json({ success: true, post });
+    return res.status(200).json({ success: true, post });
   } catch (error: any) {
-    res.status(404).json({ success: false, message: error.message });
+    return res.status(404).json({ success: false, message: error.message });
   }
 };
 
@@ -82,9 +88,9 @@ export const updatePost = async (req: Request, res: Response) => {
     const { id } = req.params;
     const updates = req.body;
     const updated = await postService.updatePost(id, updates, userId);
-    res.status(200).json({ success: true, updated });
+    return res.status(200).json({ success: true, updated });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -93,9 +99,9 @@ export const deletePost = async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { id } = req.params;
     await postService.deletePost(id, userId);
-    res.status(200).json({ success: true, message: "Post deleted" });
+    return res.status(200).json({ success: true, message: "Post deleted" });
   } catch (error: any) {
-    res.status(403).json({ success: false, message: error.message });
+    return res.status(403).json({ success: false, message: error.message });
   }
 };
 
@@ -103,9 +109,9 @@ export const getPostsByAuthor = async (req: Request, res: Response) => {
   try {
     const { authorId } = req.params;
     const posts = await postService.getPostsByAuthor(authorId);
-    res.status(200).json({ success: true, posts });
+    return res.status(200).json({ success: true, posts });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -113,8 +119,8 @@ export const getPostsByCommunity = async (req: Request, res: Response) => {
   try {
     const { communityId } = req.params;
     const posts = await postService.getPostsByCommunity(communityId);
-    res.status(200).json({ success: true, posts });
+    return res.status(200).json({ success: true, posts });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };

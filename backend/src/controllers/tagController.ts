@@ -9,18 +9,18 @@ export const createTag = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Tag already exists" });
 
     const tag = await tagService.createTag(name);
-    res.status(201).json({ success: true, tag });
+    return res.status(201).json({ success: true, tag });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const getAllTags = async (req: Request, res: Response) => {
   try {
     const tags = await tagService.getAllTags();
-    res.status(200).json({ success: true, tags });
+    return res.status(200).json({ success: true, tags });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -28,8 +28,8 @@ export const getTagByName = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     const tag = await tagService.getTagByName(name);
-    res.json({ success: true, tag });
+    return res.json({ success: true, tag });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };

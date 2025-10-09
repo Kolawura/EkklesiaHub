@@ -1,6 +1,6 @@
-import { verifyToken } from "../utils/token.js";
+import { verifyToken } from "../utils/token";
 import { Response, NextFunction } from "express";
-import { AuthRequest } from "../utils/Type.js";
+import { AuthRequest } from "../utils/Type";
 
 export const protectRoute = (
   req: AuthRequest,

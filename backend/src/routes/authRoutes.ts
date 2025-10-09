@@ -5,7 +5,7 @@ import {
   loginUser,
   logoutUser,
   registerUser,
-} from "../controllers/authController.js";
+} from "../controllers/authController";
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);

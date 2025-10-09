@@ -13,9 +13,9 @@ export const Reaction = async (req: Request, res: Response) => {
       postId,
       commentId
     );
-    res.status(201).json({ success: true, reaction });
+    return res.status(201).json({ success: true, reaction });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -27,9 +27,9 @@ export const getReactions = async (req: Request, res: Response) => {
       commentId as string | undefined
     );
 
-    res.status(200).json({ success: true, reactions });
+    return res.status(200).json({ success: true, reactions });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -40,8 +40,8 @@ export const countReactions = async (req: Request, res: Response) => {
       postId as string,
       commentId as string | undefined
     );
-    res.status(200).json({ success: true, counts });
+    return res.status(200).json({ success: true, counts });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    return res.status(400).json({ success: false, message: error.message });
   }
 };

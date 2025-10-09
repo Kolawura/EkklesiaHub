@@ -3,6 +3,8 @@ import { comparePassword, hashPassword } from "../utils/hashPassword";
 import { generateToken } from "../utils/token";
 
 export const register = async (
+  firstName: string,
+  lastName: string,
   username: string,
   email: string,
   password: string
@@ -14,7 +16,7 @@ export const register = async (
 
   const hashedPassword = await hashPassword(password);
   const user = await prisma.user.create({
-    data: { username, email, password: hashedPassword },
+    data: { firstName, lastName, username, email, password: hashedPassword },
   });
   const token = generateToken(user.id);
   const { password: _, ...userWithoutPassword } = user;
