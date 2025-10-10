@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
+import ThemeToggle from "./ThemeToggle";
 
 export const NavBar = () => {
   return (
@@ -43,6 +44,7 @@ export const NavBar = () => {
               Community
             </Link>
           </li>
+          <ThemeToggle />
         </ul>
       </nav>
     </header>
