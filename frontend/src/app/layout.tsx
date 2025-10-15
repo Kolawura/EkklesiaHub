@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { NavBar } from "@/Components/NavBar";
+// import { NavBar } from "@/components/NavBar";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import NavBar from "@/components/NavBar";
+import { SideBar } from "@/components/SideBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,8 +34,13 @@ export default function RootLayout({
       >
         <ReactQueryProvider>
           <ThemeProvider>
-            <NavBar />
-            {children}
+            <div className="flex h-screen overflow-hidden">
+              <SideBar />
+              <div className="flex-1 flex flex-col overflow-y-auto">
+                <NavBar />
+                {children}
+              </div>
+            </div>
           </ThemeProvider>
         </ReactQueryProvider>
       </body>

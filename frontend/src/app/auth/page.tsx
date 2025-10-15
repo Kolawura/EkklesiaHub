@@ -2,19 +2,18 @@
 
 import type React from "react";
 import { useState } from "react";
-import { Button } from "@/Components/ui/Button";
-import { Input } from "@/Components/ui/Input";
-import { Label } from "@/Components/ui/Label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/Components/ui/Card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/Tabs";
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
-import Link from "next/link";
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const AuthForm = () => {
@@ -54,7 +53,7 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 md:p-12 lg:p-24">
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center space-x-2 mb-6">
