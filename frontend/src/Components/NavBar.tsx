@@ -1,11 +1,11 @@
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
-import ThemeToggle from "./ThemeToggle";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const NavBar = () => {
   return (
-    <header className="flex items-center justify-between p-4 bg-gray-800 text-white">
+    <header className="flex items-center justify-between p-4 bg-gray-800 dark:bg-gray-200 text-white">
       <div className="flex items-center space-x-4">
         <Image
           className="dark:invert"

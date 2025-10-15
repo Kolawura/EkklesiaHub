@@ -7,7 +7,7 @@ export default function Home() {
         {" "}
         Welcome to EkklesiaHub!
       </h1>
-      <p className="text-2xl text-center max-w-2xl">
+      <p className="text-2xl text-center max-w-2xl text-gray-700 dark:text-gray-100 ">
         This is a modern web application built with Next.js, TypeScript, and
         Tailwind CSS. It features a responsive design, dark mode support, and
         seamless navigation.

@@ -58,7 +58,7 @@ const AuthForm = () => {
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center space-x-2 mb-6">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-primary-foreground rounded-sm" />
           </div>
           <span className="text-xl font-semibold text-foreground">
@@ -74,7 +74,7 @@ const AuthForm = () => {
       </div>
 
       {/* Tabs */}
-      <Card className="border-border w-1/3 mx-auto">
+      <Card className="border w-1/3 mx-auto">
         <Tabs defaultValue="login" className="w-full">
           <CardHeader className="space-y-4">
             <TabsList className="grid w-full grid-cols-2 bg-muted">
