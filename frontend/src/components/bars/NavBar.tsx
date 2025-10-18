@@ -2,11 +2,13 @@
 import { useSidebarStore } from "@/store/useSideBarStore";
 import { Search, Plus } from "lucide-react";
 import React from "react";
-import { ThemeToggle } from "./ThemeToggle";
-import { Button } from "./ui/button";
+import { ThemeToggle } from "../ThemeToggle";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
   const { activeView } = useSidebarStore();
+  const route = useRouter();
   return (
     <header className="w-full border-b border-gray-200 dark:border-gray-700 px-8 py-4">
       <div className="flex items-center justify-between">
@@ -29,7 +31,7 @@ export default function NavBar() {
             />
           </div>
           <Button
-            // onClick={() => setShowEditor(true)}
+            onClick={() => route.push("/new")}
             variant="outline"
             size="icon"
             className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
