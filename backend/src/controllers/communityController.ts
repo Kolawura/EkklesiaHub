@@ -1,7 +1,18 @@
 import { Request, Response } from "express";
 import * as communityService from "../services/communityService";
+import {
+  createCommunitySchema,
+  updateCommunitySchema,
+  updateMembershipSchema,
+} from "../schema/communitySchema";
 
 export const createCommunity = async (req: Request, res: Response) => {
+  const validateBody = createCommunitySchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res
+      .status(400)
+      .json({ success: false, errors: validateBody.error.issues });
+  }
   try {
     const userId = (req as any).userId;
     const { name, description } = req.body;
@@ -24,7 +35,7 @@ export const createCommunity = async (req: Request, res: Response) => {
 
 export const joinCommunity = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId; // Assuming userId is set in the request by authentication middleware
+    const userId = (req as any).userId;
     const { communityId } = req.params;
     if (!communityId)
       return res.status(400).json({ message: "Community ID is required" });
@@ -118,10 +129,18 @@ export const getCommunityPosts = async (req: Request, res: Response) => {
 };
 
 export const updateCommunityInfo = async (req: Request, res: Response) => {
+  const validateBody = updateCommunitySchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid input",
+      errors: validateBody.error.issues,
+    });
+  }
   try {
     const userId = (req as any).userId;
     const { id } = req.params;
-    const data = req.body;
+    const data = validateBody.data;
     const updatedCommunity = await communityService.updateCommunityInfo(
       id,
       data,
@@ -138,6 +157,14 @@ export const updateCommunityInfo = async (req: Request, res: Response) => {
 };
 
 export const updateMembershipRole = async (req: Request, res: Response) => {
+  const validateBody = updateMembershipSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid input",
+      errors: validateBody.error.issues,
+    });
+  }
   try {
     const userId = (req as any).userId;
     const { communityId, memberId, newRole } = req.body;

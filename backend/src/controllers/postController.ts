@@ -1,11 +1,20 @@
 import { Request, Response } from "express";
 import * as postService from "../services/postService";
+import { createPostSchema, updatePostSchema } from "../schema/postSchema";
 
 export const createPost = async (req: Request, res: Response) => {
+  const validateBody = createPostSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      massage: "Invalid input",
+      error: validateBody.error.issues,
+    });
+  }
   try {
     const userId = (req as any).userId;
     const { title, slug, content, coverImage, status, communityId, tagIds } =
-      req.body;
+      validateBody.data;
 
     const post = await postService.createPost({
       title,
@@ -83,10 +92,18 @@ export const getPostBySlug = async (req: Request, res: Response) => {
 };
 
 export const updatePost = async (req: Request, res: Response) => {
+  const validateBody = updatePostSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid input",
+      error: validateBody.error.issues,
+    });
+  }
   try {
     const userId = (req as any).userId;
     const { id } = req.params;
-    const updates = req.body;
+    const updates = validateBody.data;
     const updated = await postService.updatePost(id, updates, userId);
     return res.status(200).json({ success: true, updated });
   } catch (error: any) {

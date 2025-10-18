@@ -40,14 +40,10 @@ const AuthForm = () => {
     const [firstName, ...last] = fullName.split(" ");
     const lastName = last.join(" ") || "";
 
-    // username could be derived from first name or email prefix
-    const username = email.split("@")[0];
-
     registerMutation.mutate({
       firstName,
       lastName,
       email,
-      username,
       password,
     });
   };
@@ -158,7 +154,6 @@ const AuthForm = () => {
               </form>
             </TabsContent>
 
-            {/* REGISTER FORM */}
             <TabsContent value="signup" className="space-y-4 mt-0">
               <div className="space-y-2 text-center">
                 <CardTitle className="text-xl text-card-foreground">

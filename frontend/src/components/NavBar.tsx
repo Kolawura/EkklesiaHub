@@ -3,6 +3,7 @@ import { useSidebarStore } from "@/store/useSideBarStore";
 import { Search, Plus } from "lucide-react";
 import React from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "./ui/button";
 
 export default function NavBar() {
   const { activeView } = useSidebarStore();
@@ -27,13 +28,15 @@ export default function NavBar() {
               className="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          <button
+          <Button
             // onClick={() => setShowEditor(true)}
-            className="flex items-center gap-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            variant="outline"
+            size="icon"
+            className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
             {/* <span>New Post</span> */}
-          </button>
+          </Button>
         </div>
       </div>
     </header>

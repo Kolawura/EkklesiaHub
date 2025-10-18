@@ -1,10 +1,20 @@
 import { Request, Response } from "express";
 import { findUserByEmail, login, register } from "../services/authService";
+import { loginSchema, registerSchema } from "../schema/authSchema";
 
 export const registerUser = async (req: Request, res: Response) => {
+  const validateBody = registerSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid inputs",
+      error: validateBody.error.issues,
+    });
+  }
+
   try {
-    const { fistName, lastName, username, email, password } = req.body;
-    if (!username || !email || !password)
+    const { firstName, lastName, email, password } = validateBody.data;
+    if (!email || !password)
       return res
         .status(400)
         .json({ success: true, message: "All fields are required" });
@@ -14,9 +24,8 @@ export const registerUser = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: true, message: "User already registered" });
     const { user, token } = await register(
-      fistName,
+      firstName,
       lastName,
-      username,
       email,
       password
     );
@@ -37,6 +46,17 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 export const loginUser = async (req: Request, res: Response) => {
+  const validateBody = loginSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res
+      .status(400)
+      .json({
+        success: false,
+        message: "Invalid inputs",
+        error: validateBody.error.issues,
+      });
+  }
+
   try {
     const { email, password } = req.body;
     if (!email || !password)
@@ -60,7 +80,7 @@ export const loginUser = async (req: Request, res: Response) => {
   } catch (err) {
     return res
       .status(500)
-      .json({ success: false, message: "Login failed", error: err }); // Fixed to return error message
+      .json({ success: false, message: "Login failed", error: err });
   }
 };
 

@@ -1,10 +1,23 @@
 import { Request, Response } from "express";
 import * as commentService from "../services/commentService";
+import {
+  createCommentSchema,
+  updateCommentSchema,
+} from "../schema/commentSchema";
 
 export const createComment = async (req: Request, res: Response) => {
+  const validatedBody = createCommentSchema.safeParse(req.body);
+  if (!validatedBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid comment data",
+      error: validatedBody.error.issues,
+    });
+  }
+
   try {
     const userId = (req as any).userId;
-    const { content, postId, parentId } = req.body;
+    const { content, postId, parentId } = validatedBody.data;
     const comment = await commentService.createComment({
       content,
       authorId: userId,
@@ -28,6 +41,15 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
 };
 
 export const updateComment = async (req: Request, res: Response) => {
+  const validateBody = updateCommentSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid comment data",
+      error: validateBody.error.issues,
+    });
+  }
+
   try {
     const userId = (req as any).userId;
     const { id } = req.params;

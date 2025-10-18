@@ -167,7 +167,7 @@ export const getCommunityPosts = async (
 
 export const updateCommunityInfo = async (
   id: string,
-  data: any,
+  data: { name: string; description: string },
   userId: string
 ) => {
   const membership = await prisma.communityMembership.findFirst({

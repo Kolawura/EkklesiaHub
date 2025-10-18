@@ -5,9 +5,9 @@ import { generateToken } from "../utils/token";
 export const register = async (
   firstName: string,
   lastName: string,
-  username: string,
   email: string,
-  password: string
+  password: string,
+  username?: string
 ) => {
   const existingUser = await prisma.user.findFirst({
     where: { OR: [{ email }, { username }] },
@@ -15,6 +15,9 @@ export const register = async (
   if (existingUser) throw new Error("User already exists");
 
   const hashedPassword = await hashPassword(password);
+  if (!username) {
+    username = email.split("@")[0];
+  }
   const user = await prisma.user.create({
     data: { firstName, lastName, username, email, password: hashedPassword },
   });

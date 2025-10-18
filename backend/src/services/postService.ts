@@ -1,11 +1,12 @@
 import { prisma } from "../db/prisma";
+import { UpdatePostInput } from "../schema/postSchema";
 
 export const createPost = async (data: {
   title: string;
   slug: string;
   content: string;
   coverImage?: string;
-  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   authorId: string;
   communityId?: string;
   tagIds?: string[];
@@ -158,7 +159,7 @@ export const getPostBySlug = async (slug: string) => {
 
 export const updatePost = async (
   id: string,
-  updates: any,
+  updates: UpdatePostInput,
   authorId: string
 ) => {
   const post = await prisma.post.findUnique({ where: { id } });

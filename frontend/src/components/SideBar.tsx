@@ -50,8 +50,23 @@ export const SideBar = ({}) => {
             );
           })}
         </nav>
+        <hr className="mx-6" />
+        {/* <div className="p-4">
+          <div className="flex flex-col">
+            <span>Following</span>
+            <ul>
+              <li>
+                <div>
+                  <img src="" alt="" />
+                  {.map((follower) => (<li>{follower}</li>))}
+                  Oluwatosin
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div> */}
 
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4">
           <div className="flex items-center gap-3 px-4 py-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
               JD
