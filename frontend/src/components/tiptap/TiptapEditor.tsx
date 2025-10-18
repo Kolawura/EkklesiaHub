@@ -86,8 +86,6 @@ export default function TiptapEditor({
       content: editor?.getHTML() || "",
       coverImage,
     });
-
-    // Auto-resize textarea
     if (titleRef.current) {
       titleRef.current.style.height = "auto";
       titleRef.current.style.height = titleRef.current.scrollHeight + "px";
