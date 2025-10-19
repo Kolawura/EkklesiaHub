@@ -85,12 +85,6 @@ export function MenuBar({ editor }: MenuBarProps) {
     },
     { divider: true },
     {
-      icon: Paragraph,
-      action: () => editor.chain().focus().setParagraph().run(),
-      active: editor.isActive("paragraph"),
-      title: "Paragraph",
-    },
-    {
       icon: Heading1,
       action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
       active: editor.isActive("heading", { level: 1 }),
@@ -107,6 +101,12 @@ export function MenuBar({ editor }: MenuBarProps) {
       action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       active: editor.isActive("heading", { level: 3 }),
       title: "Heading 3",
+    },
+    {
+      icon: Paragraph,
+      action: () => editor.chain().focus().setParagraph().run(),
+      active: editor.isActive("paragraph"),
+      title: "Paragraph",
     },
     { divider: true },
     {
@@ -181,22 +181,30 @@ export function MenuBar({ editor }: MenuBarProps) {
   ];
 
   return (
-    <div className="flex items-center justify-center gap-1 p-2 border-b border-gray-200 bg-gray-50 flex-wrap">
+    <div className="flex items-center justify-center gap-1 p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 flex-wrap">
       {buttons.map((btn, idx) => {
         const Icon = btn.icon;
         return btn.divider ? (
-          <div key={idx} className="w-px h-6 bg-gray-300 mx-1" />
+          <div
+            key={idx}
+            className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"
+          />
         ) : (
           <button
             key={idx}
+            type="button"
             onClick={btn.action}
             disabled={btn.disabled}
             title={btn.title}
-            className={`p-2 rounded hover:bg-gray-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
-              btn.active ? "bg-blue-100 text-blue-600" : "text-gray-700"
-            }`}
+            className={`p-2 rounded 
+  transition-colors disabled:opacity-30 disabled:cursor-not-allowed 
+  ${
+    btn.active
+      ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-700"
+      : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+  }`}
           >
-            {Icon ? <Icon size={18} /> : null}
+            {Icon && <Icon size={18} />}
           </button>
         );
       })}

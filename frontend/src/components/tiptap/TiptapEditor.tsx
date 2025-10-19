@@ -10,6 +10,12 @@ import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import { MenuBar } from "./MenuBar";
 import { ImagePlus, X } from "lucide-react";
+import "@/components/tiptap/styles/tiptap.css";
+import "highlight.js/styles/github-dark.css";
+import { common, createLowlight } from "lowlight";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+
+const lowlight = createLowlight(common);
 
 interface TiptapEditorProps {
   content?: string;
@@ -30,7 +36,7 @@ export default function TiptapEditor({
   coverImage: initialCoverImage,
   onChange,
   editable = true,
-  placeholder = "Tell your story...",
+  placeholder,
 }: TiptapEditorProps) {
   const [title, setTitle] = useState(initialTitle);
   const [coverImage, setCoverImage] = useState(initialCoverImage);
@@ -40,6 +46,7 @@ export default function TiptapEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        codeBlock: false,
         heading: {
           levels: [1, 2, 3],
         },
@@ -60,7 +67,15 @@ export default function TiptapEditor({
         types: ["heading", "paragraph"],
       }),
       Placeholder.configure({
-        placeholder,
+        placeholder: ({ node }) => {
+          if (node.type.name === "heading") {
+            return "Write a heading...";
+          }
+          return placeholder || "Start writing...";
+        },
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
       }),
     ],
     content,
@@ -72,7 +87,7 @@ export default function TiptapEditor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-lg focus:outline-none max-w-none px-8 md:px-16 lg:px-24 py-8 min-h-[500px]",
+          "tiptap prose prose-lg focus:outline-none max-w-none px-8 md:px-16 lg:px-24 py-8 min-h-[250px] dark:prose-invert prose-h1:text-4xl prose-h1:font-bold prose-h2:text-3xl prose-h2:font-semibold prose-h3:text-2xl prose-h3:font-medium prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:rounded prose-pre:bg-gray-100 prose-pre:dark:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic prose-ul:list-disc prose-ol:list-decimal",
       },
     },
     immediatelyRender: false,
@@ -122,10 +137,10 @@ export default function TiptapEditor({
   };
 
   return (
-    <div className="bg-white">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
       {/* Cover Image Section */}
       {coverImage ? (
-        <div className="relative w-full h-64 md:h-96 bg-gray-100">
+        <div className="relative w-full h-64 md:h-96 bg-gray-100 dark:bg-gray-900">
           <img
             src={coverImage}
             alt="Cover"
@@ -133,11 +148,15 @@ export default function TiptapEditor({
           />
           {editable && (
             <button
+              type="button"
               onClick={removeCoverImage}
-              className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
               title="Remove cover image"
             >
-              <X size={20} className="text-gray-700" />
+              <X
+                size={20}
+                className="text-gray-700 dark:text-gray-700 dark:hover:text-gray-200"
+              />
             </button>
           )}
         </div>
@@ -145,6 +164,7 @@ export default function TiptapEditor({
         editable && (
           <div className="px-8 md:px-16 lg:px-24 pt-12">
             <button
+              type="button"
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors group"
             >
@@ -174,14 +194,16 @@ export default function TiptapEditor({
           placeholder="Title"
           disabled={!editable}
           rows={1}
-          className="w-full text-4xl md:text-5xl font-bold placeholder-gray-300 border-none focus:outline-none resize-none overflow-hidden"
+          className="w-full text-4xl md:text-5xl font-bold placeholder-gray-300 
+  border-none focus:outline-none resize-none overflow-hidden
+  bg-transparent text-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
           style={{ minHeight: "60px" }}
         />
       </div>
 
       {/* Toolbar - Sticky */}
       {editable && (
-        <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
+        <div className="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700">
           <div className="">
             <MenuBar editor={editor} />
           </div>

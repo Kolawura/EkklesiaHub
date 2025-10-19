@@ -1,19 +1,6 @@
 "use client";
 import { useState } from "react";
-import {
-  Search,
-  Plus,
-  Edit2,
-  Trash2,
-  Eye,
-  Save,
-  X,
-  FileText,
-  Image,
-  Users,
-  Settings,
-  BarChart3,
-} from "lucide-react";
+import { Edit2, Trash2, Eye, Save, X } from "lucide-react";
 import { useSidebarStore } from "@/store/useSideBarStore";
 
 export default function CMSDashboard() {
