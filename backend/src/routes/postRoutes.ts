@@ -7,9 +7,9 @@ const router = Router();
 
 // Public routes
 router.get("/", postController.getPosts);
-router.get("/:slug", postController.getPostBySlug);
-router.get("/:authorId", postController.getPostsByAuthor);
-router.get("/:communityId", postController.getPostsByCommunity);
+router.get("/slug/:slug", postController.getPostBySlug);
+router.get("/author/:authorId", postController.getPostsByAuthor);
+router.get("/community/:communityId", postController.getPostsByCommunity);
 
 // Protected routes (must be logged in)
 router.post("/", protectRoute, postController.createPost);

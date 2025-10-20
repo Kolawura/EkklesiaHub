@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import { NavBar } from "@/components/NavBar";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NavBar from "@/components/bars/NavBar";
 import { SideBar } from "@/components/bars/SideBar";

@@ -29,3 +29,16 @@ export type RegisterType = {
   email: string;
   password: string;
 };
+
+export type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  coverImage?: string | null;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  authorId: string;
+  communityId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
