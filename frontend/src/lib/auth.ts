@@ -1,4 +1,3 @@
-import { api } from "./api";
 import { getRequest, postRequest } from "./service";
 import { RegisterType, LoginType } from "./type";
 

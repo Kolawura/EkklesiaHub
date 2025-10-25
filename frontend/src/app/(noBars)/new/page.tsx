@@ -10,18 +10,21 @@ export default function CreatePostPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<string | undefined>(undefined);
+  const [tags, setTags] = useState<string[]>([]);
   const router = useRouter();
   const { mutateAsync: createPost, isPending } = useCreatePost();
   const { user } = useAuthStore();
 
   type contentType = {
     title: string;
+    tags: string[];
     content: string;
     coverImage?: string | undefined;
   };
 
   const getContent = (data: contentType) => {
     setTitle(data.title);
+    setTags(data.tags);
     setContent(data.content);
     setCoverImage(data.coverImage);
   };
@@ -32,6 +35,7 @@ export default function CreatePostPage() {
     try {
       const newPost = {
         title,
+        tags,
         content,
         coverImage,
         authorId: user?.id,

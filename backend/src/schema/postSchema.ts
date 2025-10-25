@@ -13,7 +13,7 @@ export const createPostSchema = z.object({
   coverImage: z.url().optional(),
   status: postStatusEnum.optional().default("DRAFT"),
   communityId: z.string().optional(),
-  tagIds: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export const updatePostSchema = z

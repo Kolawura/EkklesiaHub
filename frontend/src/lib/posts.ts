@@ -21,6 +21,11 @@ export const getPostBySlug = async (slug: string) => {
   return res;
 };
 
+export const getPostById = async (id: string) => {
+  const res = await getRequest(`/posts/${id}`);
+  return res;
+};
+
 export const getPostsByAuthor = async (authorId: string) => {
   const res = await getRequest(`/posts/author/${authorId}`);
   return res;

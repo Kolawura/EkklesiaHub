@@ -9,7 +9,7 @@ export const createPost = async (data: {
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   authorId: string;
   communityId?: string;
-  tagIds?: string[];
+  tags?: string[];
 }) => {
   return await prisma.post.create({
     data: {
@@ -20,14 +20,11 @@ export const createPost = async (data: {
       status: data.status ?? "DRAFT",
       authorId: data.authorId,
       communityId: data.communityId,
-      tags: data.tagIds
-        ? { connect: data.tagIds.map((id) => ({ id })) }
-        : undefined,
+      tags: data.tags,
     },
     include: {
       author: true,
       community: true,
-      tags: true,
     },
   });
 };
@@ -61,7 +58,7 @@ export const archivePost = async (id: string, userId: string) => {
 
 export const getAllPosts = async (params?: {
   search?: string;
-  tagId?: string;
+  tag?: string;
   communityId?: string;
   authorId?: string;
   page?: number;
@@ -70,7 +67,7 @@ export const getAllPosts = async (params?: {
 }) => {
   const {
     search = "",
-    tagId,
+    tag,
     communityId,
     authorId,
     page = 1,
@@ -90,8 +87,8 @@ export const getAllPosts = async (params?: {
     }),
     ...(authorId && { authorId }),
     ...(communityId && { communityId }),
-    ...(tagId && {
-      tags: { some: { id: tagId } }, // filter posts that have the tag
+    ...(tag && {
+      tags: { has: tag },
     }),
   };
 
@@ -102,7 +99,6 @@ export const getAllPosts = async (params?: {
       include: {
         author: { select: { id: true, username: true } },
         community: { select: { id: true, name: true } },
-        tags: true,
         comments: {
           where: { parentId: null },
           include: {
@@ -136,13 +132,36 @@ export const getAllPosts = async (params?: {
   };
 };
 
+export const getPostById = async (id: string) => {
+  const post = await prisma.post.findUnique({
+    where: { id },
+    include: {
+      author: true,
+      community: true,
+      comments: {
+        include: {
+          author: true,
+          replies: {
+            include: {
+              author: true,
+            },
+          },
+        },
+      },
+      reactions: true,
+      bookmarks: true,
+    },
+  });
+  if (!post) throw new Error("Post not found");
+  return post;
+};
+
 export const getPostBySlug = async (slug: string) => {
   const post = await prisma.post.findUnique({
     where: { slug },
     include: {
       author: true,
       community: true,
-      tags: true,
       comments: {
         include: {
           author: true,
@@ -170,11 +189,7 @@ export const updatePost = async (
     where: { id },
     data: {
       ...updates,
-      tags: updates.tagIds
-        ? { set: updates.tagIds.map((id: string) => ({ id })) }
-        : undefined,
     },
-    include: { tags: true },
   });
   return updatedPost;
 };
@@ -196,7 +211,7 @@ export const getPostsByAuthor = async (authorId: string) => {
 
 export const getPostsByCommunity = async (communityId: string) => {
   const post = await prisma.post.findMany({
-    where: { communityId: communityId },
+    where: { communityId },
   });
   if (post.length === 0) throw new Error("no community post available");
   return post;

@@ -13,7 +13,7 @@ export const createPost = async (req: Request, res: Response) => {
   }
   try {
     const userId = (req as any).userId;
-    const { title, slug, content, coverImage, status, communityId, tagIds } =
+    const { title, slug, content, coverImage, status, communityId, tags } =
       validateBody.data;
 
     const post = await postService.createPost({
@@ -24,7 +24,7 @@ export const createPost = async (req: Request, res: Response) => {
       status,
       authorId: userId,
       communityId,
-      tagIds,
+      tags,
     });
 
     return res
@@ -63,12 +63,12 @@ export const archivePost = async (req: Request, res: Response) => {
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    const { search, tagId, communityId, authorId, page, limit, status } =
+    const { search, tag, communityId, authorId, page, limit, status } =
       req.query;
 
     const result = await postService.getAllPosts({
       search: search as string,
-      tagId: tagId as string,
+      tag: tag as string,
       communityId: communityId as string,
       authorId: authorId as string,
       page: Number(page),
@@ -79,6 +79,15 @@ export const getPosts = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, result });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getPostById = async (req: Request, res: Response) => {
+  try {
+    const post = await postService.getPostById(req.params.id);
+    return res.status(200).json({ success: true, post });
+  } catch (error: any) {
+    return res.status(404).json({ success: false, message: error.message });
   }
 };
 

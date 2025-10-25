@@ -1,17 +1,28 @@
 // src/controllers/reactionController.ts
 import { Request, Response } from "express";
 import * as reactionService from "../services/reactionService";
+import { reactionSchema } from "../schema/reactionSchema";
 
 export const Reaction = async (req: Request, res: Response) => {
+  const validateBody = reactionSchema.safeParse(req.body);
+  if (!validateBody.success) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid reaction data",
+      error: validateBody.error.issues,
+    });
+  }
+
   try {
-    const { type, postId, commentId } = req.body;
+    const { type } = validateBody.data;
+    const { postId, commentId } = req.query;
     const userId = (req as any).user.id;
 
     const reaction = await reactionService.Reaction(
       userId,
       type,
-      postId,
-      commentId
+      postId as string,
+      commentId as string | undefined
     );
     return res.status(201).json({ success: true, reaction });
   } catch (error: any) {

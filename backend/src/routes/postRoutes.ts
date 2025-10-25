@@ -7,6 +7,7 @@ const router = Router();
 
 // Public routes
 router.get("/", postController.getPosts);
+router.get("/:id", postController.getPostById);
 router.get("/slug/:slug", postController.getPostBySlug);
 router.get("/author/:authorId", postController.getPostsByAuthor);
 router.get("/community/:communityId", postController.getPostsByCommunity);

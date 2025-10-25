@@ -9,7 +9,6 @@ import postRoutes from "./routes/postRoutes";
 import reactionRoutes from "./routes/reactionRoutes";
 import communityRoutes from "./routes/communityRoutes";
 import followRoutes from "./routes/followRoutes";
-import tagRoutes from "./routes/tagRoutes";
 import { prisma } from "./db/prisma";
 import { authLimiter, generalLimiter } from "./middlewares/rateLimiter";
 const app = express();
@@ -32,7 +31,6 @@ app.use("/api/communities", communityRoutes);
 app.use("/api/follow", followRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/reactions", reactionRoutes);
-app.use("/api/tags", tagRoutes);
 
 process.on("SIGINT", async () => {
   console.log("🧹 Closing Prisma connection...");

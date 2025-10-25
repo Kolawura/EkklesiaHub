@@ -1,25 +1,32 @@
 "use client";
 import React from "react";
-import { Home, FileText, Users, Settings } from "lucide-react";
+import { Home, FileText, Users, Settings, LayoutDashboard } from "lucide-react";
 import { useSidebarStore } from "@/store/useSideBarStore";
 import Link from "next/link";
+import path from "path";
 
 const navItems = [
-  { id: "dashboard", page: "Dashboard", icon: Home },
-  { id: "posts", page: "Posts", icon: FileText },
-  { id: "authors", page: "Authors", icon: Users },
-  { id: "settings", page: "Settings", icon: Settings },
+  { id: "home", page: "Home", icon: Home, path: "/" },
+  {
+    id: "dashboard",
+    page: "Dashboard",
+    icon: LayoutDashboard,
+    path: "/dashboard",
+  },
+  { id: "posts", page: "Posts", icon: FileText, path: "/posts" },
+  { id: "authors", page: "Authors", icon: Users, path: "/authors" },
+  { id: "settings", page: "Settings", icon: Settings, path: "/settings" },
 ];
 
 export const SideBar = ({}) => {
   const { activeView, setActiveView } = useSidebarStore();
 
-  const getActiveIcon = () => {
-    const item = navItems.find((i) => i.id === activeView);
-    return item ? item.icon : FileText;
-  };
+  // const getActiveIcon = () => {
+  //   const item = navItems.find((i) => i.id === activeView);
+  //   return item ? item.icon : FileText;
+  // };
 
-  const ActiveIcon = getActiveIcon();
+  // const ActiveIcon = getActiveIcon();
 
   return (
     <aside className="w-64 h-screen bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -35,7 +42,7 @@ export const SideBar = ({}) => {
             const IconComponent = item.icon;
             return (
               <Link
-                href={`/${item.page.toLowerCase()}`}
+                href={`${item.path}`}
                 key={item.id}
                 onClick={() => setActiveView(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${

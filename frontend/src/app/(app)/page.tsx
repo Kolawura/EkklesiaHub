@@ -5,7 +5,6 @@ import { useSidebarStore } from "@/store/useSideBarStore";
 
 export default function CMSDashboard() {
   const [showEditor, setShowEditor] = useState<boolean>(false);
-  const { activeView } = useSidebarStore();
 
   type Post = {
     id: number;
@@ -60,7 +59,7 @@ export default function CMSDashboard() {
 
   return (
     <main className="flex-1 overflow-auto p-8">
-      {activeView === "posts" && !showEditor && (
+      {!showEditor && (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -147,7 +146,7 @@ export default function CMSDashboard() {
         </div>
       )}
 
-      {activeView === "posts" && showEditor && (
+      {showEditor && (
         <div className="bg-white rounded-xl border border-gray-200 p-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900">
@@ -228,20 +227,6 @@ export default function CMSDashboard() {
                 <span>Save Post</span>
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {activeView !== "posts" && (
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <div className="text-gray-400 mb-4">
-              {/* <ActiveIcon size={64} className="mx-auto" /> */}
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2 capitalize">
-              {activeView}
-            </h3>
-            <p className="text-gray-500">This section is coming soon</p>
           </div>
         </div>
       )}

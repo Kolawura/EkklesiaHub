@@ -9,6 +9,7 @@ import {
   archivePost,
   updatePost,
   deletePost,
+  getPostById,
 } from "@/lib/posts";
 import type { Post } from "@/lib/type";
 
@@ -24,6 +25,17 @@ export const usePostBySlug = (slug: string) => {
     queryKey: ["post", slug],
     queryFn: async () => getPostBySlug(slug),
     enabled: !!slug,
+  });
+};
+
+export const usePostById = (id: string) => {
+  return useQuery<Post>({
+    queryKey: ["post", id],
+    queryFn: async () => {
+      const res = await getPostById(id);
+      return res;
+    },
+    enabled: !!id,
   });
 };
 

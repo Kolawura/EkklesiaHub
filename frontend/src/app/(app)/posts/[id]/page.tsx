@@ -1,7 +1,25 @@
+"use client";
 import { Heart, Bookmark, Calendar, MessageCircle } from "lucide-react";
+import { usePostById } from "@/hooks/usePosts";
+import { notFound } from "next/navigation";
+import Loading from "@/app/loading";
 
-export default function SinglePostView() {
-  //   if (!selectedPost) return null;
+interface PostPageProps {
+  params: { id: string };
+}
+
+export default function SinglePostView({ params }: PostPageProps) {
+  const { id } = params;
+  const { data: post, isLoading } = usePostById(id);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!post) {
+    return notFound();
+  }
+
   const selectedPost = {
     id: "1",
     title: "Understanding React Hooks: A Comprehensive Guide",

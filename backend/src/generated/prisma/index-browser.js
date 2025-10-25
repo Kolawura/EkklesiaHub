@@ -159,13 +159,9 @@ exports.Prisma.PostScalarFieldEnum = {
   status: 'status',
   authorId: 'authorId',
   communityId: 'communityId',
+  tags: 'tags',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TagScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
 };
 
 exports.Prisma.CommentScalarFieldEnum = {
@@ -239,7 +235,6 @@ exports.Prisma.ModelName = {
   Community: 'Community',
   CommunityMembership: 'CommunityMembership',
   Post: 'Post',
-  Tag: 'Tag',
   Comment: 'Comment',
   Reaction: 'Reaction',
   Follow: 'Follow',

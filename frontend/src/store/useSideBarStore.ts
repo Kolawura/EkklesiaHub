@@ -9,6 +9,6 @@ interface SidebarState {
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
-  activeView: "dashboard",
+  activeView: "home",
   setActiveView: (view) => set({ activeView: view }),
 }));

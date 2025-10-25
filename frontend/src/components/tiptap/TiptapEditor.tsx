@@ -20,9 +20,11 @@ const lowlight = createLowlight(common);
 interface TiptapEditorProps {
   content?: string;
   title?: string;
+  tags?: string[];
   coverImage?: string;
   onChange?: (data: {
     title: string;
+    tags: string[];
     content: string;
     coverImage?: string;
   }) => void;
@@ -33,6 +35,7 @@ interface TiptapEditorProps {
 export default function TiptapEditor({
   content = "",
   title: initialTitle = "",
+  tags: initialTags = [],
   coverImage: initialCoverImage,
   onChange,
   editable = true,
@@ -40,6 +43,8 @@ export default function TiptapEditor({
 }: TiptapEditorProps) {
   const [title, setTitle] = useState(initialTitle);
   const [coverImage, setCoverImage] = useState(initialCoverImage);
+  const [tags, setTags] = useState<string[]>([]);
+  const [currentTag, setCurrentTag] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
@@ -82,7 +87,7 @@ export default function TiptapEditor({
     editable,
     onUpdate: ({ editor }) => {
       const newContent = editor.getHTML();
-      onChange?.({ title, content: newContent, coverImage });
+      onChange?.({ title, tags, content: newContent, coverImage });
     },
     editorProps: {
       attributes: {
@@ -98,6 +103,7 @@ export default function TiptapEditor({
     setTitle(newTitle);
     onChange?.({
       title: newTitle,
+      tags,
       content: editor?.getHTML() || "",
       coverImage,
     });
@@ -116,6 +122,7 @@ export default function TiptapEditor({
         setCoverImage(imageUrl);
         onChange?.({
           title,
+          tags,
           content: editor?.getHTML() || "",
           coverImage: imageUrl,
         });
@@ -128,12 +135,38 @@ export default function TiptapEditor({
     setCoverImage(undefined);
     onChange?.({
       title,
+      tags,
       content: editor?.getHTML() || "",
       coverImage: undefined,
     });
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const newTag = currentTag.trim().toLowerCase();
+      if (newTag && !tags.includes(newTag)) {
+        const updatedTags = [...tags, newTag];
+        setTags(updatedTags);
+        onChange?.({
+          title,
+          tags: updatedTags,
+          content: editor?.getHTML() || "",
+          coverImage,
+        });
+      }
+      setCurrentTag("");
+    } else if (e.key === "Backspace" && !currentTag && tags.length > 0) {
+      setTags(tags.slice(0, -1));
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    const updatedTags = tags.filter((t) => t !== tag);
+    setTags(updatedTags);
   };
 
   return (
@@ -194,12 +227,41 @@ export default function TiptapEditor({
           placeholder="Title"
           disabled={!editable}
           rows={1}
-          className="w-full text-4xl md:text-5xl font-bold placeholder-gray-300 
-  border-none focus:outline-none resize-none overflow-hidden
-  bg-transparent text-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
+          className="w-full text-4xl md:text-5xl font-bold placeholder-gray-300 border-none focus:outline-none resize-none overflow-hidden bg-transparent text-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
           style={{ minHeight: "60px" }}
         />
       </div>
+
+      {/* Tags Input Section */}
+      {editable && (
+        <div className="px-8 md:px-16 lg:px-24 mt-4 mb-2">
+          <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                className="flex items-center gap-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-2 py-1 rounded-full text-sm"
+              >
+                <span>#{tag}</span>
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  className="hover:text-red-500"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+            <input
+              type="text"
+              value={currentTag}
+              onChange={(e) => setCurrentTag(e.target.value)}
+              onKeyDown={handleTagKeyDown}
+              placeholder={tags.length === 0 ? "Add tags..." : ""}
+              className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Toolbar - Sticky */}
       {editable && (
