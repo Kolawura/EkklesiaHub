@@ -61,10 +61,27 @@ export const archivePost = async (req: Request, res: Response) => {
   }
 };
 
-export const getPosts = async (req: Request, res: Response) => {
+export const getAllPublishedPosts = async (req: Request, res: Response) => {
   try {
-    const { search, tag, communityId, authorId, page, limit, status } =
-      req.query;
+    const { search, tag, communityId, authorId, page, limit } = req.query;
+
+    const result = await postService.getAllPublishedPosts({
+      search: search as string,
+      tag: tag as string,
+      communityId: communityId as string,
+      authorId: authorId as string,
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    return res.status(200).json({ success: true, result });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+export const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const { search, tag, communityId, authorId, page, limit } = req.query;
 
     const result = await postService.getAllPosts({
       search: search as string,
@@ -73,7 +90,7 @@ export const getPosts = async (req: Request, res: Response) => {
       authorId: authorId as string,
       page: Number(page),
       limit: Number(limit),
-      status: status as string,
+      status: "PUBLISHED",
     });
 
     return res.status(200).json({ success: true, result });
@@ -150,3 +167,6 @@ export const getPostsByCommunity = async (req: Request, res: Response) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+export function getPosts(arg0: string, getPosts: any) {
+  throw new Error("Function not implemented.");
+}

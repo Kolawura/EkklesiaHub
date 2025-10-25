@@ -6,7 +6,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
-import Image from "@tiptap/extension-image";
+import Image from "next/image";
+import TiptapImage from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import { MenuBar } from "./MenuBar";
 import { ImagePlus, X } from "lucide-react";
@@ -43,7 +44,7 @@ export default function TiptapEditor({
 }: TiptapEditorProps) {
   const [title, setTitle] = useState(initialTitle);
   const [coverImage, setCoverImage] = useState(initialCoverImage);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(initialTags);
   const [currentTag, setCurrentTag] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
@@ -63,7 +64,7 @@ export default function TiptapEditor({
           class: "text-blue-600 underline cursor-pointer hover:text-blue-800",
         },
       }),
-      Image.configure({
+      TiptapImage.configure({
         HTMLAttributes: {
           class: "max-w-full h-auto rounded-lg",
         },
@@ -174,11 +175,13 @@ export default function TiptapEditor({
       {/* Cover Image Section */}
       {coverImage ? (
         <div className="relative w-full h-64 md:h-96 bg-gray-100 dark:bg-gray-900">
-          <img
-            src={coverImage}
-            alt="Cover"
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            <img
+              src={coverImage}
+              alt={`${title} cover image`}
+              className="w-full h-full object-cover"
+            />
+          </picture>
           {editable && (
             <button
               type="button"

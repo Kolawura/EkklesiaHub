@@ -49,6 +49,11 @@ export const archivePost = async (id: string, userId: string) => {
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) throw new Error("Post not found");
   if (post.authorId !== userId) throw new Error("Not authorized");
+  // check if post is archived
+  const check = await prisma.post.findUnique({
+    where: { id, status: "ARCHIVED" },
+  });
+  if (check) throw new Error("Cannot archive an already archived post");
   const archivePost = await prisma.post.update({
     where: { id },
     data: { status: "ARCHIVED" },
@@ -56,6 +61,80 @@ export const archivePost = async (id: string, userId: string) => {
   return archivePost;
 };
 
+export const getAllPublishedPosts = async (params?: {
+  search?: string;
+  tag?: string;
+  communityId?: string;
+  authorId?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const {
+    search = "",
+    tag,
+    communityId,
+    authorId,
+    page = 1,
+    limit = 10,
+  } = params || {};
+
+  const status = "PUBLISHED";
+  const skip = (page - 1) * limit;
+
+  const whereCondition: any = {
+    status,
+    ...(search && {
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ],
+    }),
+    ...(authorId && { authorId }),
+    ...(communityId && { communityId }),
+    ...(tag && {
+      tags: { has: tag },
+    }),
+  };
+
+  // Fetch posts + total count concurrently
+  const [posts, totalCount] = await Promise.all([
+    prisma.post.findMany({
+      where: whereCondition,
+      include: {
+        author: { select: { id: true, username: true } },
+        community: { select: { id: true, name: true } },
+        comments: {
+          where: { parentId: null },
+          include: {
+            author: { select: { id: true, username: true } },
+            replies: {
+              include: {
+                author: { select: { id: true, username: true } },
+              },
+            },
+          },
+        },
+        reactions: true,
+        bookmarks: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+
+    prisma.post.count({ where: whereCondition }),
+  ]);
+
+  return {
+    posts,
+    pagination: {
+      total: totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  };
+};
 export const getAllPosts = async (params?: {
   search?: string;
   tag?: string;
@@ -72,7 +151,7 @@ export const getAllPosts = async (params?: {
     authorId,
     page = 1,
     limit = 10,
-    status = "PUBLISHED",
+    status,
   } = params || {};
 
   const skip = (page - 1) * limit;

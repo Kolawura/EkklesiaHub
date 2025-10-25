@@ -85,11 +85,13 @@ export default function Post() {
             >
               {post.coverImage && (
                 <div className="w-40 h-40 bg-gray-200 overflow-hidden">
-                  <img
-                    src={post.coverImage}
-                    alt={post.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+                  <picture>
+                    <img
+                      src={post.coverImage}
+                      alt={post.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </picture>
                 </div>
               )}
               <div className="p-6">
