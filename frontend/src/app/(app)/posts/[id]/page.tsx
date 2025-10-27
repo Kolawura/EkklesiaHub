@@ -2,7 +2,7 @@
 import { Heart, Bookmark, Calendar, MessageCircle } from "lucide-react";
 import { usePostById } from "@/hooks/usePosts";
 import { notFound } from "next/navigation";
-import Loading from "@/app/loading";
+import Loading from "@/components/Loading";
 
 interface PostPageProps {
   params: { id: string };
@@ -85,11 +85,13 @@ Hooks have made it easier to manage state and side effects in React applications
       <article className="max-w-4xl mx-auto px-6 py-12">
         {selectedPost.coverImage && (
           <div className="aspect-video bg-gray-200 rounded-2xl overflow-hidden mb-8">
-            <img
-              src={selectedPost.coverImage}
-              alt={selectedPost.title}
-              className="w-full h-full object-cover"
-            />
+            <picture>
+              <img
+                src={selectedPost.coverImage}
+                alt={selectedPost.title}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </div>
         )}
 

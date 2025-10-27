@@ -15,7 +15,7 @@ export type ApiResponse<T> = {
   success: boolean;
   message: string;
   data?: T;
-  error?: any;
+  error?: never;
 };
 
 export type LoginType = {
@@ -36,9 +36,15 @@ export type Post = {
   slug: string;
   content: string;
   coverImage?: string | null;
+  tags: string[];
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   authorId: string;
   communityId?: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type Error = {
+  error: boolean;
+  message: string;
 };
