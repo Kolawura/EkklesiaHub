@@ -11,16 +11,17 @@ import {
   deletePost,
   getPostById,
 } from "@/lib/posts";
+import type { Post } from "@/lib/type";
 
 export const usePosts = () => {
-  return useQuery({
+  return useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: async () => getPosts(),
   });
 };
 
 export const usePostBySlug = (slug: string) => {
-  return useQuery({
+  return useQuery<Post>({
     queryKey: ["post", slug],
     queryFn: async () => getPostBySlug(slug),
     enabled: !!slug,
@@ -28,7 +29,7 @@ export const usePostBySlug = (slug: string) => {
 };
 
 export const usePostById = (id: string) => {
-  return useQuery({
+  return useQuery<Post>({
     queryKey: ["post", id],
     queryFn: async () => {
       const res = await getPostById(id);
@@ -39,7 +40,7 @@ export const usePostById = (id: string) => {
 };
 
 export const usePostsByAuthor = (authorId: string) => {
-  return useQuery({
+  return useQuery<Post[]>({
     queryKey: ["posts", "author", authorId],
     queryFn: async () => getPostsByAuthor(authorId),
     enabled: !!authorId,
@@ -47,7 +48,7 @@ export const usePostsByAuthor = (authorId: string) => {
 };
 
 export const usePostsByCommunity = (communityId: string) => {
-  return useQuery({
+  return useQuery<Post[]>({
     queryKey: ["posts", "community", communityId],
     queryFn: async () => getPostsByCommunity(communityId),
     enabled: !!communityId,

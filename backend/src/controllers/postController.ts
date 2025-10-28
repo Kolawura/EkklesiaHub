@@ -74,7 +74,9 @@ export const getAllPublishedPosts = async (req: Request, res: Response) => {
       limit: Number(limit),
     });
 
-    return res.status(200).json({ success: true, result });
+    return res
+      .status(200)
+      .json({ success: true, message: "Published Post sent", result });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -93,7 +95,9 @@ export const getAllPosts = async (req: Request, res: Response) => {
       status: "PUBLISHED",
     });
 
-    return res.status(200).json({ success: true, result });
+    return res
+      .status(200)
+      .json({ success: true, message: "Post sent", result });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -102,7 +106,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
 export const getPostById = async (req: Request, res: Response) => {
   try {
     const post = await postService.getPostById(req.params.id);
-    return res.status(200).json({ success: true, post });
+    return res.status(200).json({ success: true, message: "Post sent", post });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });
   }
@@ -111,7 +115,7 @@ export const getPostById = async (req: Request, res: Response) => {
 export const getPostBySlug = async (req: Request, res: Response) => {
   try {
     const post = await postService.getPostBySlug(req.params.slug);
-    return res.status(200).json({ success: true, post });
+    return res.status(200).json({ success: true, message: "Post sent", post });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });
   }
@@ -131,7 +135,9 @@ export const updatePost = async (req: Request, res: Response) => {
     const { id } = req.params;
     const updates = validateBody.data;
     const updated = await postService.updatePost(id, updates, userId);
-    return res.status(200).json({ success: true, updated });
+    return res
+      .status(200)
+      .json({ success: true, message: "Post Updated", updated });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
@@ -152,7 +158,7 @@ export const getPostsByAuthor = async (req: Request, res: Response) => {
   try {
     const { authorId } = req.params;
     const posts = await postService.getPostsByAuthor(authorId);
-    return res.status(200).json({ success: true, posts });
+    return res.status(200).json({ success: true, message: "Post sent", posts });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -162,11 +168,8 @@ export const getPostsByCommunity = async (req: Request, res: Response) => {
   try {
     const { communityId } = req.params;
     const posts = await postService.getPostsByCommunity(communityId);
-    return res.status(200).json({ success: true, posts });
+    return res.status(200).json({ success: true, message: "Post sent", posts });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-export function getPosts(arg0: string, getPosts: any) {
-  throw new Error("Function not implemented.");
-}

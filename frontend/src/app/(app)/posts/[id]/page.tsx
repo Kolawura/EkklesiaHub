@@ -1,15 +1,13 @@
 "use client";
 import { Heart, Bookmark, Calendar, MessageCircle } from "lucide-react";
 import { usePostById } from "@/hooks/usePosts";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import Loading from "@/components/Loading";
+import React from "react";
 
-interface PostPageProps {
-  params: { id: string };
-}
-
-export default function SinglePostView({ params }: PostPageProps) {
-  const { id } = params;
+export default function SinglePostView() {
+  const params = useParams();
+  const id = params?.id as string;
   const { data: post, isLoading } = usePostById(id);
 
   if (isLoading) {
@@ -17,6 +15,7 @@ export default function SinglePostView({ params }: PostPageProps) {
   }
 
   if (!post) {
+    // navigate to error 404 page
     return notFound();
   }
 

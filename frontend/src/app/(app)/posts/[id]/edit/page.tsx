@@ -83,8 +83,8 @@ export default function EditPostPage() {
   if (isLoading) return <Loading />;
 
   // Error state
-  if (isError || !post || post.error) {
-    return <Error error={post as Error} reset={() => router.refresh()} />;
+  if (isError) {
+    return <Error error={error} reset={() => router.refresh()} />;
   }
 
   return (
