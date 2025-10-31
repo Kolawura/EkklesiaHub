@@ -1,5 +1,6 @@
-import NavBar from "@/components/layouts/NavBar";
-import { SideBar } from "@/components/layouts/SideBar";
+import { NavBar } from "@/components/layouts/NavBar";
+import { LeftSidebar } from "@/components/layouts/SideBar";
+import { Sidebar } from "@/Home/components/sidebar";
 
 export default function AppLayout({
   children,
@@ -7,11 +8,18 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <SideBar />
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        <NavBar />
-        {children}
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <NavBar />
+      <div className="flex overflow-auto">
+        <LeftSidebar />
+        <div className="flex-1 flex flex-col px-6 overflow-y-auto">
+          <div className="flex gap-6 justify-evenly mx-auto py-8 w-full">
+            {children}
+            <aside className="w-80 hidden lg:block">
+              <Sidebar />
+            </aside>
+          </div>
+        </div>
       </div>
     </div>
   );

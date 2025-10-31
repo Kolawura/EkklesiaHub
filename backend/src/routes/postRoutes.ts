@@ -6,8 +6,8 @@ import { protectRoute } from "../middlewares/authMiddleware";
 const router = Router();
 
 // Public routes
-router.get("/", postController.getPosts);
-router.get("/", protectRoute, postController.getPosts);
+router.get("/", postController.getAllPublishedPosts);
+router.get("/", protectRoute, postController.getAllPosts);
 router.get("/:id", postController.getPostById);
 router.get("/slug/:slug", postController.getPostBySlug);
 router.get("/author/:authorId", postController.getPostsByAuthor);

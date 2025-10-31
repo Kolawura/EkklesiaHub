@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, Home, Search, Compass } from "lucide-react";
+import { ArrowRight, Home, Compass } from "lucide-react";
 
 export default function NotFound() {
   return (

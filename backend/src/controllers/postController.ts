@@ -92,7 +92,6 @@ export const getAllPosts = async (req: Request, res: Response) => {
       authorId: authorId as string,
       page: Number(page),
       limit: Number(limit),
-      status: "PUBLISHED",
     });
 
     return res
