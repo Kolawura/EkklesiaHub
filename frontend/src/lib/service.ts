@@ -5,7 +5,10 @@ function extractErrorMessage(error: unknown): string {
   let message = "Network error. Please try again.";
   if (axios.isAxiosError(error)) {
     message =
-      (error.response?.data as { message?: string } | undefined)?.message ||
+      (typeof error.response?.data === "string"
+        ? error.response.data
+        : (error.response?.data as { message?: string } | undefined)
+            ?.message) ||
       error.message ||
       message;
   } else if (error instanceof Error) {

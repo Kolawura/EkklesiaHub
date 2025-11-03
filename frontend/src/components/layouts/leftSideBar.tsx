@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useSidebarStore } from "@/store/useSideBarStore";
 import {
   Home,
@@ -11,7 +13,9 @@ import {
   Bell,
   Plus,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 const navItems = [
   { icon: Home, page: "Home", id: "home", path: "/" },
   { icon: Compass, page: "Explore", id: "explore", path: "/explore" },
@@ -31,6 +35,15 @@ const moreNavBar = [
 
 export function LeftSidebar() {
   const { activeView, setActiveView, isOpen } = useSidebarStore();
+  const { mutate: logout } = useAuth().logoutMutation;
+  const { user } = useAuthStore();
+  const route = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    route.push("/");
+  };
+
   console.log(isOpen);
   return (
     <aside
@@ -67,26 +80,44 @@ export function LeftSidebar() {
         </div>
       </nav>
       <div className="border-t border-sidebar-border p-4 space-y-3">
-        <button className="w-full bg-sidebar-primary text-sidebar-primary-foreground rounded-lg py-2.5 font-semibold hover:opacity-90 flex items-center justify-center gap-2">
+        <button
+          onClick={() => route.push("/new")}
+          className="w-full bg-sidebar-primary text-sidebar-primary-foreground rounded-lg py-2.5 font-semibold hover:opacity-90 flex items-center justify-center gap-2"
+        >
           <Plus className="w-4 h-4" />
           Write
         </button>
 
         <div className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-sidebar-accent/10 cursor-pointer">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-bold text-accent-foreground">JD</span>
+            <span className="text-sm font-bold text-accent-foreground">
+              {user?.bannerImg && (
+                <Image
+                  src={user.bannerImg}
+                  alt={`${user.firstName} ${user.lastName} Avatar`}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              )}
+              {user?.firstName.charAt(0)}
+              {user?.lastName.charAt(0)}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-sidebar-foreground truncate">
-              John Doe
+              {user?.firstName} {user?.lastName}
             </p>
             <p className="text-xs text-sidebar-foreground/60 truncate">
-              @johndoe
+              @{user?.username}
             </p>
           </div>
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sidebar-foreground hover:bg-sidebar-accent/10 rounded-lg text-sm font-medium">
+        <button
+          onClick={() => handleLogout()}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sidebar-foreground hover:bg-sidebar-accent/90 rounded-lg text-sm font-medium"
+        >
           <LogOut className="w-4 h-4" />
           Logout
         </button>

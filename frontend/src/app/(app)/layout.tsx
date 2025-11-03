@@ -1,6 +1,6 @@
 import { NavBar } from "@/components/layouts/NavBar";
-import { LeftSidebar } from "@/components/layouts/SideBar";
-import { Sidebar } from "@/Home/components/sidebar";
+import { LeftSidebar } from "@/components/layouts/leftSideBar";
+import { Sidebar } from "@/components/Home/components/sidebar";
 
 export default function AppLayout({
   children,

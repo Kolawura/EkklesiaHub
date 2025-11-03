@@ -10,10 +10,14 @@ import {
 } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ApiResponse, User, LoginType, RegisterType } from "@/lib/type";
+import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const { setUser, logout } = useAuthStore();
+  const route = useRouter();
+
+  // ✅ Get Current User
 
   const userQuery = useQuery<ApiResponse<User>>({
     queryKey: ["currentUser"],
@@ -33,6 +37,7 @@ export const useAuth = () => {
     onSuccess: (data) => {
       if (data.success && data.data) {
         setUser(data.data);
+        console.log(data.data);
         queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       }
     },

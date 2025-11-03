@@ -4,6 +4,7 @@ import { usePostById } from "@/hooks/usePosts";
 import { notFound, useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 export default function SinglePostView() {
   const params = useParams();
@@ -13,6 +14,7 @@ export default function SinglePostView() {
   if (isLoading) {
     return <Loading />;
   }
+  console.log(post);
 
   if (!post) {
     // navigate to error 404 page
@@ -61,22 +63,30 @@ Hooks have made it easier to manage state and side effects in React applications
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button
+          <Button
             // onClick={() => setSelectedPost(null)}
-            className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+            className=""
           >
             ← Back to Posts
-          </button>
+          </Button>
           <div className="flex items-center gap-2">
-            <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="border border-border"
+            >
               <Heart size={20} />
-            </button>
-            <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+            </Button>
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="border border-border"
+            >
               <Bookmark size={20} />
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -105,22 +115,22 @@ Hooks have made it easier to manage state and side effects in React applications
           ))}
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
           {selectedPost.title}
         </h1>
 
         <div className="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-foreground to-accent flex items-center justify-center text-foreground font-semibold">
             {selectedPost.author.name
               .split(" ")
               .map((n) => n[0])
               .join("")}
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-muted-foreground">
               {selectedPost.author.name}
             </p>
-            <div className="flex items-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar size={14} />
                 {formatDate(selectedPost.createdAt)}
@@ -131,7 +141,7 @@ Hooks have made it easier to manage state and side effects in React applications
 
         <div className="prose prose-lg max-w-none">
           {selectedPost.content.split("\n").map((paragraph, idx) => (
-            <p key={idx} className="text-gray-700 leading-relaxed mb-4">
+            <p key={idx} className="text-foreground leading-relaxed mb-4">
               {paragraph}
             </p>
           ))}
@@ -139,15 +149,15 @@ Hooks have made it easier to manage state and side effects in React applications
 
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-gray-100 rounded-lg transition-colors">
               <Heart size={20} />
               <span className="font-medium">Like</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-gray-100 rounded-lg transition-colors">
               <MessageCircle size={20} />
               <span className="font-medium">Comment</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:bg-gray-100 rounded-lg transition-colors">
               <Bookmark size={20} />
               <span className="font-medium">Save</span>
             </button>

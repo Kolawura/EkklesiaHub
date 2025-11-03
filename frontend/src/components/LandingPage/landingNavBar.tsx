@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { useSidebarStore } from "@/store/useSideBarStore";
+// import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Button } from "@/components/ui/button";
+// import { useSidebarStore } from "@/store/useSideBarStore";
 
 export default function LandingNavbar() {
-  const { openLandingBar, setOpenLandingBar } = useSidebarStore();
+  // const { openLandingBar, setOpenLandingBar } = useSidebarStore();
 
   const navLinks = [
     { label: "Features", href: "#features" },
@@ -41,12 +41,15 @@ export default function LandingNavbar() {
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button className="hidden md:block px-6 py-2 text-foreground/70 font-medium hover:text-primary transition-colors">
-              Sign In
-            </button>
-            <button className="hidden md:block px-6 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg transition-all">
-              Get Started
-            </button>
+            <Button
+              variant={"ghost"}
+              className="hidden md:block px-6 py-2 text-foreground/70 font-medium hover:text-primary transition-colors"
+            >
+              <Link href="/auth">Sign In</Link>
+            </Button>
+            <Button className="hidden md:block px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg transition-all">
+              <Link href="/auth">Get Started</Link>
+            </Button>
           </div>
         </div>
       </div>

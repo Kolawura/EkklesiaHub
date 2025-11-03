@@ -1,8 +1,8 @@
 "use client";
 
-import { PostCard } from "@/Home/components/post-card";
-import { FeaturedSection } from "@/Home/components/featured-section";
-import { CategoryTabs } from "@/Home/components/category-tabs";
+import { PostCard } from "@/components/Home/components/post-card";
+import { FeaturedSection } from "@/components/Home/components/featured-section";
+import { CategoryTabs } from "@/components/Home/components/category-tabs";
 
 const mockPosts = [
   {

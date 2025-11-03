@@ -8,7 +8,7 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import LandingNavbar from "@/LandingPage/navBar";
+import LandingNavbar from "@/components/LandingPage/landingNavBar";
 
 export function LandingPage() {
   return (

@@ -36,6 +36,32 @@ export const login = async (email: string, password: string) => {
   return { user: userWithoutPassword, token };
 };
 
+export const findUserById = async (id: string) => {
+  const user = await prisma.user.findFirst({
+    where: { id },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      email: true,
+      bio: true,
+      profileImg: true,
+      bannerImg: true,
+      posts: true,
+      comments: true,
+      reactions: true,
+      memberships: true,
+      followers: true,
+      following: true,
+      bookmarks: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  return user;
+};
+
 export const findUserByEmail = async (email: string) => {
   return prisma.user.findUnique({ where: { email } });
 };

@@ -15,21 +15,30 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { loginMutation, registerMutation, isLoadingUser } = useAuth();
+  const { loginMutation, registerMutation } = useAuth();
+  const route = useRouter();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const email = form.get("email") as string;
     const password = form.get("password") as string;
-
-    loginMutation.mutate({ email, password });
+    console.log({ email, password });
+    try {
+      const login = await loginMutation.mutateAsync({ email, password });
+      if (login.success) {
+        route.push("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const fullName = (form.get("name") as string)?.trim();
@@ -39,13 +48,19 @@ const AuthForm = () => {
     // Split full name into first and last
     const [firstName, ...last] = fullName.split(" ");
     const lastName = last.join(" ") || "";
-
-    registerMutation.mutate({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
+    try {
+      const register = await registerMutation.mutateAsync({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+      if (register.success) {
+        route.push("/");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+    }
   };
 
   return (
@@ -143,6 +158,17 @@ const AuthForm = () => {
                     </Button>
                   </div>
                 </div>
+                <div>
+                  {loginMutation.isError && setTimeout(() => {}, 3000) && (
+                    <Card>
+                      <CardContent className="text-center p-2 bg-red-100 text-red-700">
+                        {loginMutation.error instanceof Error
+                          ? loginMutation.error.message
+                          : "An error occurred during login."}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
@@ -222,7 +248,17 @@ const AuthForm = () => {
                     </Button>
                   </div>
                 </div>
-
+                <div>
+                  {registerMutation.isError && (
+                    <Card>
+                      <CardContent className="text-center p-2 bg-red-100 text-red-700">
+                        {registerMutation.error instanceof Error
+                          ? registerMutation.error.message
+                          : "An error occurred during registration."}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
                 <Button
                   type="submit"
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90"

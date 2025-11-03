@@ -31,7 +31,8 @@ export const registerUser = async (req: Request, res: Response) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "lax",
     });
     return res.status(200).json({
       success: true,
@@ -48,13 +49,11 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   const validateBody = loginSchema.safeParse(req.body);
   if (!validateBody.success) {
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Invalid inputs",
-        error: validateBody.error.issues,
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid inputs",
+      error: validateBody.error.issues,
+    });
   }
 
   try {
@@ -72,7 +71,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "lax",
     });
     return res
       .status(200)
@@ -88,7 +88,8 @@ export const logoutUser = async (req: Request, res: Response) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: "lax",
     });
     return res
       .status(200)

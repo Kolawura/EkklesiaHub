@@ -1,6 +1,3 @@
-import { LucideProps } from "lucide-react";
-import { Home, FileText, Users, Settings } from "lucide-react";
-
 import { create } from "zustand";
 
 interface SidebarState {
@@ -14,7 +11,7 @@ interface SidebarState {
 
 export const useSidebarStore = create<SidebarState>((set) => ({
   activeView: "home",
-  isOpen: false,
+  isOpen: true,
   openLandingBar: false,
   setActiveView: (view) => set({ activeView: view }),
   setIsOpen: (open) => set({ isOpen: !open }),

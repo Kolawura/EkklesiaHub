@@ -2,7 +2,7 @@
 import { Search, Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useRouter } from "next/navigation";
 import { useSidebarStore } from "@/store/useSideBarStore";
 
@@ -21,7 +21,7 @@ export function NavBar() {
               size="icon"
               onClick={() => setIsOpen(isOpen)}
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-25 h-25" />
             </Button>
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">
@@ -54,7 +54,7 @@ export function NavBar() {
             </Button>
             <Button
               onClick={() => route.push("/new")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground hidden sm:flex"
+              className="bg-primary hover:bg-primary/80 text-primary-foreground hidden sm:flex"
             >
               Write
             </Button>
