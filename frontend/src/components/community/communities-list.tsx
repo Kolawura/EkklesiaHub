@@ -10,7 +10,8 @@ const mockCommunities = [
     description: "Share knowledge and discuss React best practices",
     members: 2847,
     posts: 542,
-    avatar: "/react-logo.jpg",
+    avatar:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg",
     isMember: true,
   },
   {
@@ -19,7 +20,8 @@ const mockCommunities = [
     description: "Build amazing web applications with Next.js",
     members: 1923,
     posts: 387,
-    avatar: "/nextjs-logo.jpg",
+    avatar:
+      "https://upload.wikimedia.org/wikipedia/commons/archive/8/8e/20230404233502%21Nextjs-logo.svg",
     isMember: false,
   },
   {
@@ -28,7 +30,8 @@ const mockCommunities = [
     description: "Master TypeScript and write type-safe code",
     members: 1654,
     posts: 298,
-    avatar: "/typescript-logo.jpg",
+    avatar:
+      "https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg",
     isMember: true,
   },
   {
@@ -37,7 +40,8 @@ const mockCommunities = [
     description: "Discuss design trends and UX best practices",
     members: 3124,
     posts: 612,
-    avatar: "/design-palette.jpg",
+    avatar:
+      "https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg",
     isMember: false,
   },
 ];
@@ -98,7 +102,7 @@ export function CommunitiesList() {
                 height={40}
                 src={community.avatar || "/placeholder.svg"}
                 alt={community.name}
-                className="w-16 h-16 rounded-lg"
+                className="w-16 h-16 rounded-lg bg-white"
               />
               <button
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${

@@ -1,93 +1,121 @@
-/* src/styles/tiptap.css */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #9ca3af;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
 
-/* Basic editor styles */
+/* basic editor container */
 .tiptap {
-  :first-child {
-    margin-top: 0;
-  }
+  min-height: 200px;
+  font-size: 16px;
+}
 
-  /* List styles */
-  ul,
-  ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
+/* reset margin for first child */
+.tiptap :first-child {
+  margin-top: 0;
+}
 
-    li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-  }
+/* lists */
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+  margin: 1.25rem 1rem 1.25rem 0.4rem;
+}
+.tiptap li p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
 
-  /* Heading styles */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    line-height: 1.1;
-    margin-top: 2.5rem;
-    text-wrap: pretty;
-  }
+/* headings */
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+  margin-top: 2.5rem;
+  word-wrap: break-word;
+}
+.tiptap h1,
+.tiptap h2 {
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+.tiptap h1 {
+  font-size: 2.5rem;
+}
+.tiptap h2 {
+  font-size: 2rem;
+}
+.tiptap h3 {
+  font-size: 1.75rem;
+}
+.tiptap h4 {
+  font-size: 1.5rem;
+}
+.tiptap h5 {
+  font-size: 1.25rem;
+}
+.tiptap h6 {
+  font-size: 1rem;
+}
 
-  h1,
-  h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
-  }
+/* inline code */
+.tiptap code {
+  background-color: rgba(243, 232, 255, 0.9);
+  border-radius: 0.4rem;
+  color: #111827;
+  font-size: 0.85rem;
+  padding: 0.25em 0.3em;
+}
 
-  h1 {
-    font-size: 1.4rem;
-  }
+/* code blocks */
+.tiptap pre {
+  background: #0f172a;
+  border-radius: 0.5rem;
+  color: #e6eef8;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    "Roboto Mono", monospace;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+.tiptap pre code {
+  background: none;
+  color: inherit;
+  font-size: 0.9rem;
+  padding: 0;
+}
 
-  h2 {
-    font-size: 1.2rem;
-  }
+/* blockquote */
+.tiptap blockquote {
+  border-left: 3px solid #d1d5db;
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+}
 
-  h3 {
-    font-size: 1.1rem;
-  }
+/* hr */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
 
-  h4,
-  h5,
-  h6 {
-    font-size: 1rem;
-  }
+/* light mode adjustments */
+:root .tiptap pre {
+  background: #f3f4f6;
+  color: #0f172a;
+}
 
-  /* Code and preformatted text styles */
-  code {
-    background-color: var(--purple-light, #f3e8ff);
-    border-radius: 0.4rem;
-    color: var(--black, #111);
-    font-size: 0.85rem;
-    padding: 0.25em 0.3em;
-  }
-
-  pre {
-    background: var(--black, #111);
-    border-radius: 0.5rem;
-    color: var(--white, #fff);
-    font-family: "JetBrainsMono", monospace;
-    margin: 1.5rem 0;
-    padding: 0.75rem 1rem;
-
-    code {
-      background: none;
-      color: inherit;
-      font-size: 0.8rem;
-      padding: 0;
-    }
-  }
-
-  blockquote {
-    border-left: 3px solid var(--gray-3, #ccc);
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-  }
-
-  hr {
-    border: none;
-    border-top: 1px solid var(--gray-2, #ddd);
-    margin: 2rem 0;
-  }
+/* dark mode overrides */
+.dark .tiptap pre {
+  background: #0b1220;
+  color: #e6eef8;
+}
+.dark .tiptap code {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #fbbf24;
 }

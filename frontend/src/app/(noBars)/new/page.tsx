@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<string | undefined>(undefined);
   const [tags, setTags] = useState<string[]>([]);
@@ -17,6 +18,7 @@ export default function CreatePostPage() {
 
   type contentType = {
     title: string;
+    slug: string;
     tags: string[];
     content: string;
     coverImage?: string | undefined;
@@ -24,6 +26,7 @@ export default function CreatePostPage() {
 
   const getContent = (data: contentType) => {
     setTitle(data.title);
+    setSlug(data.slug);
     setTags(data.tags);
     setContent(data.content);
     setCoverImage(data.coverImage);
@@ -35,13 +38,14 @@ export default function CreatePostPage() {
     try {
       const newPost = {
         title,
+        slug,
         tags,
         content,
         coverImage,
         authorId: user?.id,
       };
 
-      const res: any = await createPost(newPost);
+      const res = await createPost(newPost);
       if (!res.error) {
         const data = res.data;
         router.push(`/posts/${data.id}`);

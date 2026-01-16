@@ -10,12 +10,10 @@ import {
 } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ApiResponse, User, LoginType, RegisterType } from "@/lib/type";
-import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const { setUser, logout } = useAuthStore();
-  const route = useRouter();
 
   // ✅ Get Current User
 

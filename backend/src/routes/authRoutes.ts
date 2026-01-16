@@ -6,11 +6,11 @@ import {
   logoutUser,
   registerUser,
 } from "../controllers/authController";
-import { protectRoute } from "../middlewares/authMiddleware";
+import { checkUser } from "../middlewares/authMiddleware";
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.get("/me", protectRoute, getCurrentUser);
+router.get("/me", checkUser, getCurrentUser);
 
 export default router;

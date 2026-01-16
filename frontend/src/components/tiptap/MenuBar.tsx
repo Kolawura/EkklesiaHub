@@ -1,213 +1,204 @@
+// src/components/tiptap/MenuBar.tsx
 "use client";
 
+import React from "react";
 import { Editor } from "@tiptap/react";
 import {
   Bold,
   Italic,
   Strikethrough,
-  Pilcrow as Paragraph,
-  Code,
-  CodeSquare as CodeBlock,
   Heading1,
   Heading2,
   Heading3,
   List,
   ListOrdered,
   Quote,
-  Undo,
-  Redo,
   Link2,
   Image as ImageIcon,
+  Code,
+  Undo,
+  Redo,
   AlignLeft,
   AlignCenter,
   AlignRight,
-  SeparatorHorizontal as HorizontalRule,
   Underline as UnderlineIcon,
 } from "lucide-react";
 
 interface MenuBarProps {
   editor: Editor | null;
+  onAddImageFile?: (cb: (url: string) => void) => void;
 }
 
-export function MenuBar({ editor }: MenuBarProps) {
+export function MenuBar({ editor, onAddImageFile }: MenuBarProps) {
   if (!editor) return null;
 
   const addLink = () => {
-    const url = window.prompt("Enter URL:");
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
-    }
+    const url = window.prompt("Enter URL");
+    if (!url) return;
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
-  const addImage = () => {
-    const url = window.prompt("Enter image URL:");
+  const addImage = async () => {
+    const url = window.prompt("Enter image URL");
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
+    } else if (onAddImageFile) {
+      onAddImageFile((url) =>
+        editor.chain().focus().setImage({ src: url }).run()
+      );
     }
   };
 
-  const buttons = [
-    {
-      icon: Bold,
-      action: () => editor.chain().focus().toggleBold().run(),
-      active: editor.isActive("bold"),
-      title: "Bold",
-    },
-    {
-      icon: Italic,
-      action: () => editor.chain().focus().toggleItalic().run(),
-      active: editor.isActive("italic"),
-      title: "Italic",
-    },
-    {
-      icon: UnderlineIcon,
-      action: () => editor.chain().focus().toggleUnderline().run(),
-      active: editor.isActive("underline"),
-      title: "Underline",
-    },
-    {
-      icon: Strikethrough,
-      action: () => editor.chain().focus().toggleStrike().run(),
-      active: editor.isActive("strike"),
-      title: "Strikethrough",
-    },
-    {
-      icon: Code,
-      action: () => editor.chain().focus().toggleCode().run(),
-      active: editor.isActive("code"),
-      title: "Code",
-    },
-    {
-      icon: HorizontalRule,
-      action: () => editor.chain().focus().setHorizontalRule().run(),
-      active: editor.isActive("horizontalRule"),
-      title: "Horizontal Rule",
-    },
-    { divider: true },
-    {
-      icon: Heading1,
-      action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-      active: editor.isActive("heading", { level: 1 }),
-      title: "Heading 1",
-    },
-    {
-      icon: Heading2,
-      action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-      active: editor.isActive("heading", { level: 2 }),
-      title: "Heading 2",
-    },
-    {
-      icon: Heading3,
-      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-      active: editor.isActive("heading", { level: 3 }),
-      title: "Heading 3",
-    },
-    {
-      icon: Paragraph,
-      action: () => editor.chain().focus().setParagraph().run(),
-      active: editor.isActive("paragraph"),
-      title: "Paragraph",
-    },
-    { divider: true },
-    {
-      icon: AlignLeft,
-      action: () => editor.chain().focus().setTextAlign("left").run(),
-      active: editor.isActive({ textAlign: "left" }),
-      title: "Align Left",
-    },
-    {
-      icon: AlignCenter,
-      action: () => editor.chain().focus().setTextAlign("center").run(),
-      active: editor.isActive({ textAlign: "center" }),
-      title: "Align Center",
-    },
-    {
-      icon: AlignRight,
-      action: () => editor.chain().focus().setTextAlign("right").run(),
-      active: editor.isActive({ textAlign: "right" }),
-      title: "Align Right",
-    },
-    { divider: true },
-    {
-      icon: List,
-      action: () => editor.chain().focus().toggleBulletList().run(),
-      active: editor.isActive("bulletList"),
-      title: "Bullet List",
-    },
-    {
-      icon: ListOrdered,
-      action: () => editor.chain().focus().toggleOrderedList().run(),
-      active: editor.isActive("orderedList"),
-      title: "Numbered List",
-    },
-    {
-      icon: Quote,
-      action: () => editor.chain().focus().toggleBlockquote().run(),
-      active: editor.isActive("blockquote"),
-      title: "Quote",
-    },
-    { divider: true },
-    {
-      icon: Link2,
-      action: addLink,
-      active: editor.isActive("link"),
-      title: "Link",
-    },
-    {
-      icon: ImageIcon,
-      action: addImage,
-      active: false,
-      title: "Image",
-    },
-    {
-      icon: CodeBlock,
-      action: () => editor.chain().focus().toggleCodeBlock().run(),
-      active: editor.isActive("codeBlock"),
-      title: "CodeBlock",
-    },
-    { divider: true },
-    {
-      icon: Undo,
-      action: () => editor.chain().focus().undo().run(),
-      disabled: !editor.can().undo(),
-      title: "Undo",
-    },
-    {
-      icon: Redo,
-      action: () => editor.chain().focus().redo().run(),
-      disabled: !editor.can().redo(),
-      title: "Redo",
-    },
-  ];
+  const btnClass = (active?: boolean) =>
+    `p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ${
+      active
+        ? "bg-blue-100 dark:bg-blue-900 text-blue-600"
+        : "text-gray-700 dark:text-gray-200"
+    }`;
 
   return (
-    <div className="flex items-center justify-center gap-1 p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 flex-wrap">
-      {buttons.map((btn, idx) => {
-        const Icon = btn.icon;
-        return btn.divider ? (
-          <div
-            key={idx}
-            className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"
-          />
-        ) : (
-          <button
-            key={idx}
-            type="button"
-            onClick={btn.action}
-            disabled={btn.disabled}
-            title={btn.title}
-            className={`p-2 rounded 
-  transition-colors disabled:opacity-30 disabled:cursor-not-allowed 
-  ${
-    btn.active
-      ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-700"
-      : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-  }`}
-          >
-            {Icon && <Icon size={18} />}
-          </button>
-        );
-      })}
+    <div className="flex justify-center gap-2 items-center p-2 flex-wrap">
+      <button
+        onClick={() => editor.chain().focus().undo().run()}
+        className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+        title="Undo"
+      >
+        <Undo size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().redo().run()}
+        className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+        title="Redo"
+      >
+        <Redo size={16} />
+      </button>
+
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        className={btnClass(editor.isActive("heading", { level: 1 }))}
+        title="H1"
+      >
+        <Heading1 size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        className={btnClass(editor.isActive("heading", { level: 2 }))}
+        title="H2"
+      >
+        <Heading2 size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        className={btnClass(editor.isActive("heading", { level: 3 }))}
+        title="H3"
+      >
+        <Heading3 size={16} />
+      </button>
+
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+      <button
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        className={btnClass(editor.isActive("bold"))}
+        title="Bold"
+      >
+        <Bold size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        className={btnClass(editor.isActive("italic"))}
+        title="Italic"
+      >
+        <Italic size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        className={btnClass(editor.isActive("underline"))}
+        title="Underline"
+      >
+        <UnderlineIcon size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        className={btnClass(editor.isActive("strike"))}
+        title="Strike"
+      >
+        <Strikethrough size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        className={btnClass(editor.isActive("code"))}
+        title="Inline code"
+      >
+        <Code size={16} />
+      </button>
+
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+      <button
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        className={btnClass(editor.isActive("bulletList"))}
+        title="Bullet list"
+      >
+        <List size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        className={btnClass(editor.isActive("orderedList"))}
+        title="Numbered list"
+      >
+        <ListOrdered size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        className={btnClass(editor.isActive("blockquote"))}
+        title="Blockquote"
+      >
+        <Quote size={16} />
+      </button>
+
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+      <button
+        onClick={addLink}
+        className={btnClass(editor.isActive("link"))}
+        title="Add link"
+      >
+        <Link2 size={16} />
+      </button>
+      <button
+        onClick={addImage}
+        className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+        title="Add image"
+      >
+        <ImageIcon size={16} />
+      </button>
+
+      <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        className={btnClass(editor.isActive({ textAlign: "left" }))}
+        title="Align left"
+      >
+        <AlignLeft size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        className={btnClass(editor.isActive({ textAlign: "center" }))}
+        title="Align center"
+      >
+        <AlignCenter size={16} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        className={btnClass(editor.isActive({ textAlign: "right" }))}
+        title="Align right"
+      >
+        <AlignRight size={16} />
+      </button>
     </div>
   );
 }
