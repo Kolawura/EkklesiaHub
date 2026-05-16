@@ -47,7 +47,7 @@ export const getRequest = async (url: string) => {
     }
     return data;
   } catch (error: unknown) {
-    console.log(error);
+    console.error(error);
     throw new Error(extractErrorMessage(error));
   }
 };
@@ -80,9 +80,9 @@ export const patchRequest = async (url: string, body: object) => {
   }
 };
 
-export const deleteRequest = async (url: string) => {
+export const deleteRequest = async (url: string, body?: object) => {
   try {
-    const response = await api.delete(url);
+    const response = await api.delete(url, body);
     const data = response.data;
     if (!data.success) {
       const message = data?.message || "An error occurred!";

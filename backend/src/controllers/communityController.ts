@@ -1,200 +1,179 @@
-import { Request, Response } from "express";
+import { Response } from "express";
+import { AuthRequest } from "../utils/Type";
 import * as communityService from "../services/communityService";
-import {
-  createCommunitySchema,
-  updateCommunitySchema,
-  updateMembershipSchema,
-} from "../schema/communitySchema";
 
-export const createCommunity = async (req: Request, res: Response) => {
-  const validateBody = createCommunitySchema.safeParse(req.body);
-  if (!validateBody.success) {
-    return res
-      .status(400)
-      .json({ success: false, errors: validateBody.error.issues });
-  }
+export const createCommunity = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { name, description } = req.body;
-    if (!name || !description)
-      return res.status(400).json({ message: "All fields are required" });
+    const { name, description, rules, avatar, coverImage, isPrivate } =
+      req.body;
+    if (!name?.trim() || !description?.trim())
+      return res
+        .status(400)
+        .json({ success: false, message: "Name and description are required" });
     const community = await communityService.createCommunity(
       name,
       description,
-      userId
+      req.userId!,
+      { rules, avatar, coverImage, isPrivate },
     );
-    return res.status(201).json({
-      success: true,
-      message: "Community created successfully",
-      community,
-    });
+    return res
+      .status(201)
+      .json({ success: true, message: "Community created", data: community });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const joinCommunity = async (req: Request, res: Response) => {
+export const joinCommunity = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { communityId } = req.params;
-    if (!communityId)
-      return res.status(400).json({ message: "Community ID is required" });
     const membership = await communityService.joinCommunity(
-      communityId,
-      userId
+      req.params.id,
+      req.userId!,
     );
-    return res.status(200).json({
-      success: true,
-      message: "Joined community successfully",
-      membership,
-    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Joined community", data: membership });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const leaveCommunity = async (req: Request, res: Response) => {
+export const leaveCommunity = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { communityId } = req.params;
-    if (!communityId)
-      return res.status(400).json({ message: "Community ID is required" });
-    const result = await communityService.leaveCommunity(communityId, userId);
+    const result = await communityService.leaveCommunity(
+      req.params.id,
+      req.userId!,
+    );
     return res.status(200).json({ success: true, ...result });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const getAllCommunities = async (req: Request, res: Response) => {
+export const getAllCommunities = async (req: AuthRequest, res: Response) => {
   try {
     const { search } = req.query;
     const communities = await communityService.getAllCommunities(
-      search as string
+      search as string,
+      req.userId,
     );
-    return res.status(200).json({ success: true, communities });
+    return res.status(200).json({ success: true, data: communities });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getCommunityById = async (req: Request, res: Response) => {
+export const getCommunityById = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
-    const community = await communityService.getCommunityById(id);
-    return res.status(200).json({ success: true, community });
+    const community = await communityService.getCommunityById(
+      req.params.id,
+      req.userId,
+    );
+    return res.status(200).json({ success: true, data: community });
   } catch (error: any) {
     return res.status(404).json({ success: false, message: error.message });
   }
 };
 
-export const getUserCommunities = async (req: Request, res: Response) => {
+export const getUserCommunities = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const communities = await communityService.getUserCommunities(userId);
-    return res.status(200).json({ success: true, communities });
+    const communities = await communityService.getUserCommunities(req.userId!);
+    return res.status(200).json({ success: true, data: communities });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getCommunityMembers = async (req: Request, res: Response) => {
+export const getCommunityMembers = async (req: AuthRequest, res: Response) => {
   try {
-    const { communityId } = req.params;
-    const users = await communityService.getCommunityMembers(communityId);
-    return res.status(200).json({ success: true, users });
+    const members = await communityService.getCommunityMembers(req.params.id);
+    return res.status(200).json({ success: true, data: members });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getCommunityPosts = async (req: Request, res: Response) => {
+export const getCommunityPosts = async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
     const { page = "1", limit = "10", search } = req.query;
     const results = await communityService.getCommunityPosts(
-      id,
+      req.params.id,
       parseInt(page as string, 10),
       parseInt(limit as string, 10),
-      search as string
+      search as string,
+      req.userId,
     );
-    return res.status(200).json({
-      success: true,
-      message: "Posts fetched successfully",
-      ...results,
-    });
+    return res.status(200).json({ success: true, data: results });
   } catch (error: any) {
-    return res.status(500).json({ success: false, message: error.message });
+    const status =
+      error.message.includes("private") || error.message.includes("member")
+        ? 403
+        : 500;
+    return res.status(status).json({ success: false, message: error.message });
   }
 };
 
-export const updateCommunityInfo = async (req: Request, res: Response) => {
-  const validateBody = updateCommunitySchema.safeParse(req.body);
-  if (!validateBody.success) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid input",
-      errors: validateBody.error.issues,
-    });
-  }
+export const updateCommunityInfo = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { id } = req.params;
-    const data = validateBody.data;
-    const updatedCommunity = await communityService.updateCommunityInfo(
-      id,
-      data,
-      userId
+    const { name, description, rules, avatar, coverImage, isPrivate } =
+      req.body;
+    const updated = await communityService.updateCommunityInfo(
+      req.params.id,
+      { name, description, rules, avatar, coverImage, isPrivate },
+      req.userId!,
     );
-    return res.status(200).json({
-      success: true,
-      message: "Community updated successfully",
-      updatedCommunity,
-    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Community updated", data: updated });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const updateMembershipRole = async (req: Request, res: Response) => {
-  const validateBody = updateMembershipSchema.safeParse(req.body);
-  if (!validateBody.success) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid input",
-      errors: validateBody.error.issues,
-    });
-  }
+export const updateMembershipRole = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { communityId, memberId, newRole } = req.body;
-    if (!communityId || !memberId || !newRole)
+    const { id: communityId, userId: targetUserId } = req.params;
+    const { newRole } = req.body;
+    if (!newRole)
       return res
         .status(400)
-        .json({ message: "communityId, memberId and newRole are required" });
-    const updatedMember = await communityService.updateMembershipRole(
+        .json({ success: false, message: "newRole is required" });
+    const updated = await communityService.updateMembershipRole(
       communityId,
-      memberId,
+      targetUserId,
       newRole,
-      userId
+      req.userId!,
     );
-    return res.status(200).json({
-      success: true,
-      message: "Member role updated successfully",
-      updatedMember,
-    });
+    return res.status(200).json({ success: true, data: updated });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const deleteCommunity = async (req: Request, res: Response) => {
+export const deleteCommunity = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = (req as any).userId;
-    const { id } = req.params;
-    const result = await communityService.deleteCommunity(id, userId);
+    const result = await communityService.deleteCommunity(
+      req.params.id,
+      req.userId!,
+    );
     return res.status(200).json({ success: true, ...result });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const getCommunityAnalytics = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    const analytics = await communityService.getCommunityAnalytics(
+      req.params.id,
+      req.userId!,
+    );
+    return res.status(200).json({ success: true, data: analytics });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(403).json({ success: false, message: error.message });
   }
 };

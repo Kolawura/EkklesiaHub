@@ -1,30 +1,16 @@
-"use client";
+/*
+ * Root page — always renders the public landing page at "/"
+ *
+ * Routing logic:
+ *   - Unauthenticated visitors: see the landing page (middleware lets them through)
+ *   - Authenticated visitors who visit "/": also see the landing page
+ *     (they can navigate to /posts or /dashboard from the nav)
+ *   - After login/register: useAuth redirects to /posts (not here)
+ *   - Protected routes (/posts, /dashboard, etc.): middleware
+ *     redirects unauthenticated users to /auth?from=<path>
+ */
+import LandingPage from "./landing/page";
 
-import { useAuth } from "@/hooks/useAuth";
-import LandingLayout from "./(landing)/layout";
-import AppLayout from "./(app)/layout";
-import { HomePage } from "@/app/(app)/home/HomePage";
-import { LandingPage } from "@/app/(landing)/home/landingPage";
-import Loading from "@/components/Loading";
-
-export default function App() {
-  const { user, isLoadingUser } = useAuth();
-
-  if (isLoadingUser) {
-    return <Loading />;
-  }
-
-  if (!user) {
-    return (
-      <LandingLayout>
-        <LandingPage />
-      </LandingLayout>
-    );
-  }
-
-  return (
-    <AppLayout>
-      <HomePage />
-    </AppLayout>
-  );
+export default function RootPage() {
+  return <LandingPage />;
 }

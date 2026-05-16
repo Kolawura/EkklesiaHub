@@ -1,46 +1,32 @@
 import { verifyToken } from "../utils/token";
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "../utils/Type";
-import { findUserById } from "../services/authService";
+import { JwtPayload } from "jsonwebtoken";
 
-export const protectRoute = async (
+export const protectRoute = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    const token = req.cookies.token;
+    const token = req.cookies?.token;
     if (!token) {
       return res
         .status(401)
-        .json({ message: "Unauthorized: No token provided" });
+        .json({ success: false, message: "Unauthorized: No token provided" });
     }
-    const decoded = verifyToken(token) as { userId: string };
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "Unauthorized: Invalid token", error });
-  }
-};
-
-export const checkUser = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: No token provided" });
+    const decoded = verifyToken(token) as JwtPayload;
+    if (!decoded?.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: Invalid token payload",
+      });
     }
-    const decoded = verifyToken(token) as { userId: string };
-    const user = await findUserById(decoded.userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    req.user = user;
+    req.userId = decoded.userId;
     next();
-  } catch (error) {
-    res.status(401).json({ message: "Unauthorized: Invalid token", error });
+  } catch {
+    return res
+      .status(401)
+      .json({ success: false, message: "Unauthorized: Invalid token" });
   }
 };

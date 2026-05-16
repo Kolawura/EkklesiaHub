@@ -1,0 +1,61 @@
+/*
+ * mention.css
+ *
+ * Styles for @mention chips in the editor and on the post page.
+ * Append to src/app/ekk-editor.css
+ */
+
+/* ── @mention chip ───────────────────────────────────────────────────────── */
+.mention {
+  display: inline;
+  font-family: var(--font-body);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--color-gold);
+  background: var(--color-gold-bg);
+  border: 1px solid var(--color-gold-pale);
+  padding: 0.1em 0.4em;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.mention:hover {
+  background: rgba(251, 244, 228, 0.85);
+  color: var(--color-gold-light);
+}
+
+/* Inside the prose editor */
+.ekk-editor-prose .mention {
+  /* same as above — no overrides needed */
+}
+
+/* ── tippy.js dropdown container ─────────────────────────────────────────── */
+/* Override tippy defaults so it uses our brand styles instead of its own */
+.tippy-box[data-animation="shift-away"][data-state="hidden"] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.tippy-box[data-animation="shift-away"][data-state="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease;
+}
+.tippy-box {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  max-width: none !important;
+}
+.tippy-content {
+  padding: 0 !important;
+}
+.tippy-arrow {
+  display: none !important;
+}

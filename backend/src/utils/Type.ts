@@ -1,7 +1,6 @@
-import { JwtPayload } from "jsonwebtoken";
 import { Request } from "express";
 
 export interface AuthRequest extends Request {
-  user?: string | JwtPayload;
-  userInfo?: object;
+  userId?: string;
+  file?: Express.Multer.File;
 }

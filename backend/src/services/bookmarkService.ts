@@ -1,48 +1,52 @@
-// src/services/bookmarkService.ts
 import { prisma } from "../db/prisma";
 
 export const addBookmark = async (userId: string, postId: string) => {
-  const bookmark = await prisma.bookmark.create({
-    data: {
-      userId,
-      postId,
-    },
+  const post = await prisma.post.findUnique({ where: { id: postId } });
+  if (!post) throw new Error("Post not found");
+
+  const existing = await prisma.bookmark.findUnique({
+    where: { userId_postId: { userId, postId } },
   });
-  return bookmark;
+  if (existing) throw new Error("Already bookmarked");
+
+  return prisma.bookmark.create({ data: { userId, postId } });
 };
 
 export const removeBookmark = async (userId: string, postId: string) => {
-  const bookmark = await prisma.bookmark.delete({
-    where: {
-      userId_postId: { userId, postId },
-    },
+  const bookmark = await prisma.bookmark.findUnique({
+    where: { userId_postId: { userId, postId } },
   });
-  return bookmark;
+  if (!bookmark) throw new Error("Bookmark not found");
+
+  return prisma.bookmark.delete({
+    where: { userId_postId: { userId, postId } },
+  });
 };
 
 export const getUserBookmarks = async (userId: string) => {
-  const bookmark = await prisma.bookmark.findMany({
+  return prisma.bookmark.findMany({
     where: { userId },
     include: {
       post: {
         select: {
           id: true,
           title: true,
+          slug: true,
           content: true,
+          coverImage: true,
           createdAt: true,
+          author: { select: { id: true, username: true } },
+          tags: true,
         },
       },
     },
     orderBy: { createdAt: "desc" },
   });
-  return bookmark;
 };
 
 export const isPostBookmarked = async (userId: string, postId: string) => {
   const bookmark = await prisma.bookmark.findUnique({
-    where: {
-      userId_postId: { userId, postId },
-    },
+    where: { userId_postId: { userId, postId } },
   });
   return !!bookmark;
 };

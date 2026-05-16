@@ -1,34 +1,41 @@
-import express from "express";
+import { Router } from "express";
 import {
-  createCommunity,
-  joinCommunity,
-  leaveCommunity,
-  getAllCommunities,
-  getCommunityById,
-  getUserCommunities,
-  getCommunityMembers,
-  getCommunityPosts,
-  updateCommunityInfo,
-  updateMembershipRole,
-  deleteCommunity,
+  createCommunity, joinCommunity, leaveCommunity,
+  getAllCommunities, getCommunityById, getUserCommunities,
+  getCommunityMembers, getCommunityPosts, updateCommunityInfo,
+  updateMembershipRole, deleteCommunity, getCommunityAnalytics,
 } from "../controllers/communityController";
 import { protectRoute } from "../middlewares/authMiddleware";
 
-const router = express.Router();
+const router = Router();
 
-// Public
-router.get("/get", getAllCommunities);
-router.get("/get/:id", getCommunityById);
-router.get("/posts/:id", getCommunityPosts);
+// inject optional userId for privacy checks
+const optionalAuth = (req: any, res: any, next: any) => {
+  try {
+    const jwt = require("jsonwebtoken");
+    const token = req.cookies?.token;
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+      req.userId = decoded?.userId;
+    }
+  } catch {}
+  next();
+};
 
-// Protected
+router.get("/", optionalAuth, getAllCommunities);
+router.get("/mine", protectRoute, getUserCommunities);
+router.get("/:id", optionalAuth, getCommunityById);
+router.get("/:id/posts", optionalAuth, getCommunityPosts);
+router.get("/:id/members", optionalAuth, getCommunityMembers);
+router.get("/:id/analytics", protectRoute, getCommunityAnalytics);
+
 router.post("/", protectRoute, createCommunity);
-router.post("/join:id", protectRoute, joinCommunity);
-router.post("/leave/:id", protectRoute, leaveCommunity);
-router.get("/get/communities", protectRoute, getUserCommunities);
-router.get("/get/members/:id", protectRoute, getCommunityMembers);
-router.put("/info/update:id", protectRoute, updateCommunityInfo);
-router.put("/members/update/:id", protectRoute, updateMembershipRole);
-router.delete("/delete/:id", protectRoute, deleteCommunity);
+router.post("/:id/join", protectRoute, joinCommunity);
+router.post("/:id/leave", protectRoute, leaveCommunity);
+router.put("/:id", protectRoute, updateCommunityInfo);
+router.patch("/:id", protectRoute, updateCommunityInfo);
+router.put("/:id/members/:userId", protectRoute, updateMembershipRole);
+router.patch("/:id/members/:userId", protectRoute, updateMembershipRole);
+router.delete("/:id", protectRoute, deleteCommunity);
 
 export default router;

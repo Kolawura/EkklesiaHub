@@ -138,6 +138,10 @@ exports.Prisma.CommunityScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  rules: 'rules',
+  avatar: 'avatar',
+  coverImage: 'coverImage',
+  isPrivate: 'isPrivate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -154,14 +158,33 @@ exports.Prisma.PostScalarFieldEnum = {
   id: 'id',
   title: 'title',
   slug: 'slug',
+  excerpt: 'excerpt',
   content: 'content',
   coverImage: 'coverImage',
   status: 'status',
+  isPinned: 'isPinned',
+  readingTime: 'readingTime',
+  viewCount: 'viewCount',
+  publishedAt: 'publishedAt',
   authorId: 'authorId',
   communityId: 'communityId',
-  tags: 'tags',
+  removedBy: 'removedBy',
+  removalReason: 'removalReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostViewScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  ipHash: 'ipHash',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TagScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
 };
 
 exports.Prisma.CommentScalarFieldEnum = {
@@ -197,6 +220,16 @@ exports.Prisma.BookmarkScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  message: 'message',
+  read: 'read',
+  link: 'link',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -220,7 +253,8 @@ exports.Role = exports.$Enums.Role = {
 exports.PostStatus = exports.$Enums.PostStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
-  ARCHIVED: 'ARCHIVED'
+  ARCHIVED: 'ARCHIVED',
+  REMOVED: 'REMOVED'
 };
 
 exports.ReactionType = exports.$Enums.ReactionType = {
@@ -230,15 +264,27 @@ exports.ReactionType = exports.$Enums.ReactionType = {
   INSIGHTFUL: 'INSIGHTFUL'
 };
 
+exports.NotificationType = exports.$Enums.NotificationType = {
+  NEW_COMMENT: 'NEW_COMMENT',
+  NEW_REACTION: 'NEW_REACTION',
+  NEW_FOLLOWER: 'NEW_FOLLOWER',
+  NEW_REPLY: 'NEW_REPLY',
+  COMMUNITY_INVITE: 'COMMUNITY_INVITE',
+  POST_REMOVED: 'POST_REMOVED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Community: 'Community',
   CommunityMembership: 'CommunityMembership',
   Post: 'Post',
+  PostView: 'PostView',
+  Tag: 'Tag',
   Comment: 'Comment',
   Reaction: 'Reaction',
   Follow: 'Follow',
-  Bookmark: 'Bookmark'
+  Bookmark: 'Bookmark',
+  Notification: 'Notification'
 };
 
 /**
