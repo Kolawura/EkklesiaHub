@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Clock, MessageCircle, Heart, Pin, Lock, Eye } from "lucide-react";
 import { PostCardProps, Tag } from "@/lib/type";
 import { fmt } from "@/lib/format";
+import { ReadingListButton } from "../Series/ReadingListButton";
 
 const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "");
 
@@ -105,6 +106,7 @@ export function PostCard({
               <MessageCircle size={11} />
               {post._count?.comments ?? 0}
             </span>
+            <ReadingListButton postId={post.id} variant="icon" />
           </div>
         </div>
 

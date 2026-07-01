@@ -18,7 +18,6 @@
 
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react";
-import React from "react";
 import { BookOpen, X } from "lucide-react";
 
 /* ── Node definition ─────────────────────────────────────────────────────── */

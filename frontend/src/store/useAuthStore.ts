@@ -19,6 +19,7 @@ export const useAuthStore = create<AuthState>()(
       name: "ekklesia-auth",
       // Only persist non-sensitive display fields
       partialize: (state) => ({ user: state.user }),
-    }
-  )
+      skipHydration: true,
+    },
+  ),
 );

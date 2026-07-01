@@ -230,6 +230,41 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SeriesScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  coverImage: 'coverImage',
+  slug: 'slug',
+  published: 'published',
+  authorId: 'authorId',
+  communityId: 'communityId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SeriesPostScalarFieldEnum = {
+  id: 'id',
+  position: 'position',
+  seriesId: 'seriesId',
+  postId: 'postId'
+};
+
+exports.Prisma.ReadingListItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  postId: 'postId',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserTagFollowScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tagId: 'tagId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -284,7 +319,11 @@ exports.Prisma.ModelName = {
   Reaction: 'Reaction',
   Follow: 'Follow',
   Bookmark: 'Bookmark',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  Series: 'Series',
+  SeriesPost: 'SeriesPost',
+  ReadingListItem: 'ReadingListItem',
+  UserTagFollow: 'UserTagFollow'
 };
 
 /**

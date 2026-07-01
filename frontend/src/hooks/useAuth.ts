@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   getCurrentUser,
   loginUser,
@@ -13,12 +13,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { ApiResponse, User, LoginType, RegisterType } from "@/lib/type";
 import { toast } from "@/hooks/useToast";
 
-const DEFAULT_POST_LOGIN = "/posts";
+export const DEFAULT_POST_LOGIN = "/posts";
 
-export const useAuth = () => {
+export const useAuth = (
+  postLoginPath: () => string = () => DEFAULT_POST_LOGIN,
+) => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user: storedUser, setUser, logout } = useAuthStore();
   const isAuthenticated = !!storedUser;
 
@@ -37,12 +38,6 @@ export const useAuth = () => {
       logout();
     }
   }, [userQuery.data, userQuery.isError, setUser, logout]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/posts");
-    }
-  }, [isAuthenticated, router]);
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,33 +61,6 @@ export const useAuth = () => {
     });
   };
 
-  /*
-   * getRedirectPath
-   * If middleware added a ?from= param (e.g. user tried to visit
-   * /communities/xyz while logged out), honour it so they land
-   * on the page they originally wanted.
-   * Otherwise fall back to the feed (/posts).
-   * Never redirect back to /auth itself or public marketing pages.
-   */
-  const getRedirectPath = (): string => {
-    try {
-      const from = searchParams?.get("from");
-      if (
-        from &&
-        from !== "/auth" &&
-        from !== "/" &&
-        from !== "/features" &&
-        from !== "/about" &&
-        from.startsWith("/")
-      ) {
-        return from;
-      }
-    } catch {
-      // searchParams not available (SSR context) — fall through
-    }
-    return DEFAULT_POST_LOGIN;
-  };
-
   /* ── Login ── */
   const loginMutation = useMutation<ApiResponse<User>, Error, LoginType>({
     mutationFn: loginUser,
@@ -104,7 +72,7 @@ export const useAuth = () => {
           title: `Welcome back, ${data.data.firstName}!`,
           variant: "success",
         });
-        router.push(getRedirectPath());
+        router.push(postLoginPath());
       } else {
         toast({
           title: "Login failed",

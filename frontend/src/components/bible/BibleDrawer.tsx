@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface BibleDrawerProps {
   /** Called when user clicks "Insert" in the panel */
-  onInsert?: (text: string, reference: string) => void;
+  onInsert?: (text: string, reference: string, version: string) => void;
   /** Show the insert button (only in editor context) */
   showInsert?: boolean;
   /** Whether to render as a floating button (post/comment context)
@@ -43,8 +43,8 @@ export function BibleDrawer({
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const handleInsert = (text: string, reference: string) => {
-    onInsert?.(text, reference);
+  const handleInsert = (text: string, reference: string, version: string) => {
+    onInsert?.(text, reference, version);
     // Don't close on insert — user may want to insert multiple references
   };
 
@@ -113,12 +113,14 @@ export function BibleDrawer({
       >
         <div className="h-full flex flex-col">
           {/* Close button overlay */}
-          <button
-            onClick={() => setOpen(false)}
-            className="absolute top-3.5 -left-11 p-2 bg-parchment border border-parchment-dark rounded-l-xl text-ink-ghost hover:text-ink transition-colors z-10"
-          >
-            <X size={15} />
-          </button>
+          {open && (
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-3.5 -left-11 p-2 bg-parchment border border-parchment-dark rounded-l-xl text-ink-ghost hover:text-ink transition-colors z-10"
+            >
+              <X size={15} />
+            </button>
+          )}
 
           <BiblePanel
             onInsert={handleInsert}

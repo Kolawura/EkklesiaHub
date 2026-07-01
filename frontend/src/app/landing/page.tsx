@@ -72,10 +72,18 @@ const STATS = [
 ];
 
 const MARQUEE_ITEMS = [
-  "Theology", "Devotional Writing", "Biblical Commentary",
-  "Pastoral Letters", "Church History", "Christian Living",
-  "Apologetics", "Spiritual Formation", "Missiology",
-  "Faith & Culture", "Interfaith Dialogue", "Liturgy",
+  "Theology",
+  "Devotional Writing",
+  "Biblical Commentary",
+  "Pastoral Letters",
+  "Church History",
+  "Christian Living",
+  "Apologetics",
+  "Spiritual Formation",
+  "Missiology",
+  "Faith & Culture",
+  "Interfaith Dialogue",
+  "Liturgy",
 ];
 
 /* ── EDITOR MOCK ────────────────────── */
@@ -87,7 +95,9 @@ function EditorMock() {
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
-        <span className="ml-auto font-body text-[11px] text-ink-ghost">New Article · Draft saved</span>
+        <span className="ml-auto font-body text-[11px] text-ink-ghost">
+          New Article · Draft saved
+        </span>
       </div>
       {/* body */}
       <div className="p-6 space-y-3">
@@ -129,7 +139,10 @@ export default function LandingPage() {
         </span>
 
         {/* ruled lines */}
-        <div aria-hidden className="absolute inset-0 bg-ruled pointer-events-none z-0" />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-ruled pointer-events-none z-0"
+        />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center animate-hero-in">
           {/* eyebrow */}
@@ -142,13 +155,15 @@ export default function LandingPage() {
           <h1 className="font-display text-[clamp(2.75rem,7vw,5.5rem)] font-bold tracking-tight leading-[1.08] text-ink mb-6">
             Write with purpose.
             <br />
-            <em className="not-italic text-gold font-semibold">Connect with depth.</em>
+            <em className="not-italic text-gold font-semibold">
+              Connect with depth.
+            </em>
           </h1>
 
           <p className="font-body text-lg text-ink-faint max-w-xl mx-auto leading-relaxed mb-8">
-            EkklesiaHub is the platform for spiritual writers, theologians, pastors,
-            and curious seekers. Publish your voice, find your community,
-            and reach readers who care.
+            EkklesiaHub is the platform for spiritual writers, theologians,
+            pastors, and curious seekers. Publish your voice, find your
+            community, and reach readers who care.
           </p>
 
           <div className="flex items-center justify-center gap-3 flex-wrap mb-10">
@@ -214,7 +229,8 @@ export default function LandingPage() {
               Everything a faith writer needs
             </h2>
             <p className="font-body text-lg text-ink-faint max-w-md mx-auto leading-relaxed">
-              From first draft to engaged community — every tool crafted with purpose-driven writers in mind.
+              From first draft to engaged community — every tool crafted with
+              purpose-driven writers in mind.
             </p>
           </div>
 
@@ -230,7 +246,9 @@ export default function LandingPage() {
                 <h3 className="font-display text-[1.0625rem] font-semibold text-ink mb-2 leading-snug">
                   {title}
                 </h3>
-                <p className="font-body text-sm text-ink-faint leading-relaxed">{desc}</p>
+                <p className="font-body text-sm text-ink-faint leading-relaxed">
+                  {desc}
+                </p>
               </div>
             ))}
           </div>
@@ -249,11 +267,14 @@ export default function LandingPage() {
               <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-bold tracking-tight leading-tight text-parchment">
                 Write like a scholar.
                 <br />
-                <em className="not-italic text-gold font-semibold">Reach like a storyteller.</em>
+                <em className="not-italic text-gold font-semibold">
+                  Reach like a storyteller.
+                </em>
               </h2>
               <p className="font-body text-base text-parchment/60 leading-relaxed">
-                Our editor respects the weight of your words. Clean, focused, and powerful —
-                with all the formatting you need for deep, thoughtful writing.
+                Our editor respects the weight of your words. Clean, focused,
+                and powerful — with all the formatting you need for deep,
+                thoughtful writing.
               </p>
               <ul className="space-y-2.5">
                 {[
@@ -263,7 +284,10 @@ export default function LandingPage() {
                   "Community publishing or private drafts",
                   "Cover images and custom excerpts",
                 ].map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 font-body text-sm text-parchment/70">
+                  <li
+                    key={f}
+                    className="flex items-center gap-2.5 font-body text-sm text-parchment/70"
+                  >
                     <ChevronRight size={13} className="text-gold shrink-0" />
                     {f}
                   </li>
@@ -301,14 +325,16 @@ export default function LandingPage() {
               >
                 <Quote size={24} className="text-gold-pale shrink-0" />
                 <p className="font-body text-base italic text-ink-light leading-relaxed flex-1">
-                  "{quote}"
+                  &quot;{quote}&quot;
                 </p>
                 <div className="flex items-center gap-3 pt-3 border-t border-parchment-deep">
                   <div className="w-9 h-9 rounded-full bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-xs font-bold text-gold shrink-0">
                     {initials}
                   </div>
                   <div>
-                    <p className="font-display text-sm font-semibold text-ink">{author}</p>
+                    <p className="font-display text-sm font-semibold text-ink">
+                      {author}
+                    </p>
                     <p className="font-body text-xs text-ink-ghost">{role}</p>
                   </div>
                 </div>
@@ -328,11 +354,12 @@ export default function LandingPage() {
             Church first. But doors open wide.
           </h2>
           <p className="font-body text-lg text-ink-faint max-w-2xl mx-auto leading-relaxed mb-12">
-            EkklesiaHub was built by and for the faith community — but our platform
-            welcomes anyone drawn to spiritual writing, contemplative thought, or questions
-            about meaning, purpose, and life. Whether you're a pastor, a philosopher,
-            a seeker, or simply someone who writes about things that matter — there's a
-            community here for you.
+            EkklesiaHub was built by and for the faith community — but our
+            platform welcomes anyone drawn to spiritual writing, contemplative
+            thought, or questions about meaning, purpose, and life. Whether
+            you&apos;re a pastor, a philosopher, a seeker, or simply someone who
+            writes about things that matter — there&apos;s a community here for
+            you.
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -346,8 +373,12 @@ export default function LandingPage() {
                 key={label}
                 className="bg-parchment-deep border border-parchment-dark rounded-xl p-5 text-center hover:border-gold-pale hover:bg-gold-bg transition-all group"
               >
-                <span className="block text-2xl text-gold mb-2 group-hover:scale-110 transition-transform">{icon}</span>
-                <p className="font-body text-sm text-ink-faint font-medium">{label}</p>
+                <span className="block text-2xl text-gold mb-2 group-hover:scale-110 transition-transform">
+                  {icon}
+                </span>
+                <p className="font-body text-sm text-ink-faint font-medium">
+                  {label}
+                </p>
               </div>
             ))}
           </div>
@@ -367,11 +398,15 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center space-y-5">
           <CrossOrnament className="w-10 h-10 text-gold opacity-40 mx-auto" />
           <h2 className="font-display text-[clamp(2.25rem,5vw,3.75rem)] font-bold tracking-tight leading-[1.1] text-ink">
-            Your words carry<br />
-            <em className="not-italic text-gold font-semibold">weight that lasts.</em>
+            Your words carry
+            <br />
+            <em className="not-italic text-gold font-semibold">
+              weight that lasts.
+            </em>
           </h2>
           <p className="font-body text-lg text-ink-faint max-w-md mx-auto leading-relaxed">
-            Join thousands of writers who have found their community. Free to start. Powerful to grow.
+            Join thousands of writers who have found their community. Free to
+            start. Powerful to grow.
           </p>
           <Link
             href="/auth?tab=signup"
@@ -379,7 +414,9 @@ export default function LandingPage() {
           >
             Create your account <ArrowRight size={16} />
           </Link>
-          <p className="font-body text-xs text-ink-ghost mt-3">Free forever for individual writers.</p>
+          <p className="font-body text-xs text-ink-ghost mt-3">
+            Free forever for individual writers.
+          </p>
         </div>
       </section>
 

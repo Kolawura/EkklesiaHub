@@ -3,6 +3,7 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { StoreHydrator } from "@/providers/StoreHydrator";
 
 export const metadata: Metadata = {
   title: "EkklesiaHub — Write. Connect. Inspire.",
@@ -20,8 +21,10 @@ export default function RootLayout({
       <body>
         <ThemeProvider disableTransitionOnChange>
           <ReactQueryProvider>
-            {children}
-            <Toaster />
+            <StoreHydrator>
+              {children}
+              <Toaster />
+            </StoreHydrator>
           </ReactQueryProvider>
         </ThemeProvider>
       </body>

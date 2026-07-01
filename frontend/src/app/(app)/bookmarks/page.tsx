@@ -13,7 +13,6 @@ export default function BookmarksPage() {
     isPending,
     removeBookmark,
   } = useBookmarks() || {};
-  console.log("bookmarks:", bookmarks);
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-9">
@@ -61,7 +60,7 @@ export default function BookmarksPage() {
                 {post.coverImage && (
                   <Link href={`/posts/${post.slug}`} className="shrink-0">
                     <div className="w-20 h-16 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
-                      <Image
+                      <img
                         src={post.coverImage}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

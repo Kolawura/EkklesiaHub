@@ -27,6 +27,9 @@ model User {
   bookmarks     Bookmark[]
   notifications Notification[]
   postViews     PostView[]
+  series          Series[]
+  readingList     ReadingListItem[]
+  followedTags    UserTagFollow[]
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
 }
@@ -39,11 +42,11 @@ model Community {
   avatar      String?
   coverImage  String?
   isPrivate   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
   memberships CommunityMembership[]
   posts       Post[]
+  series          Series[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model CommunityMembership {
@@ -82,13 +85,15 @@ model Post {
   authorId       String
   community      Community? @relation(fields: [communityId], references: [id])
   communityId    String?
-  removedBy      String?    
+  removedBy      String?
   removalReason  String?
   tags           Tag[]      @relation("PostTags")
   comments       Comment[]
   reactions      Reaction[]
   bookmarks      Bookmark[]
   views          PostView[]
+  seriesPosts     SeriesPost[]
+  readingListItems ReadingListItem[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
@@ -100,8 +105,8 @@ model Post {
 model PostView {
   id        String   @id @default(uuid())
   postId    String
-  userId    String?  
-  ipHash    String?  
+  userId    String?
+  ipHash    String?
   createdAt DateTime @default(now())
 
   post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -115,13 +120,14 @@ enum PostStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
-  REMOVED  
+  REMOVED
 }
 
 model Tag {
   id    String @id @default(uuid())
   name  String @unique
   posts Post[] @relation("PostTags")
+  followers       UserTagFollow[]
 }
 
 model Comment {
@@ -202,4 +208,63 @@ enum NotificationType {
   NEW_REPLY
   COMMUNITY_INVITE
   POST_REMOVED
+}
+
+model Series {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  coverImage  String?
+  slug        String       @unique
+  published   Boolean      @default(false)
+  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  community   Community?   @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  communityId String?
+  posts       SeriesPost[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([authorId])
+  @@index([communityId])
+}
+
+model SeriesPost {
+  id       String @id @default(uuid())
+  position Int    // 1-based order within the series
+
+  series   Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  seriesId String
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   String
+
+  @@unique([seriesId, postId])
+  @@unique([seriesId, position])
+  @@index([postId])
+}
+
+model ReadingListItem {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  readAt    DateTime? // null = unread, set when user marks as read
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, postId])
+  @@index([userId, readAt])
+}
+
+model UserTagFollow {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId     String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tagId])
+  @@index([userId])
+  @@index([tagId])
 }

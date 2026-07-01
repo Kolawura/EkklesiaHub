@@ -25,6 +25,8 @@ import { fmt, fmtShort } from "@/lib/format";
 import { REACTIONS } from "@/lib/utils";
 import { usePostDetails } from "@/hooks/usePostDetails";
 import { Comment } from "@/lib/type";
+import { SeriesNav } from "@/components/Series/SeriesNav";
+import { ReadingListButton } from "@/components/Series/ReadingListButton";
 
 export default function PostDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -204,6 +206,9 @@ export default function PostDetailPage() {
           </div>
         </div>
 
+        {/* ── Series navigation — shown BEFORE the article body ── */}
+        <SeriesNav postId={post.id} currentSlug={slug} />
+
         {/* Article content */}
         <PostContent html={post.content} />
 
@@ -241,6 +246,13 @@ export default function PostDetailPage() {
               </button>
             );
           })}
+
+          {/* Read-later pill */}
+          <ReadingListButton
+            postId={post.id}
+            variant="pill"
+            className="ml-auto"
+          />
         </div>
 
         {/* Comments */}
@@ -397,7 +409,7 @@ function CommentItem({
           {/* Scripture references attached to this comment */}
           {comment.scriptureRefs?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-parchment-dark">
-              {comment.scriptureRefs.map((ref) => (
+              {comment.scriptureRefs.map((ref: { reference: string }) => (
                 <ScriptureReference
                   key={ref.reference}
                   reference={ref.reference}

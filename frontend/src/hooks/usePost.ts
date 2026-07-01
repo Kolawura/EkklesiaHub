@@ -10,6 +10,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "./useToast";
 import { useAuth } from "./useAuth";
+import { usePathname } from "next/navigation";
 
 type FilterStatus = "ALL" | "DRAFT" | "ARCHIVED";
 
@@ -18,6 +19,7 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -41,7 +43,10 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
     return () => clearTimeout(t);
   }, [search]);
 
+  // Sync search and page params to URL
   useEffect(() => {
+    console.log("URL sync effect running", pathname);
+    if (pathname !== "/posts") return;
     const params = new URLSearchParams();
     if (debouncedSearch) params.set("search", debouncedSearch);
     if (page > 1) params.set("page", String(page));
@@ -51,7 +56,7 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
         scroll: false,
       },
     );
-  }, [debouncedSearch, page, router]);
+  }, [debouncedSearch, page, pathname]);
 
   const {
     data: editPostData,

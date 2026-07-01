@@ -2,45 +2,55 @@
 
 import { useState, useRef, useEffect } from "react";
 import { BookOpen, Loader2, X } from "lucide-react";
-import { useBible } from "@/hooks/useBible";
+import { useReferenceJump, type ResolvedReference } from "@/hooks/bible";
+
 /**
  * ScriptureInline
  *
- * A lightweight component for comments and discussion replies.
- * Renders as a small "✦ John 3:16" trigger chip that:
- *   - Shows a floating card with the verse text on hover/click
- *   - Can be used standalone OR as an input field where users
- *     type a reference and get a preview before "attaching" it
+ * Lightweight components for comments and discussion replies, backed by
+ * the local Bible database (no external API calls). Supports both single
+ * verses ("John 3:16") and ranges ("Romans 8:28-30").
  *
- * Usage in comments — two patterns:
- *
- * Pattern A: Read-only chip (verse already stored as text)
- *   <ScriptureReference reference="John 3:16" />
- *
- * Pattern B: Input mode (user is composing a comment)
- *   <ScriptureInput onAttach={(ref, text) => ...} />
+ *   ScriptureReference — read-only chip, fetches + previews on hover
+ *   ScriptureInput      — input mode for composing a comment, with preview
  */
+
+const DEFAULT_TRANSLATION = "KJV";
+
+// ─────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────
+
+function formatReference(r: ResolvedReference): string {
+  return r.endVerse !== r.startVerse
+    ? `${r.book_name} ${r.chapter}:${r.startVerse}-${r.endVerse}`
+    : `${r.book_name} ${r.chapter}:${r.startVerse}`;
+}
+
+function formatPassageText(r: ResolvedReference): string {
+  return r.verses.map((v) => v.text).join(" ");
+}
 
 /* ──────────────────────────────────────────────────────
    A — Read-only chip that previews on hover
 ────────────────────────────────────────────────────── */
 export function ScriptureReference({
   reference,
-  versionId = "de4e12af7f28f599-02",
+  translation = DEFAULT_TRANSLATION,
 }: {
   reference: string;
-  versionId?: string;
+  translation?: string;
 }) {
   const [hovered, setHovered] = useState(false);
   const [fetched, setFetched] = useState(false);
-  const { lookupVerse, passage, loading, error } = useBible(versionId);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const { lookup, loading, error } = useReferenceJump();
+  const [result, setResult] = useState<ResolvedReference | null>(null);
 
   const handleHover = () => {
     setHovered(true);
     if (!fetched) {
-      lookupVerse(reference);
       setFetched(true);
+      lookup(reference, translation).then((r) => setResult(r));
     }
   };
 
@@ -58,10 +68,7 @@ export function ScriptureReference({
 
       {/* Hover card */}
       {hovered && (
-        <div
-          ref={cardRef}
-          className="absolute bottom-full left-0 mb-2 w-72 bg-parchment border border-parchment-dark rounded-xl shadow-warm-lg z-50 p-3.5"
-        >
+        <div className="absolute bottom-full left-0 mb-2 w-72 bg-parchment border border-parchment-dark rounded-xl shadow-warm-lg z-50 p-3.5">
           {loading ? (
             <div className="flex items-center gap-2 py-2">
               <Loader2 size={13} className="animate-spin text-gold" />
@@ -69,13 +76,16 @@ export function ScriptureReference({
             </div>
           ) : error ? (
             <p className="font-body text-xs text-red-500">{error}</p>
-          ) : passage ? (
+          ) : result ? (
             <>
               <p className="font-body text-[11px] font-semibold text-gold mb-1.5">
-                {passage.reference}
+                {formatReference(result)}
+                <span className="font-normal text-ink-ghost ml-1">
+                  · {translation}
+                </span>
               </p>
               <p className="font-body text-xs text-ink-light leading-relaxed">
-                {passage.text}
+                {formatPassageText(result)}
               </p>
             </>
           ) : null}
@@ -93,42 +103,48 @@ interface ScriptureInputProps {
   onAttach: (reference: string, text: string) => void;
   attached?: { reference: string; text: string }[];
   onRemove?: (reference: string) => void;
+  translation?: string;
 }
 
 export function ScriptureInput({
   onAttach,
   attached = [],
   onRemove,
+  translation = DEFAULT_TRANSLATION,
 }: ScriptureInputProps) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [previewing, setPreviewing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { lookupVerse, passage, loading, error, reset } = useBible();
+  const { lookup, loading, error } = useReferenceJump();
+  const [result, setResult] = useState<ResolvedReference | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 50);
   }, [open]);
 
-  const handlePreview = () => {
+  const handlePreview = async () => {
     if (!input.trim()) return;
-    setPreviewing(true);
-    lookupVerse(input.trim());
+    setResult(null);
+    setNotFound(false);
+    const r = await lookup(input.trim(), translation);
+    if (r) setResult(r);
+    else setNotFound(true);
   };
 
   const handleAttach = () => {
-    if (!passage) return;
-    onAttach(passage.reference, passage.text);
+    if (!result) return;
+    onAttach(formatReference(result), formatPassageText(result));
     setInput("");
-    setPreviewing(false);
-    reset();
+    setResult(null);
+    setNotFound(false);
     setOpen(false);
   };
 
   const handleCancel = () => {
     setInput("");
-    setPreviewing(false);
-    reset();
+    setResult(null);
+    setNotFound(false);
     setOpen(false);
   };
 
@@ -178,9 +194,9 @@ export function ScriptureInput({
               value={input}
               onChange={(e) => {
                 setInput(e.target.value);
-                if (previewing) {
-                  reset();
-                  setPreviewing(false);
+                if (result || notFound) {
+                  setResult(null);
+                  setNotFound(false);
                 }
               }}
               onKeyDown={(e) => {
@@ -190,7 +206,7 @@ export function ScriptureInput({
                 }
                 if (e.key === "Escape") handleCancel();
               }}
-              placeholder="e.g. John 3:16 or Romans 8:28"
+              placeholder="e.g. John 3:16 or Romans 8:28-30"
               className="flex-1 px-3 py-1.5 font-body text-xs bg-parchment border border-parchment-dark rounded-lg text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 transition-all"
             />
             <button
@@ -203,17 +219,19 @@ export function ScriptureInput({
             </button>
           </div>
 
-          {error && (
-            <p className="font-body text-[11px] text-red-500">{error}</p>
+          {(error || notFound) && (
+            <p className="font-body text-[11px] text-red-500">
+              {error || "Reference not found."}
+            </p>
           )}
 
-          {passage && !loading && (
+          {result && !loading && (
             <div className="bg-parchment border border-gold-pale/50 rounded-xl p-3">
               <p className="font-body text-[11px] font-semibold text-gold mb-1">
-                {passage.reference}
+                {formatReference(result)}
               </p>
               <p className="font-body text-xs text-ink-light leading-relaxed line-clamp-4">
-                {passage.text}
+                {formatPassageText(result)}
               </p>
               <div className="flex items-center gap-2 mt-2.5">
                 <button
@@ -232,7 +250,7 @@ export function ScriptureInput({
             </div>
           )}
 
-          {!passage && !loading && !error && (
+          {!result && !loading && !error && !notFound && (
             <div className="flex justify-end">
               <button
                 onClick={handleCancel}

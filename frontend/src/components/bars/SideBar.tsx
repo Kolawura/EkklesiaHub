@@ -10,6 +10,10 @@ import {
   BarChart2,
   Settings,
   LogOut,
+  BookMarked,
+  Library,
+  BookOpen,
+  Rss,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,6 +22,7 @@ import { CrossOrnament } from "@/components/ui/CrossOrnament";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  // Core
   {
     id: "dashboard",
     label: "Dashboard",
@@ -26,13 +31,35 @@ const NAV = [
   },
   { id: "posts", label: "Posts", icon: FileText, href: "/posts" },
   { id: "drafts", label: "Drafts", icon: FileEdit, href: "/drafts" },
+
+  // Separator — writing
+  { id: "sep-writing", label: "Writing", separator: true },
+  { id: "new", label: "Write", icon: PenLine, href: "/new" },
+  { id: "series", label: "Series", icon: BookMarked, href: "/series" },
+
+  // Separator — discover
+  { id: "sep-discover", label: "Discover", separator: true },
+  { id: "bible", label: "Bible", icon: BookOpen, href: "/bible" }, // ← ADD THIS
+  { id: "feed", label: "Tag Feed", icon: Rss, href: "/feed" },
   {
     id: "communities",
     label: "Communities",
     icon: Users,
     href: "/communities",
   },
+
+  // Separator — library
+  { id: "sep-library", label: "Library", separator: true },
+  {
+    id: "reading-list",
+    label: "Reading List",
+    icon: Library,
+    href: "/reading-list",
+  },
   { id: "bookmarks", label: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
+
+  // Separator — account
+  { id: "sep-account", label: "Account", separator: true },
   { id: "analytics", label: "Analytics", icon: BarChart2, href: "/analytics" },
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
@@ -42,7 +69,7 @@ export const SideBar = () => {
   const { user, logoutMutation } = useAuth();
 
   const initials = user
-    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : "?";
 
   return (
@@ -50,7 +77,7 @@ export const SideBar = () => {
       {/* Brand */}
       <div className="px-4 py-4 border-b border-parchment-dark">
         <Link
-          href="/"
+          href="/dashboard"
           className="flex items-center gap-2 font-display text-[1.0625rem] font-semibold text-ink tracking-tight"
         >
           <CrossOrnament className="w-4 h-4 text-gold" />
@@ -61,28 +88,30 @@ export const SideBar = () => {
         </p>
       </div>
 
-      {/* Write CTA */}
-      <div className="px-2.5 pt-3 pb-1">
-        <Link
-          href="/new"
-          className="flex items-center justify-center gap-1.5 w-full bg-ink text-parchment font-body text-xs font-medium py-2 rounded-lg hover:bg-ink-medium transition-colors"
-        >
-          <PenLine size={13} />
-          New Article
-        </Link>
-      </div>
-
       {/* Nav */}
-      <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
-        {NAV.map(({ id, label, icon: Icon, href }) => {
+      <nav className="flex-1 px-2 py-2 overflow-y-auto space-y-0">
+        {NAV.map((item) => {
+          // Section separator
+          if ("separator" in item) {
+            return (
+              <div key={item.id} className="pt-3 pb-1 px-2">
+                <p className="font-body text-[9px] uppercase tracking-widest text-ink-ghost font-medium">
+                  {item.label}
+                </p>
+              </div>
+            );
+          }
+
+          const Icon = item.icon!;
           const active =
-            href === "/dashboard"
+            item.href === "/dashboard"
               ? pathname === "/dashboard"
-              : pathname.startsWith(href);
+              : pathname.startsWith(item.href!);
+
           return (
             <Link
-              key={id}
-              href={href}
+              key={item.id}
+              href={item.href!}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 rounded-lg font-body text-sm transition-all",
                 active
@@ -91,7 +120,7 @@ export const SideBar = () => {
               )}
             >
               <Icon size={14} className="shrink-0" />
-              {label}
+              {item.label}
             </Link>
           );
         })}
@@ -101,8 +130,16 @@ export const SideBar = () => {
       <div className="px-3 py-3 border-t border-parchment-dark">
         <div className="flex items-center gap-2.5">
           <Link href="/profile" className="shrink-0">
-            <div className="w-8 h-8 rounded-full bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-[10px] font-bold text-gold hover:opacity-80 transition-opacity cursor-pointer">
-              {initials}
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-[10px] font-bold text-gold hover:opacity-80 transition-opacity cursor-pointer">
+              {user?.profileImg ? (
+                <img
+                  src={user.profileImg}
+                  alt={user.firstName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
           </Link>
           <div className="flex-1 min-w-0">

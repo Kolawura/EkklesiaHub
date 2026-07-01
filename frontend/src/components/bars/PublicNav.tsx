@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Features", href: "/features" },
   { label: "Communities", href: "/communities" },
   { label: "About", href: "/about" },
+  { label: "Bible", href: "/bible" },
 ];
 
 export function PublicNav() {

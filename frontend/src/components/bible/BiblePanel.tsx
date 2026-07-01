@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
 import {
   BookOpen,
   Search,
@@ -13,85 +13,35 @@ import {
   Hash,
 } from "lucide-react";
 import {
-  useBible,
-  DEFAULT_VERSIONS as BIBLE_VERSIONS,
-  BIBLE_BOOKS,
-  type ScriptureVerse,
-} from "@/hooks/useBible";
+  useBibleBooks,
+  useBibleSearch,
+  useBibleTranslations,
+  useReferenceJump,
+  type SearchResult,
+  type TranslationInfo,
+  type ResolvedReference,
+} from "@/hooks/bible";
 import { cn } from "@/lib/utils";
+
+// ─────────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────────
 
 type Mode = "lookup" | "search" | "browse";
 
 interface BiblePanelProps {
-  /** Called when user clicks "Insert" — passes formatted text for the editor */
-  onInsert?: (text: string, reference: string) => void;
+  /** Called when user clicks "Insert" — passes verse text + reference */
+  onInsert?: (text: string, reference: string, version: string) => void;
   /** Whether the Insert button should be shown (hide outside the editor) */
   showInsert?: boolean;
-  /** Compact mode for the comment / discussion context */
+  /** Compact mode for inline/drawer context */
   compact?: boolean;
 }
 
-/* ── Version selector ── */
-function VersionPicker({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (id: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const current = BIBLE_VERSIONS.find((v) => v.id === value)!;
+// ─────────────────────────────────────────────────────────────────
+// Copy button
+// ─────────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 font-body text-xs font-medium text-ink-faint bg-parchment-deep border border-parchment-dark px-2.5 py-1 rounded-lg hover:border-gold-pale hover:text-ink transition-all"
-      >
-        {current.label}
-        <ChevronDown
-          size={10}
-          className={cn("transition-transform", open ? "rotate-180" : "")}
-        />
-      </button>
-
-      {open && (
-        <div className="absolute right-0 top-full mt-1 bg-parchment border border-parchment-dark rounded-xl shadow-warm-md z-50 overflow-hidden min-w-45">
-          {BIBLE_VERSIONS.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => {
-                onChange(v.id);
-                setOpen(false);
-              }}
-              className={cn(
-                "w-full text-left px-3.5 py-2 font-body text-xs hover:bg-parchment-deep transition-colors flex items-center justify-between gap-3",
-                v.id === value ? "text-gold font-medium" : "text-ink-faint",
-              )}
-            >
-              <span className="font-medium text-ink text-[11px]">
-                {v.label}
-              </span>
-              <span className="text-ink-ghost">{v.name}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ── Copy button with check feedback ── */
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   const copy = () => {
@@ -111,32 +61,130 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-/* ── Single verse result card ── */
+// ─────────────────────────────────────────────────────────────────
+// Translation picker — loaded from the local DB
+//
+// Anchored `right-0` with a width relative to itself (not the full
+// header), and capped with `max-w-[80vw]` so it never overflows the
+// panel even in the narrow `compact` drawer used inside the editor.
+// ─────────────────────────────────────────────────────────────────
+
+function TranslationPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (t: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { data: translations, isLoading } = useBibleTranslations();
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const sorted = translations
+    ? [
+        ...translations.filter((t) => t.is_featured),
+        ...translations.filter((t) => !t.is_featured),
+      ]
+    : [];
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        onClick={() => setOpen(!open)}
+        disabled={isLoading}
+        className="inline-flex items-center gap-1.5 font-body text-xs font-medium text-ink-faint bg-parchment-deep border border-parchment-dark px-2.5 py-1 rounded-lg hover:border-gold-pale hover:text-ink transition-all disabled:opacity-50"
+      >
+        {isLoading ? <Loader2 size={10} className="animate-spin" /> : value}
+        <ChevronDown
+          size={10}
+          className={cn("transition-transform", open ? "rotate-180" : "")}
+        />
+      </button>
+
+      {open && sorted.length > 0 && (
+        <div className="absolute right-0 top-full mt-1.5 w-56 max-w-[80vw] bg-parchment border border-parchment-dark rounded-xl shadow-warm-lg z-50 overflow-hidden">
+          <div className="max-h-64 overflow-y-auto p-1">
+            {sorted.map((t: TranslationInfo) => (
+              <button
+                key={t.translation}
+                onClick={() => {
+                  onChange(t.translation);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between gap-3",
+                  t.translation === value
+                    ? "bg-gold-bg text-gold"
+                    : "hover:bg-parchment-deep",
+                )}
+              >
+                <span
+                  className={cn(
+                    "font-display font-bold text-xs shrink-0",
+                    t.translation === value ? "text-gold" : "text-ink",
+                  )}
+                >
+                  {t.translation}
+                </span>
+                {t.description && (
+                  <span className="font-body text-[10px] text-ink-ghost truncate">
+                    {t.description}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Single verse result card (search mode)
+// ─────────────────────────────────────────────────────────────────
+
 function VerseCard({
   verse,
+  translation,
   onInsert,
   showInsert,
 }: {
-  verse: ScriptureVerse;
-  onInsert?: (text: string, ref: string) => void;
+  verse: SearchResult;
+  translation: string;
+  onInsert?: (text: string, ref: string, version: string) => void;
   showInsert?: boolean;
 }) {
-  const formatted = `"${verse.text}" — ${verse.reference}`;
+  const reference = `${verse.book_name} ${verse.chapter}:${verse.verse}`;
+  const formatted = `"${verse.text}" — ${reference} (${translation})`;
 
   return (
     <div className="group bg-parchment border border-parchment-dark rounded-xl p-4 hover:border-gold-pale transition-all">
       <p className="font-body text-xs font-semibold text-gold mb-2 flex items-center gap-1.5">
         <Hash size={10} />
-        {verse.reference}
+        {reference}
+        <span className="font-normal text-ink-ghost normal-case tracking-normal ml-0.5">
+          · {translation}
+        </span>
       </p>
-      <p className="font-body text-sm text-ink-light leading-relaxed">
-        {verse.text}
-      </p>
+      <p
+        className="font-body text-sm text-ink-light leading-relaxed [&_em]:not-italic [&_em]:font-semibold [&_em]:text-gold"
+        dangerouslySetInnerHTML={{ __html: verse.snippet || verse.text }}
+      />
       <div className="flex items-center gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
         <CopyButton text={formatted} />
         {showInsert && onInsert && (
           <button
-            onClick={() => onInsert(verse.text, verse.reference)}
+            onClick={() => onInsert(verse.text, reference, translation)}
             className="inline-flex items-center gap-1 font-body text-[11px] font-medium text-gold bg-gold-bg border border-gold-pale px-2.5 py-1 rounded-lg hover:bg-gold-bg/80 transition-colors"
           >
             Insert into editor
@@ -147,10 +195,83 @@ function VerseCard({
   );
 }
 
-/* ── Book browser (OT / NT grid) ── */
+// ─────────────────────────────────────────────────────────────────
+// Lookup result card — handles both a single verse and a range
+// (e.g. "Romans 8:28-30"). The full passage text is joined together
+// for copy/insert, while individual verse numbers are still shown.
+// ─────────────────────────────────────────────────────────────────
+
+function LookupCard({
+  result,
+  translation,
+  onInsert,
+  showInsert,
+}: {
+  result: ResolvedReference;
+  translation: string;
+  onInsert?: (text: string, ref: string, version: string) => void;
+  showInsert?: boolean;
+}) {
+  const isRange = result.endVerse !== result.startVerse;
+  const reference = isRange
+    ? `${result.book_name} ${result.chapter}:${result.startVerse}-${result.endVerse}`
+    : `${result.book_name} ${result.chapter}:${result.startVerse}`;
+
+  // Join all verses into one passage for copy/insert
+  const fullText = result.verses.map((v) => v.text).join(" ");
+  const formatted = `"${fullText}" — ${reference} (${translation})`;
+
+  return (
+    <div className="bg-parchment border border-parchment-dark rounded-xl p-4">
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <div>
+          <p className="font-display text-sm font-semibold text-gold">
+            {reference}
+          </p>
+          <p className="font-body text-[10px] text-ink-ghost mt-0.5">
+            {translation}
+          </p>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <CopyButton text={formatted} />
+          {showInsert && onInsert && (
+            <button
+              onClick={() => onInsert(fullText, reference, translation)}
+              className="inline-flex items-center gap-1 font-body text-[11px] font-medium text-gold bg-gold-bg border border-gold-pale px-2.5 py-1 rounded-lg hover:bg-gold-bg/80 transition-colors"
+            >
+              Insert
+            </button>
+          )}
+        </div>
+      </div>
+
+      {isRange ? (
+        <p className="font-body text-sm text-ink-light leading-[1.85] tracking-[0.01em]">
+          {result.verses.map((v) => (
+            <span key={v.verse}>
+              <sup className="font-display font-bold text-gold/60 text-[0.65em] mr-0.5">
+                {v.verse}
+              </sup>
+              {v.text}{" "}
+            </span>
+          ))}
+        </p>
+      ) : (
+        <p className="font-body text-sm text-ink-light leading-[1.85] tracking-[0.01em] italic">
+          &quot;{fullText}&quot;
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Book browser — uses useBibleBooks from local DB
+// ─────────────────────────────────────────────────────────────────
+
 function BookBrowser({ onSelect }: { onSelect: (book: string) => void }) {
   const [testament, setTestament] = useState<"OT" | "NT">("NT");
-  const books = BIBLE_BOOKS[testament];
+  const { data: books, isLoading } = useBibleBooks(testament);
 
   return (
     <div>
@@ -170,80 +291,135 @@ function BookBrowser({ onSelect }: { onSelect: (book: string) => void }) {
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-1.5 max-h-64 overflow-y-auto">
-        {books.map((book) => (
-          <button
-            key={book.id}
-            onClick={() => onSelect(`${book.name} 1:1`)}
-            className="text-left font-body text-xs text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale px-2.5 py-1.5 rounded-lg transition-all truncate"
-          >
-            {book.name}
-          </button>
-        ))}
-      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-3 gap-1.5">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-8 bg-parchment-deep rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-1.5 max-h-64 overflow-y-auto">
+          {(books ?? []).map((book) => (
+            <button
+              key={book.book_number}
+              onClick={() => onSelect(`${book.book_name} 1:1`)}
+              className="text-left font-body text-xs text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale px-2.5 py-1.5 rounded-lg transition-all truncate"
+              title={book.book_name}
+            >
+              {book.book_name}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-/* ── Main BiblePanel ── */
+// ─────────────────────────────────────────────────────────────────
+// Main BiblePanel
+// ─────────────────────────────────────────────────────────────────
+
 export function BiblePanel({
   onInsert,
   showInsert = false,
   compact = false,
 }: BiblePanelProps) {
   const [mode, setMode] = useState<Mode>("lookup");
+  const [translation, setTranslation] = useState("KJV");
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Lookup state — useReferenceJump now returns the FULL resolved
+  // range (verses with text included), not just the first verse.
   const {
-    versionId,
-    setVersionId,
-    loading,
-    error,
-    results,
-    passage,
-    lookupVerse,
-    searchScripture,
-    reset,
-  } = useBible();
+    lookup,
+    loading: lookupLoading,
+    error: lookupError,
+  } = useReferenceJump();
+  const [lookupResult, setLookupResult] = useState<ResolvedReference | null>(
+    null,
+  );
+  const [lookupFailed, setLookupFailed] = useState(false);
 
-  const handleSubmit = () => {
+  // Search state
+  const {
+    search,
+    reset: resetSearch,
+    loading: searchLoading,
+    results,
+    error: searchError,
+  } = useBibleSearch();
+
+  const loading = lookupLoading || searchLoading;
+  const error = lookupError || searchError;
+
+  const resetAll = useCallback(() => {
+    resetSearch();
+    setLookupResult(null);
+    setLookupFailed(false);
+    setInput("");
+  }, [resetSearch]);
+
+  const runLookup = useCallback(
+    async (ref: string, t: string) => {
+      setLookupResult(null);
+      setLookupFailed(false);
+      const result = await lookup(ref, t);
+      if (result) {
+        setLookupResult(result);
+      } else {
+        setLookupFailed(true);
+      }
+    },
+    [lookup],
+  );
+
+  const handleTranslationChange = useCallback(
+    (t: string) => {
+      setTranslation(t);
+      if (mode === "lookup" && input.trim() && lookupResult) {
+        runLookup(input.trim(), t);
+      }
+    },
+    [mode, input, lookupResult, runLookup],
+  );
+
+  const handleSubmit = useCallback(() => {
     const val = input.trim();
     if (!val) return;
+
     if (mode === "lookup") {
-      lookupVerse(val);
+      runLookup(val, translation);
     } else if (mode === "search") {
-      searchScripture(val);
+      setLookupResult(null);
+      search(val, translation);
     }
-  };
+  }, [input, mode, translation, runLookup, search]);
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSubmit();
     if (e.key === "Escape") {
-      reset();
-      setInput("");
+      resetAll();
+      inputRef.current?.focus();
     }
   };
 
-  const handleClear = () => {
-    reset();
-    setInput("");
-    inputRef.current?.focus();
-  };
-
-  const handleInsert = (text: string, reference: string) => {
-    onInsert?.(text, reference);
-  };
-
-  const handleBrowseSelect = (ref: string) => {
-    setInput(ref);
-    setMode("lookup");
-    lookupVerse(ref);
-  };
+  const handleBrowseSelect = useCallback(
+    (ref: string) => {
+      setInput(ref);
+      setMode("lookup");
+      runLookup(ref, translation);
+    },
+    [runLookup, translation],
+  );
 
   const modeLabel: Record<Mode, string> = {
-    lookup: "Reference (e.g. John 3:16 or Rom 8:28-30)",
-    search: "Search (e.g. 'love your neighbour')",
+    lookup: "Reference — e.g. John 3:16 or Romans 8:28-30",
+    search: "Search — e.g. 'love your neighbour'",
     browse: "Browse books",
   };
 
@@ -251,23 +427,20 @@ export function BiblePanel({
     <div
       className={cn(
         "flex flex-col bg-parchment border border-parchment-dark rounded-2xl overflow-hidden",
-        compact ? "max-h-105" : "h-full",
+        compact ? "max-h-104" : "h-full",
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-parchment-dark shrink-0 bg-parchment-deep">
-        <div className="flex items-center gap-2">
-          <BookOpen size={14} className="text-gold" />
-          <span className="font-display text-sm font-semibold text-ink">
+      <div className="relative flex items-center justify-between gap-2 px-4 py-3 border-b border-parchment-dark shrink-0 bg-parchment-deep">
+        <div className="flex items-center gap-2 min-w-0">
+          <BookOpen size={14} className="text-gold shrink-0" />
+          <span className="font-display text-sm font-semibold text-ink truncate">
             Scripture
           </span>
         </div>
-        <VersionPicker
-          value={versionId}
-          onChange={(id) => {
-            setVersionId(id);
-            reset();
-          }}
+        <TranslationPicker
+          value={translation}
+          onChange={handleTranslationChange}
         />
       </div>
 
@@ -284,8 +457,7 @@ export function BiblePanel({
             key={id}
             onClick={() => {
               setMode(id);
-              reset();
-              setInput("");
+              resetAll();
             }}
             className={cn(
               "flex-1 inline-flex items-center justify-center gap-1.5 py-2 font-body text-xs transition-all border-b-2 -mb-px",
@@ -300,7 +472,7 @@ export function BiblePanel({
         ))}
       </div>
 
-      {/* Input — shown for lookup and search modes */}
+      {/* Input — shown for lookup and search */}
       {mode !== "browse" && (
         <div className="flex items-center gap-2 px-3 py-2.5 border-b border-parchment-dark shrink-0">
           <div className="relative flex-1">
@@ -315,7 +487,10 @@ export function BiblePanel({
             />
             {input && (
               <button
-                onClick={handleClear}
+                onClick={() => {
+                  resetAll();
+                  inputRef.current?.focus();
+                }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-ghost hover:text-ink transition-colors"
               >
                 <X size={12} />
@@ -339,57 +514,36 @@ export function BiblePanel({
       {/* Content area */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
         {/* Error */}
-        {error && (
+        {(error || lookupFailed) && (
           <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
             <span className="text-red-500 text-sm shrink-0">⚠</span>
             <p className="font-body text-xs text-red-600 leading-relaxed">
-              {error}
+              {error ||
+                'Reference not found. Try a different format — e.g. "John 3:16" or "Romans 8:28-30".'}
             </p>
           </div>
         )}
 
-        {/* Browse mode */}
+        {/* Browse */}
         {mode === "browse" && <BookBrowser onSelect={handleBrowseSelect} />}
 
         {/* Loading skeleton */}
         {loading && !error && (
           <div className="space-y-2.5 animate-pulse">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-16 bg-parchment-deep rounded-xl" />
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="h-20 bg-parchment-deep rounded-xl" />
             ))}
           </div>
         )}
 
-        {/* Passage result (lookup mode) */}
-        {!loading && passage && (
-          <div className="bg-parchment border border-parchment-dark rounded-xl p-4">
-            <div className="flex items-start justify-between gap-2 mb-3">
-              <p className="font-display text-sm font-semibold text-gold">
-                {passage.reference}
-              </p>
-              <div className="flex items-center gap-1 shrink-0">
-                <CopyButton text={`"${passage.text}" — ${passage.reference}`} />
-                {showInsert && onInsert && (
-                  <button
-                    onClick={() =>
-                      handleInsert(passage.text, passage.reference)
-                    }
-                    className="inline-flex items-center gap-1 font-body text-[11px] font-medium text-gold bg-gold-bg border border-gold-pale px-2.5 py-1 rounded-lg hover:bg-gold-bg/80 transition-colors"
-                  >
-                    Insert
-                  </button>
-                )}
-              </div>
-            </div>
-            <p className="font-body text-sm text-ink-light leading-[1.85] tracking-[0.01em]">
-              {passage.text}
-            </p>
-            {passage.copyright && (
-              <p className="font-body text-[10px] text-ink-ghost mt-3 border-t border-parchment-dark pt-2">
-                {passage.copyright}
-              </p>
-            )}
-          </div>
+        {/* Lookup result — single verse or full range */}
+        {!loading && lookupResult && (
+          <LookupCard
+            result={lookupResult}
+            translation={translation}
+            onInsert={onInsert}
+            showInsert={showInsert}
+          />
         )}
 
         {/* Search results */}
@@ -400,9 +554,10 @@ export function BiblePanel({
             </p>
             {results.map((verse) => (
               <VerseCard
-                key={verse.id}
+                key={`${verse.book_number}-${verse.chapter}-${verse.verse}`}
                 verse={verse}
-                onInsert={showInsert ? handleInsert : undefined}
+                translation={translation}
+                onInsert={onInsert}
                 showInsert={showInsert}
               />
             ))}
@@ -412,7 +567,8 @@ export function BiblePanel({
         {/* Empty state */}
         {!loading &&
           !error &&
-          !passage &&
+          !lookupFailed &&
+          !lookupResult &&
           results.length === 0 &&
           mode !== "browse" && (
             <div className="flex flex-col items-center justify-center py-10 text-center">
@@ -424,8 +580,8 @@ export function BiblePanel({
               </p>
               <p className="font-body text-[11px] text-ink-ghost">
                 {mode === "lookup"
-                  ? 'e.g. "John 3:16", "Psalm 23:1-6", "Romans 8:28"'
-                  : 'e.g. "grace", "love your neighbour", "faith hope love"'}
+                  ? 'e.g. "John 3:16", "Psalm 23", "Romans 8:28-30"'
+                  : 'e.g. "grace", "love your neighbour", "faith"'}
               </p>
             </div>
           )}

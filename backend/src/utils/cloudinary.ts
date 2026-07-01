@@ -1,4 +1,6 @@
 import { StorageEngine } from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
 export function buildCloudinaryStorage(): StorageEngine | null {
   const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
@@ -7,9 +9,6 @@ export function buildCloudinaryStorage(): StorageEngine | null {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
     return null;
   }
-
-  const cloudinary = require("cloudinary").v2;
-  const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
   cloudinary.config({
     cloud_name: CLOUDINARY_CLOUD_NAME,
@@ -24,6 +23,6 @@ export function buildCloudinaryStorage(): StorageEngine | null {
       folder: "ekklesiahub",
       allowed_formats: ["jpg", "jpeg", "png", "webp"],
       transformation: [{ width: 1200, crop: "limit", quality: "auto" }],
-    },
+    } as any,
   });
 }

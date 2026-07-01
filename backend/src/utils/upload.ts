@@ -12,7 +12,7 @@ const fileFilter: multer.Options["fileFilter"] = (_req, file, cb) => {
     cb(new Error("Only JPEG, PNG, WebP, and GIF images are allowed"));
   }
 };
-
+//u
 export const upload = multer({
   storage: buildCloudinaryStorage() ?? buildDiskStorage(),
   limits: { fileSize: MAX_SIZE_MB * 1024 * 1024 },

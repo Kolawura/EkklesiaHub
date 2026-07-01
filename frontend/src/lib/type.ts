@@ -31,6 +31,7 @@ export type Tag = {
 };
 
 export interface Comment {
+  [x: string]: any;
   id: string;
   createdAt: Date;
   updatedAt: Date;

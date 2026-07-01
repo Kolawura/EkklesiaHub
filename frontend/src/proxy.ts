@@ -13,8 +13,8 @@ import { NextRequest, NextResponse } from "next/server";
  * valid auth token cookie. Unauthenticated visitors are sent to /auth
  * with a ?from= param so they land back where they came from after login.
  */
-
-const PUBLIC_EXACT = new Set(["/", "/features", "/about"]);
+//
+const PUBLIC_EXACT = new Set(["/", "/features", "/about", "/bible"]);
 
 const PUBLIC_PREFIXES = [
   "/auth",
@@ -33,7 +33,8 @@ function isPublic(pathname: string): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
+  const start = performance.now();
   const { pathname } = req.nextUrl;
 
   if (isPublic(pathname)) {
@@ -45,12 +46,13 @@ export function middleware(req: NextRequest) {
   if (!token) {
     const loginUrl = new URL("/auth", req.url);
     loginUrl.searchParams.set("from", pathname);
+    console.log(`Proxy ${pathname}: ${performance.now() - start}ms`);
     return NextResponse.redirect(loginUrl);
   }
-
+  console.log(`Proxy ${pathname}: ${performance.now() - start}ms`);
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };

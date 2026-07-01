@@ -287,3 +287,11 @@
 .scripture-chip:hover {
   background: rgba(251, 244, 228, 0.7);
 }
+
+.bible-search-snippet mark {
+  background: rgba(184, 125, 44, 0.18);
+  color: var(--color-gold);
+  font-weight: 600;
+  border-radius: 0.15rem;
+  padding: 0 0.1em;
+}

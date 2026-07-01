@@ -2,16 +2,52 @@
 
 import React, { useState } from "react";
 import { Mail, User } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { DEFAULT_POST_LOGIN, useAuth } from "@/hooks/useAuth";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CrossOrnament } from "@/components/ui/CrossOrnament";
 import { QUOTES } from "@/components/Auth/Quotes";
 import { Field } from "@/components/Auth/Field";
 import { PasswordField } from "@/components/Auth/PasswordField";
+import { Suspense } from "react";
 
-export default function AuthPage() {
+export default function AuthPageWrapper() {
+  return (
+    <Suspense>
+      <AuthPage />
+    </Suspense>
+  );
+}
+
+function AuthPage() {
   const searchParams = useSearchParams();
+
+  /*
+   * getRedirectPath
+   * If middleware added a ?from= param (e.g. user tried to visit
+   * /communities/xyz while logged out), honour it so they land
+   * on the page they originally wanted.
+   * Otherwise fall back to the feed (/posts).
+   * Never redirect back to /auth itself or public marketing pages.
+   */
+  const getRedirectPath = (): string => {
+    try {
+      const from = searchParams?.get("from");
+      if (
+        from &&
+        from !== "/auth" &&
+        from !== "/" &&
+        from !== "/features" &&
+        from !== "/about" &&
+        from.startsWith("/")
+      ) {
+        return from;
+      }
+    } catch {
+      // searchParams not available (SSR context) — fall through
+    }
+    return DEFAULT_POST_LOGIN;
+  };
   const {
     isAuthenticated,
     loginMutation,
@@ -20,7 +56,7 @@ export default function AuthPage() {
     error,
     handleLogin,
     handleRegister,
-  } = useAuth();
+  } = useAuth(getRedirectPath);
   const [showPassword, setShowPassword] = useState(false);
 
   // Set initial tab from ?tab=signup query param (used by landing page CTAs)

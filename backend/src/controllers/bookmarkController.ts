@@ -2,24 +2,24 @@ import { Response } from "express";
 import { AuthRequest } from "../utils/Type";
 import * as bookmarkService from "../services/bookmarkService";
 
-export const addBookmark = async (req: AuthRequest, res: Response) => {
+export const toggleBookmark = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.userId!;
     const { postId } = req.body;
-    if (!postId) return res.status(400).json({ success: false, message: "postId is required" });
+    if (!postId)
+      return res
+        .status(400)
+        .json({ success: false, message: "postId is required" });
+    if (await bookmarkService.isPostBookmarked(userId, postId)) {
+      await bookmarkService.removeBookmark(userId, postId);
+      return res
+        .status(200)
+        .json({ success: true, message: "Bookmark removed" });
+    }
     const bookmark = await bookmarkService.addBookmark(userId, postId);
-    return res.status(201).json({ success: true, data: bookmark });
-  } catch (error: any) {
-    return res.status(400).json({ success: false, message: error.message });
-  }
-};
-
-export const removeBookmark = async (req: AuthRequest, res: Response) => {
-  try {
-    const userId = req.userId!;
-    const { postId } = req.params;
-    await bookmarkService.removeBookmark(userId, postId);
-    return res.status(200).json({ success: true, message: "Bookmark removed" });
+    return res
+      .status(201)
+      .json({ success: true, data: bookmark, message: "Bookmarked!" });
   } catch (error: any) {
     return res.status(400).json({ success: false, message: error.message });
   }

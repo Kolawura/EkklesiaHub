@@ -1,6 +1,3 @@
-import { LucideProps } from "lucide-react";
-import { Home, FileText, Users, Settings } from "lucide-react";
-
 import { create } from "zustand";
 
 interface SidebarState {

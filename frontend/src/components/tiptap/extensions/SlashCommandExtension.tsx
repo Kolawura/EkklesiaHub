@@ -10,16 +10,11 @@
 
 "use client";
 
-import { Extension } from "@tiptap/core";
+import { Editor, Extension } from "@tiptap/core";
 import { ReactRenderer } from "@tiptap/react";
 import Suggestion from "@tiptap/suggestion";
 import tippy, { type Instance as TippyInstance } from "tippy.js";
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   Heading1,
   Heading2,
@@ -31,6 +26,7 @@ import {
   ListOrdered,
   BookOpen,
   Type,
+  LucideIcon,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -40,9 +36,9 @@ import {
 interface SlashCommand {
   title: string;
   description: string;
-  icon: React.FC<any>;
+  icon: LucideIcon;
   keywords: string[];
-  command: (editor: any) => void;
+  command: (editor: Editor) => void;
 }
 
 const COMMANDS: SlashCommand[] = [
@@ -117,7 +113,7 @@ const COMMANDS: SlashCommand[] = [
     description: "Insert a Bible verse blockquote",
     icon: BookOpen,
     keywords: ["scripture", "bible", "verse", "reference", "john", "psalm"],
-    command: (editor) => {
+    command: () => {
       // Opens the Bible panel — we emit a custom event the new/edit page listens to
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("ekk:open-bible-panel"));
@@ -235,7 +231,7 @@ export const SlashCommandExtension = Extension.create({
         char: "/",
 
         // Only trigger at the start of a line (after whitespace or line start)
-        allow({ state, range }) {
+        allow({ state }) {
           const $from = state.selection.$from;
           const textBefore = $from.parent.textContent.slice(
             0,
