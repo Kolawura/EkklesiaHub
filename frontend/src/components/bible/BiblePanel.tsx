@@ -7,6 +7,7 @@ import {
   Copy,
   Check,
   ChevronDown,
+  ChevronLeft,
   X,
   Loader2,
   BookMarked,
@@ -16,6 +17,8 @@ import {
   useBibleBooks,
   useBibleSearch,
   useBibleTranslations,
+  useBibleBookMeta,
+  useBibleChapterMeta,
   useReferenceJump,
   type SearchResult,
   type TranslationInfo,
@@ -266,55 +269,179 @@ function LookupCard({
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Book browser — uses useBibleBooks from local DB
+// Book browser — 3-level drill-down: Books → Chapters → Verses
 // ─────────────────────────────────────────────────────────────────
 
-function BookBrowser({ onSelect }: { onSelect: (book: string) => void }) {
+type BrowseLevel = "books" | "chapters" | "verses";
+
+function BookBrowser({
+  translation,
+  onSelect,
+}: {
+  translation: string;
+  onSelect: (reference: string) => void;
+}) {
+  const [level, setLevel] = useState<BrowseLevel>("books");
   const [testament, setTestament] = useState<"OT" | "NT">("NT");
-  const { data: books, isLoading } = useBibleBooks(testament);
+  const [selectedBook, setSelectedBook] = useState<{ name: string } | null>(
+    null,
+  );
+  const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
+  const { data: books, isLoading: booksLoading } = useBibleBooks(testament);
+  const { data: chapterMeta, isLoading: chaptersLoading } = useBibleBookMeta(
+    translation,
+    selectedBook?.name ?? "",
+    level === "chapters" || level === "verses",
+  );
+  const { data: verseMeta, isLoading: versesLoading } = useBibleChapterMeta(
+    translation,
+    selectedBook?.name ?? "",
+    selectedChapter ?? 0,
+    level === "verses",
+  );
+
+  const handleBack = () => {
+    if (level === "verses") {
+      setLevel("chapters");
+      setSelectedChapter(null);
+    } else if (level === "chapters") {
+      setLevel("books");
+      setSelectedBook(null);
+    }
+  };
+
+  const breadcrumb =
+    level === "chapters"
+      ? selectedBook?.name
+      : level === "verses"
+        ? `${selectedBook?.name} ${selectedChapter}`
+        : null;
 
   return (
     <div>
-      <div className="flex gap-1 mb-3">
-        {(["OT", "NT"] as const).map((t) => (
+      {/* Breadcrumb / back */}
+      {level !== "books" && (
+        <div className="flex items-center gap-1.5 mb-2.5">
           <button
-            key={t}
-            onClick={() => setTestament(t)}
-            className={cn(
-              "flex-1 py-1.5 font-body text-xs font-medium rounded-lg transition-all",
-              testament === t
-                ? "bg-ink text-parchment"
-                : "text-ink-faint bg-parchment-deep border border-parchment-dark hover:text-ink",
-            )}
+            onClick={handleBack}
+            className="text-ink-ghost hover:text-gold transition-colors"
           >
-            {t === "OT" ? "Old Testament" : "New Testament"}
+            <ChevronLeft size={14} />
           </button>
-        ))}
-      </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-3 gap-1.5">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-8 bg-parchment-deep rounded-lg animate-pulse"
-            />
-          ))}
+          <span className="font-display text-xs font-semibold text-ink">
+            {breadcrumb}
+          </span>
+          <span className="font-body text-[10px] text-ink-ghost ml-auto">
+            {level === "chapters" ? "Pick a chapter" : "Pick a verse"}
+          </span>
         </div>
-      ) : (
-        <div className="grid grid-cols-3 gap-1.5 max-h-64 overflow-y-auto">
-          {(books ?? []).map((book) => (
+      )}
+
+      {/* Testament toggle — only shown at books level */}
+      {level === "books" && (
+        <div className="flex gap-1 mb-2.5">
+          {(["OT", "NT"] as const).map((t) => (
             <button
-              key={book.book_number}
-              onClick={() => onSelect(`${book.book_name} 1:1`)}
-              className="text-left font-body text-xs text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale px-2.5 py-1.5 rounded-lg transition-all truncate"
-              title={book.book_name}
+              key={t}
+              onClick={() => setTestament(t)}
+              className={cn(
+                "flex-1 py-1.5 font-body text-xs font-medium rounded-lg transition-all",
+                testament === t
+                  ? "bg-ink text-parchment"
+                  : "text-ink-faint bg-parchment-deep border border-parchment-dark hover:text-ink",
+              )}
             >
-              {book.book_name}
+              {t === "OT" ? "Old Testament" : "New Testament"}
             </button>
           ))}
         </div>
       )}
+
+      {/* Level: Books */}
+      {level === "books" &&
+        (booksLoading ? (
+          <div className="grid grid-cols-3 gap-1.5">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-8 bg-parchment-deep rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-1 max-h-64 overflow-y-auto">
+            {(books ?? []).map((book) => (
+              <button
+                key={book.book_number}
+                onClick={() => {
+                  setSelectedBook({ name: book.book_name });
+                  setLevel("chapters");
+                }}
+                className="text-left font-body text-xs text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale px-2 py-1.5 rounded-lg transition-all truncate"
+                title={book.book_name}
+              >
+                {book.book_name}
+              </button>
+            ))}
+          </div>
+        ))}
+
+      {/* Level: Chapters */}
+      {level === "chapters" &&
+        (chaptersLoading ? (
+          <div className="flex justify-center py-6">
+            <Loader2 size={16} className="animate-spin text-ink-ghost" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-5 gap-1 max-h-64 overflow-y-auto">
+            {Array.from(
+              { length: chapterMeta?.maxChapters ?? 0 },
+              (_, i) => i + 1,
+            ).map((ch) => (
+              <button
+                key={ch}
+                onClick={() => {
+                  setSelectedChapter(ch);
+                  setLevel("verses");
+                }}
+                className="aspect-square rounded-lg font-body text-xs font-medium text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale transition-all"
+              >
+                {ch}
+              </button>
+            ))}
+          </div>
+        ))}
+
+      {/* Level: Verses */}
+      {level === "verses" &&
+        (versesLoading ? (
+          <div className="flex justify-center py-6">
+            <Loader2 size={16} className="animate-spin text-ink-ghost" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-5 gap-1 max-h-64 overflow-y-auto">
+            {Array.from(
+              { length: verseMeta?.totalVerses ?? 0 },
+              (_, i) => i + 1,
+            ).map((v) => (
+              <button
+                key={v}
+                onClick={() => {
+                  if (selectedBook && selectedChapter) {
+                    onSelect(`${selectedBook.name} ${selectedChapter}:${v}`);
+                    // Reset drill
+                    setLevel("books");
+                    setSelectedBook(null);
+                    setSelectedChapter(null);
+                  }
+                }}
+                className="aspect-square rounded-lg font-body text-xs font-medium text-ink-faint hover:text-gold hover:bg-gold-bg border border-transparent hover:border-gold-pale transition-all"
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        ))}
     </div>
   );
 }
@@ -525,7 +652,12 @@ export function BiblePanel({
         )}
 
         {/* Browse */}
-        {mode === "browse" && <BookBrowser onSelect={handleBrowseSelect} />}
+        {mode === "browse" && (
+          <BookBrowser
+            translation={translation}
+            onSelect={handleBrowseSelect}
+          />
+        )}
 
         {/* Loading skeleton */}
         {loading && !error && (

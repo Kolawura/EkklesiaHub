@@ -3,18 +3,20 @@
 import { useState, useRef, useEffect } from "react";
 import {
   ChevronDown,
+  ChevronLeft,
   Search,
   X,
   BookOpen,
   Loader2,
   Globe,
-  ChevronLeft,
 } from "lucide-react";
 import {
   useBibleBooks,
   useBibleTranslations,
   useBibleSearch,
-  BibleBook,
+  useBibleBookMeta,
+  useBibleChapterMeta,
+  type BibleBook,
 } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 
@@ -23,12 +25,114 @@ interface BibleSidebarProps {
   bookName: string;
   chapter: number;
   onTranslationChange: (t: string) => void;
-  onNavigate: (book: string, chapter: number, verse?: number) => void;
+  onNavigate: (
+    book: string,
+    chapter: number,
+    verse?: number,
+    endVerse?: number,
+  ) => void;
 }
 
 type Panel = "navigator" | "search";
+type DrillLevel = "books" | "chapters" | "verses";
 
-// ── Book list organised by testament ──────────────────────────────
+// ── Translation Picker ─────────────────────────────────────────────
+function TranslationPicker({
+  current,
+  onChange,
+  onClose,
+}: {
+  current: string;
+  onChange: (t: string) => void;
+  onClose: () => void;
+}) {
+  const { data: translations } = useBibleTranslations();
+  const featured = translations?.filter((t) => t.is_featured) ?? [];
+  const others = translations?.filter((t) => !t.is_featured) ?? [];
+
+  return (
+    // left-0 right-0 makes the dropdown exactly as wide as the sidebar header,
+    // preventing it from overflowing either edge.
+    <div className="absolute right-0 top-full mt-1.5 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-30 overflow-hidden">
+      <div className="px-4 py-3 border-b border-parchment-dark flex items-center justify-between">
+        <p className="font-display text-sm font-semibold text-ink">
+          Translation
+        </p>
+        <button
+          onClick={onClose}
+          className="text-ink-ghost hover:text-ink transition-colors"
+        >
+          <X size={14} />
+        </button>
+      </div>
+
+      <div className="max-h-80 overflow-y-auto p-2">
+        {featured.length > 0 && (
+          <>
+            <p className="font-body text-[10px] uppercase tracking-widest text-gold/70 font-medium px-2 py-1.5">
+              Featured
+            </p>
+            {featured.map((t) => (
+              <button
+                key={t.translation}
+                onClick={() => {
+                  onChange(t.translation);
+                  onClose();
+                }}
+                className={cn(
+                  "w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all",
+                  t.translation === current
+                    ? "bg-gold-bg text-gold border border-gold-pale"
+                    : "hover:bg-parchment-deep",
+                )}
+              >
+                <span
+                  className={cn(
+                    "font-display font-bold text-sm w-12 shrink-0",
+                    t.translation === current ? "text-gold" : "text-ink",
+                  )}
+                >
+                  {t.translation}
+                </span>
+                {t.description && (
+                  <p className="font-body text-[11px] text-ink-ghost leading-snug line-clamp-1">
+                    {t.description}
+                  </p>
+                )}
+              </button>
+            ))}
+          </>
+        )}
+        {others.length > 0 && (
+          <>
+            <p className="font-body text-[10px] uppercase tracking-widest text-ink-ghost font-medium px-2 py-1.5 mt-2">
+              All installed ({others.length})
+            </p>
+            {others.map((t) => (
+              <button
+                key={t.translation}
+                onClick={() => {
+                  onChange(t.translation);
+                  onClose();
+                }}
+                className={cn(
+                  "w-full text-left px-3 py-2 rounded-xl font-body text-sm transition-all",
+                  t.translation === current
+                    ? "bg-gold-bg text-gold"
+                    : "text-ink-faint hover:text-ink hover:bg-parchment-deep",
+                )}
+              >
+                {t.translation}
+              </button>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Book grid ──────────────────────────────────────────────────────
 function BookGrid({
   books,
   currentBook,
@@ -73,129 +177,110 @@ function BookGrid({
   );
 }
 
-// ── Chapter picker ─────────────────────────────────────────────────
-function ChapterPicker({
-  max,
-  current,
+// ── Chapter grid — fetches real chapter count for the selected book ─
+function ChapterGrid({
+  book,
+  translation,
+  currentBook,
+  currentChapter,
   onSelect,
 }: {
-  max: number;
-  current: number;
-  onSelect: (ch: number) => void;
+  book: BibleBook;
+  translation: string;
+  currentBook: string;
+  currentChapter: number;
+  onSelect: (chapter: number) => void;
 }) {
+  const { data, isLoading } = useBibleBookMeta(translation, book.book_name);
+  const maxChapters = data?.maxChapters ?? 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Loader2 size={16} className="animate-spin text-ink-ghost" />
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-5 gap-1 p-3 overflow-y-auto">
-      {Array.from({ length: max }, (_, i) => i + 1).map((ch) => (
-        <button
-          key={ch}
-          onClick={() => onSelect(ch)}
-          className={cn(
-            "aspect-square rounded-lg font-body text-sm font-medium transition-all",
-            ch === current
-              ? "bg-gold text-parchment shadow-warm-sm"
-              : "text-ink-faint hover:text-ink hover:bg-parchment-dark",
-          )}
-        >
-          {ch}
-        </button>
-      ))}
+      {Array.from({ length: maxChapters }, (_, i) => i + 1).map((ch) => {
+        const isActive =
+          book.book_name === currentBook && ch === currentChapter;
+        return (
+          <button
+            key={ch}
+            onClick={() => onSelect(ch)}
+            className={cn(
+              "aspect-square rounded-lg font-body text-sm font-medium transition-all",
+              isActive
+                ? "bg-gold text-parchment shadow-warm-sm"
+                : "text-ink-faint hover:text-ink hover:bg-parchment-dark",
+            )}
+          >
+            {ch}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-// ── Translation Picker ─────────────────────────────────────────────
-function TranslationPicker({
-  current,
-  onChange,
-  onClose,
+// ── Verse grid — fetches real verse count for the selected chapter ─
+function VerseGrid({
+  book,
+  chapter,
+  translation,
+  currentBook,
+  currentChapter,
+  currentVerse,
+  onSelect,
 }: {
-  current: string;
-  onChange: (t: string) => void;
-  onClose: () => void;
+  book: BibleBook;
+  chapter: number;
+  translation: string;
+  currentBook: string;
+  currentChapter: number;
+  currentVerse: number;
+  onSelect: (verse: number) => void;
 }) {
-  const { data: translations } = useBibleTranslations();
-  const featured = translations?.filter((t) => t.is_featured) ?? [];
-  const others = translations?.filter((t) => !t.is_featured) ?? [];
+  const { data, isLoading } = useBibleChapterMeta(
+    translation,
+    book.book_name,
+    chapter,
+  );
+  const totalVerses = data?.totalVerses ?? 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Loader2 size={16} className="animate-spin text-ink-ghost" />
+      </div>
+    );
+  }
 
   return (
-    <div className="absolute right-0 top-full mt-1.5 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-30 overflow-hidden">
-      <div className="px-4 py-3 border-b border-parchment-dark flex items-center justify-between">
-        <p className="font-display text-sm font-semibold text-ink">
-          Translation
-        </p>
-        <button
-          onClick={onClose}
-          className="text-ink-ghost hover:text-ink transition-colors"
-        >
-          <X size={14} />
-        </button>
-      </div>
-
-      <div className="max-h-80 overflow-y-auto p-2">
-        {featured.length > 0 && (
-          <>
-            <p className="font-body text-[10px] uppercase tracking-widest text-gold/70 font-medium px-2 py-1.5">
-              Featured
-            </p>
-            {featured.map((t) => (
-              <button
-                key={t.translation}
-                onClick={() => {
-                  onChange(t.translation);
-                  onClose();
-                }}
-                className={cn(
-                  "w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all",
-                  t.translation === current
-                    ? "bg-gold-bg text-gold border border-gold-pale"
-                    : "hover:bg-parchment-deep",
-                )}
-              >
-                <span
-                  className={cn(
-                    "font-display font-bold text-sm w-12 shrink-0",
-                    t.translation === current ? "text-gold" : "text-ink",
-                  )}
-                >
-                  {t.translation}
-                </span>
-                <div className="min-w-0">
-                  {t.description && (
-                    <p className="font-body text-[11px] text-ink-ghost leading-snug line-clamp-1">
-                      {t.description}
-                    </p>
-                  )}
-                </div>
-              </button>
-            ))}
-          </>
-        )}
-
-        {others.length > 0 && (
-          <>
-            <p className="font-body text-[10px] uppercase tracking-widest text-ink-ghost font-medium px-2 py-1.5 mt-2">
-              All installed ({others.length})
-            </p>
-            {others.map((t) => (
-              <button
-                key={t.translation}
-                onClick={() => {
-                  onChange(t.translation);
-                  onClose();
-                }}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-xl font-body text-sm transition-all",
-                  t.translation === current
-                    ? "bg-gold-bg text-gold"
-                    : "text-ink-faint hover:text-ink hover:bg-parchment-deep",
-                )}
-              >
-                {t.translation}
-              </button>
-            ))}
-          </>
-        )}
-      </div>
+    <div className="grid grid-cols-5 gap-1 p-3 overflow-y-auto">
+      {Array.from({ length: totalVerses }, (_, i) => i + 1).map((v) => {
+        const isActive =
+          book.book_name === currentBook &&
+          chapter === currentChapter &&
+          v === currentVerse;
+        return (
+          <button
+            key={v}
+            onClick={() => onSelect(v)}
+            className={cn(
+              "aspect-square rounded-lg font-body text-sm font-medium transition-all",
+              isActive
+                ? "bg-gold text-parchment shadow-warm-sm"
+                : "text-ink-faint hover:text-ink hover:bg-parchment-dark",
+            )}
+          >
+            {v}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -232,7 +317,6 @@ function SearchPanel({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Search input */}
       <div className="px-3 py-3 border-b border-parchment-dark space-y-2">
         <div className="relative">
           <Search
@@ -258,8 +342,6 @@ function SearchPanel({
             </button>
           )}
         </div>
-
-        {/* Testament filter */}
         <div className="flex gap-1.5">
           {(["", "OT", "NT"] as const).map((t) => (
             <button
@@ -283,29 +365,25 @@ function SearchPanel({
         </div>
       </div>
 
-      {/* Results */}
       <div className="flex-1 overflow-y-auto">
         {loading && (
           <div className="flex justify-center py-8">
             <Loader2 size={18} className="animate-spin text-ink-ghost" />
           </div>
         )}
-
         {error && (
           <p className="font-body text-xs text-red-500 px-4 py-3">{error}</p>
         )}
-
         {!loading && results.length === 0 && query.length >= 2 && !error && (
           <div className="text-center py-10">
             <p className="font-body text-sm text-ink-ghost">
-              No results for "{query}"
+              No results for &quot;{query}&quot;
             </p>
             <p className="font-body text-xs text-ink-ghost mt-1">
-              Try different words or check spelling
+              Try different words
             </p>
           </div>
         )}
-
         {!loading && results.length > 0 && (
           <>
             <p className="font-body text-[11px] text-ink-ghost px-4 py-2 border-b border-parchment-deep">
@@ -321,14 +399,13 @@ function SearchPanel({
                   {r.book_name} {r.chapter}:{r.verse}
                 </p>
                 <p
-                  className="font-body text-xs text-ink-faint leading-relaxed line-clamp-3"
+                  className="font-body text-xs text-ink-faint leading-relaxed line-clamp-3 [&_em]:not-italic [&_em]:font-semibold [&_em]:text-gold"
                   dangerouslySetInnerHTML={{ __html: r.snippet }}
                 />
               </button>
             ))}
           </>
         )}
-
         {!query && (
           <div className="px-4 py-8 text-center">
             <Search size={28} className="mx-auto text-parchment-dark mb-3" />
@@ -354,14 +431,17 @@ export function BibleSidebar({
   onNavigate,
 }: BibleSidebarProps) {
   const [panel, setPanel] = useState<Panel>("navigator");
+  const [drillLevel, setDrillLevel] = useState<DrillLevel>("books");
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(null);
+  const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [showTranslation, setShowTrans] = useState(false);
   const transRef = useRef<HTMLDivElement>(null);
 
-  const { data: books = [] } = useBibleBooks();
-  const currentBook = books.find((b) => b.book_name === bookName);
+  // Track current verse for highlighting
+  const [currentVerse, setCurrentVerse] = useState(1);
 
-  // Close translation picker on outside click
+  const { data: books = [] } = useBibleBooks();
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (transRef.current && !transRef.current.contains(e.target as Node)) {
@@ -372,19 +452,47 @@ export function BibleSidebar({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Drill-down handlers
   const handleBookSelect = (book: BibleBook) => {
     setSelectedBook(book);
+    setSelectedChapter(null);
+    setDrillLevel("chapters");
   };
 
   const handleChapterSelect = (ch: number) => {
-    if (selectedBook) {
-      onNavigate(selectedBook.book_name, ch);
+    setSelectedChapter(ch);
+    setDrillLevel("verses");
+  };
+
+  const handleVerseSelect = (verse: number) => {
+    if (!selectedBook || !selectedChapter) return;
+    setCurrentVerse(verse);
+    onNavigate(selectedBook.book_name, selectedChapter, verse);
+    // Reset drill back to books after navigating
+    setDrillLevel("books");
+    setSelectedBook(null);
+    setSelectedChapter(null);
+  };
+
+  // Breadcrumb label for the back button
+  const drillTitle = () => {
+    if (drillLevel === "chapters" && selectedBook)
+      return selectedBook.book_name;
+    if (drillLevel === "verses" && selectedBook && selectedChapter) {
+      return `${selectedBook.book_name} ${selectedChapter}`;
+    }
+    return "";
+  };
+
+  const handleBack = () => {
+    if (drillLevel === "verses") {
+      setDrillLevel("chapters");
+      setSelectedChapter(null);
+    } else if (drillLevel === "chapters") {
+      setDrillLevel("books");
       setSelectedBook(null);
     }
   };
-
-  const maxChapters =
-    currentBook?.book_name === selectedBook?.book_name ? undefined : undefined; // will be loaded from chapter data
 
   return (
     <div className="flex flex-col h-full bg-parchment-deep border-r border-parchment-dark">
@@ -431,7 +539,14 @@ export function BibleSidebar({
           ].map(({ id, icon: Icon, label }) => (
             <button
               key={id}
-              onClick={() => setPanel(id)}
+              onClick={() => {
+                setPanel(id);
+                if (id === "navigator") {
+                  setDrillLevel("books");
+                  setSelectedBook(null);
+                  setSelectedChapter(null);
+                }
+              }}
               className={cn(
                 "flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg font-body text-xs font-medium transition-all",
                 panel === id
@@ -446,6 +561,28 @@ export function BibleSidebar({
         </div>
       </div>
 
+      {/* Drill-down breadcrumb header */}
+      {panel === "navigator" && drillLevel !== "books" && (
+        <div className="shrink-0 px-3 py-2.5 border-b border-parchment-dark flex items-center gap-2">
+          <button
+            onClick={handleBack}
+            className="text-ink-ghost hover:text-ink transition-colors shrink-0"
+          >
+            <ChevronLeft size={15} />
+          </button>
+          <div className="min-w-0">
+            <p className="font-display text-sm font-semibold text-ink truncate">
+              {drillTitle()}
+            </p>
+            <p className="font-body text-[10px] text-ink-ghost">
+              {drillLevel === "chapters"
+                ? "Select a chapter"
+                : "Select a verse"}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
       <div className="flex-1 overflow-hidden flex flex-col">
         {panel === "search" ? (
@@ -454,36 +591,36 @@ export function BibleSidebar({
             onNavigate={(book, ch, verse) => {
               onNavigate(book, ch, verse);
               setPanel("navigator");
+              setDrillLevel("books");
+              setSelectedBook(null);
+              setSelectedChapter(null);
             }}
           />
-        ) : selectedBook ? (
-          /* Chapter picker */
-          <div className="flex flex-col h-full">
-            <div className="px-3 py-2.5 border-b border-parchment-dark flex items-center gap-2">
-              <button
-                onClick={() => setSelectedBook(null)}
-                className="text-ink-ghost hover:text-ink transition-colors"
-              >
-                <ChevronLeft size={15} />
-              </button>
-              <p className="font-display text-sm font-semibold text-ink">
-                {selectedBook.book_name}
-              </p>
-            </div>
-            <ChapterPicker
-              max={150} // will render up to 150, backend returns only valid ones
-              current={selectedBook.book_name === bookName ? chapter : 0}
-              onSelect={handleChapterSelect}
-            />
-          </div>
-        ) : (
-          /* Book list */
+        ) : drillLevel === "books" ? (
           <BookGrid
             books={books}
             currentBook={bookName}
             onSelect={handleBookSelect}
           />
-        )}
+        ) : drillLevel === "chapters" && selectedBook ? (
+          <ChapterGrid
+            book={selectedBook}
+            translation={translation}
+            currentBook={bookName}
+            currentChapter={chapter}
+            onSelect={handleChapterSelect}
+          />
+        ) : drillLevel === "verses" && selectedBook && selectedChapter ? (
+          <VerseGrid
+            book={selectedBook}
+            chapter={selectedChapter}
+            translation={translation}
+            currentBook={bookName}
+            currentChapter={chapter}
+            currentVerse={currentVerse}
+            onSelect={handleVerseSelect}
+          />
+        ) : null}
       </div>
 
       {/* Current location footer */}

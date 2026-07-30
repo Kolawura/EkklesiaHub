@@ -117,6 +117,61 @@ export function useBibleChapter(
   });
 }
 
+/**
+ * Lightweight hook that returns the number of chapters in a book.
+ * Fetches chapter 1 (which returns max_chapters) — React Query caches
+ * this indefinitely so it is only ever fetched once per book.
+ */
+export function useBibleBookMeta(
+  translation: string,
+  bookName: string,
+  enabled = true,
+) {
+  return useQuery<{ maxChapters: number }>({
+    queryKey: ["bible-book-meta", translation, bookName],
+    queryFn: async () => {
+      const res = await api.get(
+        `/bible/chapter/${translation}/${encodeURIComponent(bookName)}/1`,
+      );
+      const data: BibleChapter = res.data.data ?? res.data;
+      console.log("book meta", data);
+      return { maxChapters: data.max_chapters };
+    },
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: enabled && !!translation && !!bookName,
+    retry: 2,
+  });
+}
+
+/**
+ * Returns the number of verses in a specific chapter.
+ * Shares the same cache key as useBibleChapter so if the user
+ * navigates to that chapter, no extra request is made.
+ */
+export function useBibleChapterMeta(
+  translation: string,
+  bookName: string,
+  chapter: number,
+  enabled = true,
+) {
+  return useQuery<{ totalVerses: number }>({
+    queryKey: ["bible-chapter-meta", translation, bookName, chapter],
+    queryFn: async () => {
+      const res = await api.get(
+        `/bible/chapter/${translation}/${encodeURIComponent(bookName)}/${chapter}`,
+      );
+      const data: BibleChapter = res.data.data ?? res.data;
+      console.log("chapter meta", data);
+      return { totalVerses: data.total_verses };
+    },
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: enabled && !!translation && !!bookName && chapter > 0,
+    retry: 2,
+  });
+}
+
 /** Available translations */
 export function useBibleTranslations() {
   return useQuery<TranslationInfo[]>({

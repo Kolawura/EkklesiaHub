@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { GitCompare, X } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Copy, Check, GitCompare, X, BookOpen } from "lucide-react";
 import { BibleSidebar } from "@/components/bible/BibleSidebar";
 import { BibleReader } from "@/components/bible/BibleReader";
 import { BibleToolbar } from "@/components/bible/BibleToolbar";
 import { CompareDrawer } from "@/components/bible/CompareDrawer";
 import { VerseOfTheDay } from "@/components/bible/VerseOfTheDay";
-import { BibleVerse } from "@/hooks/bible";
+import { useBibleChapter, type BibleVerse } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 
-// Persist reader preferences in localStorage
+// ─── Reader preferences ────────────────────────────────────────────
 const PREFS_KEY = "ekk-bible-prefs";
 interface ReaderPrefs {
   translation: string;
@@ -18,7 +18,12 @@ interface ReaderPrefs {
   lineSpacing: "compact" | "normal" | "relaxed";
   showNumbers: boolean;
 }
-
+const DEFAULT_PREFS: ReaderPrefs = {
+  translation: "KJV",
+  fontSize: "md",
+  lineSpacing: "normal",
+  showNumbers: true,
+};
 function loadPrefs(): ReaderPrefs {
   if (typeof window === "undefined") return DEFAULT_PREFS;
   try {
@@ -28,34 +33,144 @@ function loadPrefs(): ReaderPrefs {
     return DEFAULT_PREFS;
   }
 }
-
-function savePrefs(prefs: ReaderPrefs) {
+function savePrefs(p: ReaderPrefs) {
   try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+    localStorage.setItem(PREFS_KEY, JSON.stringify(p));
   } catch {}
 }
 
-const DEFAULT_PREFS: ReaderPrefs = {
-  translation: "KJV",
-  fontSize: "md",
-  lineSpacing: "normal",
-  showNumbers: true,
-};
+// ─── Verse action bar ──────────────────────────────────────────────
+/**
+ * The text used for the compare drawer must match BibleVerse, but we only
+ * need one representative verse to open the compare panel (which then
+ * fetches all translations for that verse). We always use the first
+ * selected verse for compare, and show a note if the user selected multiple.
+ */
+function VerseActionBar({
+  bookName,
+  chapter,
+  translation,
+  selectedVerses,
+  onCompare,
+  onClear,
+}: {
+  bookName: string;
+  chapter: number;
+  translation: string;
+  selectedVerses: Set<number>;
+  onCompare: (verse: BibleVerse) => void;
+  onClear: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const sorted = Array.from(selectedVerses).sort((a, b) => a - b);
+  const first = sorted[0];
+  const last = sorted[sorted.length - 1];
 
+  // Fetch the chapter data to get verse texts for copy
+  const { data: chapterData } = useBibleChapter(translation, bookName, chapter);
+
+  const referenceLabel =
+    sorted.length === 1
+      ? `${bookName} ${chapter}:${first}`
+      : `${bookName} ${chapter}:${first}–${last}`;
+
+  const handleCopy = () => {
+    if (!chapterData) return;
+    const verseTexts = sorted
+      .map((vNum) => {
+        const vData = chapterData.verses.find((v) => v.verse === vNum);
+        return vData ? `[${vNum}] ${vData.text}` : null;
+      })
+      .filter(Boolean)
+      .join(" ");
+
+    const text = `${verseTexts}\n— ${referenceLabel} (${translation})`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleCompare = () => {
+    if (!chapterData) return;
+    const verseData = chapterData.verses.find((v) => v.verse === first);
+    if (verseData) onCompare(verseData);
+  };
+
+  return (
+    <div className="shrink-0 border-t border-parchment-dark bg-parchment px-6 py-3">
+      <div className="flex items-center gap-3 flex-wrap">
+        {/* Reference label */}
+        <div className="flex items-center gap-1.5">
+          <BookOpen size={11} className="text-gold" />
+          <span className="font-body text-xs font-medium text-gold">
+            {referenceLabel}
+          </span>
+          <span className="font-body text-xs text-ink-ghost">
+            ({sorted.length} verse{sorted.length !== 1 ? "s" : ""} selected)
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 ml-auto">
+          {/* Copy */}
+          <button
+            onClick={handleCopy}
+            disabled={!chapterData}
+            className={cn(
+              "inline-flex items-center gap-1.5 font-body text-xs px-3 py-1.5 rounded-lg border transition-all",
+              copied
+                ? "text-gold border-gold-pale bg-gold-bg"
+                : "text-ink-ghost border-parchment-dark hover:text-gold hover:bg-gold-bg hover:border-gold-pale disabled:opacity-40",
+            )}
+          >
+            {copied ? <Check size={11} /> : <Copy size={11} />}
+            {copied ? "Copied!" : "Copy"}
+          </button>
+
+          {/* Compare */}
+          <button
+            onClick={handleCompare}
+            disabled={!chapterData}
+            className="inline-flex items-center gap-1.5 font-body text-xs px-3 py-1.5 rounded-lg border text-ink-ghost border-parchment-dark hover:text-gold hover:bg-gold-bg hover:border-gold-pale disabled:opacity-40 transition-all"
+          >
+            <GitCompare size={11} />
+            Compare translations
+            {sorted.length > 1 && (
+              <span className="text-[10px] text-ink-ghost">(first verse)</span>
+            )}
+          </button>
+
+          {/* Clear */}
+          <button
+            onClick={onClear}
+            className="ml-1 text-ink-ghost hover:text-ink transition-colors"
+            title="Clear selection"
+          >
+            <X size={13} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────
 export default function BiblePage() {
   const [prefs, setPrefs] = useState<ReaderPrefs>(DEFAULT_PREFS);
-
-  // Load from localStorage after hydration
   useEffect(() => {
     setPrefs(loadPrefs());
   }, []);
 
   const [bookName, setBookName] = useState("Genesis");
   const [chapter, setChapter] = useState(1);
-  const [activeVerse, setActive] = useState<number | null>(null);
-  const [activeVerseEnd, setActiveEnd] = useState<number | null>(null);
-  const [compareVerse, setCompare] = useState<BibleVerse | null>(null);
+  const [scrollToVerse, setScrollToVerse] = useState<number | null>(null);
   const [showVotd, setShowVotd] = useState(true);
+  const [compareVerse, setCompare] = useState<BibleVerse | null>(null);
+
+  // Multi-verse selection
+  const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
+  // Track the last verse clicked — used for shift-click range extension
+  const lastClickedVerse = useRef<number | null>(null);
 
   const updatePrefs = useCallback((patch: Partial<ReaderPrefs>) => {
     setPrefs((prev) => {
@@ -65,38 +180,83 @@ export default function BiblePage() {
     });
   }, []);
 
+  const clearSelection = useCallback(() => {
+    setSelectedVerses(new Set());
+    lastClickedVerse.current = null;
+  }, []);
+
+  /**
+   * navigate() is called from:
+   * - BibleSidebar (book/chapter/verse drill-down)
+   * - BibleToolbar (reference jump — may carry a range)
+   * - VerseOfTheDay
+   * - BibleReader (prev/next chapter dots)
+   *
+   * When a verse is supplied, we scroll to it and pre-select it.
+   * When a range is supplied (endVerse), we select the whole range.
+   */
   const navigate = useCallback(
     (book: string, ch: number, verse?: number, endVerse?: number) => {
       setBookName(book);
       setChapter(ch);
-      setActive(verse ?? null);
-      setActiveEnd(endVerse && endVerse > (verse ?? 0) ? endVerse : null);
+      setScrollToVerse(verse ?? null);
       setShowVotd(false);
       setCompare(null);
+
+      if (verse != null) {
+        const end = endVerse ?? verse;
+        const range = new Set<number>();
+        for (let v = verse; v <= end; v++) range.add(v);
+        setSelectedVerses(range);
+        lastClickedVerse.current = verse;
+      } else {
+        clearSelection();
+      }
+    },
+    [clearSelection],
+  );
+
+  /**
+   * Verse click handler — supports:
+   * - Click: toggle the verse (add if not selected, remove if selected)
+   * - Shift-click: select the contiguous range from the last clicked verse to this one
+   */
+  const handleVerseClick = useCallback(
+    (verse: BibleVerse, shiftKey: boolean) => {
+      setSelectedVerses((prev) => {
+        const next = new Set(prev);
+
+        if (shiftKey && lastClickedVerse.current != null) {
+          // Extend selection from last clicked to this verse
+          const from = Math.min(lastClickedVerse.current, verse.verse);
+          const to = Math.max(lastClickedVerse.current, verse.verse);
+          for (let v = from; v <= to; v++) next.add(v);
+        } else {
+          // Toggle single verse
+          if (next.has(verse.verse)) {
+            next.delete(verse.verse);
+          } else {
+            next.add(verse.verse);
+          }
+          lastClickedVerse.current = verse.verse;
+        }
+
+        return next;
+      });
     },
     [],
   );
 
-  const handleVerseClick = useCallback((verse: BibleVerse) => {
-    setActive((prev) => (prev === verse.verse ? null : verse.verse));
-    setActiveEnd(null);
-  }, []);
-
-  const handleCompare = useCallback((verse: BibleVerse) => {
-    setCompare((prev) =>
-      prev?.verse === verse.verse && prev.chapter === verse.chapter
-        ? null
-        : verse,
-    );
-    setActive(verse.verse);
-    setActiveEnd(null);
-  }, []);
+  // Clear selection when chapter changes
+  useEffect(() => {
+    clearSelection();
+    setScrollToVerse(null);
+  }, [bookName, chapter, clearSelection]);
 
   return (
-    <div className="h-screen flex flex-col bg-parchment overflow-hidden">
-      {/* ── Three-panel layout ── */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* LEFT: Book/chapter navigator + search */}
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
+        {/* LEFT: Sidebar */}
         <div className="w-56 shrink-0 flex flex-col overflow-hidden">
           <BibleSidebar
             translation={prefs.translation}
@@ -123,7 +283,7 @@ export default function BiblePage() {
             onNavigate={navigate}
           />
 
-          {/* VOTD banner — dismissible */}
+          {/* Verse of the Day banner */}
           {showVotd && (
             <div className="shrink-0 relative border-b border-parchment-dark">
               <button
@@ -137,7 +297,7 @@ export default function BiblePage() {
                 <VerseOfTheDay
                   translation={prefs.translation}
                   onNavigate={navigate}
-                  compact
+                  compact={false}
                 />
               </div>
             </div>
@@ -149,64 +309,32 @@ export default function BiblePage() {
               translation={prefs.translation}
               bookName={bookName}
               chapter={chapter}
-              activeVerse={activeVerse}
-              activeVerseEnd={activeVerseEnd}
-              onNavigate={navigate}
+              selectedVerses={selectedVerses}
               onVerseClick={handleVerseClick}
+              onNavigate={navigate}
               fontSize={prefs.fontSize}
               lineSpacing={prefs.lineSpacing}
               showNumbers={prefs.showNumbers}
+              scrollToVerse={scrollToVerse}
             />
           </div>
 
-          {/* Verse action bar — appears when a verse is selected */}
-          {activeVerse && (
-            <div className="shrink-0 border-t border-parchment-dark bg-parchment px-8 py-3">
-              <div className="flex items-center gap-3">
-                <p className="font-body text-xs text-ink-ghost">
-                  <span className="text-gold font-medium">
-                    {bookName} {chapter}:{activeVerse}
-                    {activeVerseEnd ? `-${activeVerseEnd}` : ""}
-                  </span>{" "}
-                  selected
-                </p>
-                <button
-                  onClick={() => {
-                    setCompare({
-                      id: 0,
-                      translation: prefs.translation,
-                      book_name: bookName,
-                      book_number: 0,
-                      chapter,
-                      verse: activeVerse,
-                      text: "",
-                    });
-                  }}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 font-body text-xs px-3 py-1.5 rounded-lg border transition-all",
-                    compareVerse?.verse === activeVerse
-                      ? "bg-gold-bg text-gold border-gold-pale"
-                      : "text-ink-ghost border-parchment-dark hover:text-gold hover:bg-gold-bg hover:border-gold-pale",
-                  )}
-                >
-                  <GitCompare size={12} />
-                  Compare translations
-                </button>
-                <button
-                  onClick={() => {
-                    setActive(null);
-                    setActiveEnd(null);
-                  }}
-                  className="ml-auto text-ink-ghost hover:text-ink transition-colors"
-                >
-                  <X size={13} />
-                </button>
-              </div>
-            </div>
+          {/* Multi-verse action bar */}
+          {selectedVerses.size > 0 && (
+            <VerseActionBar
+              bookName={bookName}
+              chapter={chapter}
+              translation={prefs.translation}
+              selectedVerses={selectedVerses}
+              onCompare={(verse) => {
+                setCompare(verse);
+              }}
+              onClear={clearSelection}
+            />
           )}
         </div>
 
-        {/* RIGHT: Compare drawer (slides in when verse selected) */}
+        {/* RIGHT: Compare drawer */}
         <div
           className={cn(
             "shrink-0 overflow-hidden transition-all duration-300",
@@ -216,10 +344,7 @@ export default function BiblePage() {
           {compareVerse && (
             <CompareDrawer
               verse={compareVerse}
-              onClose={() => {
-                setCompare(null);
-                setActive(null);
-              }}
+              onClose={() => setCompare(null)}
             />
           )}
         </div>

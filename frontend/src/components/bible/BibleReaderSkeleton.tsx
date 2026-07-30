@@ -10,7 +10,7 @@ export function BibleReaderSkeleton() {
           <div className="h-3 w-3 bg-parchment-dark rounded mt-1 shrink-0" />
           <div
             className="h-3 bg-parchment-dark rounded-full"
-            // style={{ width: `${60 + Math.random() * 35}%` }}
+            style={{ width: `${60 + ((i * 17) % 35)}%` }}
           />
         </div>
       ))}

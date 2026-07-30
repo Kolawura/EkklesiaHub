@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
-import { useBibleChapter, BibleVerse, BibleChapter } from "@/hooks/bible";
+import { useBibleChapter, type BibleVerse } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 import { BibleReaderSkeleton } from "./BibleReaderSkeleton";
 
@@ -10,14 +10,20 @@ interface BibleReaderProps {
   translation: string;
   bookName: string;
   chapter: number;
-  activeVerse?: number | null;
-  /** End of a verse range (e.g. the 30 in Romans 8:28-30). Omit for a single verse. */
-  activeVerseEnd?: number | null;
+  /** Set of currently selected verse numbers — drives highlighting */
+  selectedVerses: Set<number>;
+  /**
+   * Fired when the user clicks a verse.
+   * - Plain click: toggle that single verse
+   * - Shift-click: extend selection from the last-clicked verse to this one
+   */
+  onVerseClick: (verse: BibleVerse, shiftKey: boolean) => void;
   onNavigate: (book: string, chapter: number, verse?: number) => void;
-  onVerseClick?: (verse: BibleVerse) => void;
   fontSize: "sm" | "md" | "lg" | "xl";
   lineSpacing: "compact" | "normal" | "relaxed";
   showNumbers: boolean;
+  /** When set, the reader scrolls to this verse on mount/change */
+  scrollToVerse?: number | null;
 }
 
 const FONT_SIZES: Record<string, string> = {
@@ -37,13 +43,13 @@ export function BibleReader({
   translation,
   bookName,
   chapter,
-  activeVerse,
-  activeVerseEnd,
-  onNavigate,
+  selectedVerses,
   onVerseClick,
+  onNavigate,
   fontSize,
   lineSpacing,
   showNumbers,
+  scrollToVerse,
 }: BibleReaderProps) {
   const { data, isLoading, isError } = useBibleChapter(
     translation,
@@ -53,28 +59,26 @@ export function BibleReader({
   const contentRef = useRef<HTMLDivElement>(null);
   const [hoveredVerse, setHoveredVerse] = useState<number | null>(null);
 
-  const isInActiveRange = (verseNum: number) => {
-    if (activeVerse == null) return false;
-    const end = activeVerseEnd ?? activeVerse;
-    return verseNum >= activeVerse && verseNum <= end;
-  };
-
-  // Scroll active verse into view
+  // Scroll to a specific verse when requested (e.g. from reference jump or sidebar)
   useEffect(() => {
-    if (activeVerse && contentRef.current) {
-      const el = contentRef.current.querySelector(
-        `[data-verse="${activeVerse}"]`,
-      );
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }
-  }, [activeVerse, data]);
+    if (!scrollToVerse || !contentRef.current) return;
+    const el = contentRef.current.querySelector(
+      `[data-verse="${scrollToVerse}"]`,
+    );
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [scrollToVerse, data]);
 
   // Scroll to top on chapter change
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, [bookName, chapter]);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent, verse: BibleVerse) => {
+      onVerseClick(verse, e.shiftKey);
+    },
+    [onVerseClick],
+  );
 
   if (isLoading) return <BibleReaderSkeleton />;
 
@@ -93,7 +97,6 @@ export function BibleReader({
 
   return (
     <div className="flex flex-col h-full">
-      {/* <div className="h-full flex flex-col items-center"> */}
       {/* Chapter heading */}
       <div className="shrink-0 px-8 pt-10 pb-6">
         <p className="font-body text-xs uppercase tracking-[0.2em] text-gold mb-1.5">
@@ -111,9 +114,9 @@ export function BibleReader({
       {/* Verses */}
       <div
         ref={contentRef}
-        className="flex-1 overflow-y-auto px-8 pb-16 scroll-smooth items-center m-auto"
+        className="flex-1 overflow-y-auto px-8 pb-16 scroll-smooth"
       >
-        <div className="">
+        <div className="max-w-2xl">
           <p
             className={cn(
               "font-body text-ink-light",
@@ -121,37 +124,48 @@ export function BibleReader({
               LINE_SPACINGS[lineSpacing],
             )}
           >
-            {data.verses.map((v) => (
-              <span
-                key={v.verse}
-                data-verse={v.verse}
-                onClick={() => onVerseClick?.(v)}
-                onMouseEnter={() => setHoveredVerse(v.verse)}
-                onMouseLeave={() => setHoveredVerse(null)}
-                className={cn(
-                  "cursor-pointer block transition-colors duration-150 rounded",
-                  isInActiveRange(v.verse)
-                    ? "bg-gold/15 text-ink"
-                    : hoveredVerse === v.verse
-                      ? "bg-parchment-deep"
-                      : "",
-                )}
-              >
-                {/* Verse number */}
-                {showNumbers && (
-                  <sup
-                    className={cn(
-                      "font-display font-bold mr-0.5 select-none transition-colors",
-                      "text-[0.6em] relative top-[-0.15em]",
-                      isInActiveRange(v.verse) ? "text-gold" : "text-gold/50",
-                    )}
-                  >
-                    {v.verse}
-                  </sup>
-                )}
-                {v.text}{" "}
-              </span>
-            ))}
+            {data.verses.map((v) => {
+              const isSelected = selectedVerses.has(v.verse);
+              const isHovered = hoveredVerse === v.verse;
+              return (
+                <span
+                  key={v.verse}
+                  data-verse={v.verse}
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => handleClick(e, v)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onVerseClick(v, false);
+                    }
+                  }}
+                  onMouseEnter={() => setHoveredVerse(v.verse)}
+                  onMouseLeave={() => setHoveredVerse(null)}
+                  className={cn(
+                    "cursor-pointer transition-colors duration-100 rounded px-0.5 -mx-0.5",
+                    isSelected
+                      ? "bg-gold/20 text-ink"
+                      : isHovered
+                        ? "bg-parchment-deep"
+                        : "",
+                  )}
+                >
+                  {showNumbers && (
+                    <sup
+                      className={cn(
+                        "font-display font-bold mr-0.5 select-none transition-colors",
+                        "text-[0.6em] relative top-[-0.15em]",
+                        isSelected ? "text-gold" : "text-gold/50",
+                      )}
+                    >
+                      {v.verse}
+                    </sup>
+                  )}
+                  {v.text}{" "}
+                </span>
+              );
+            })}
           </p>
         </div>
 
@@ -161,9 +175,14 @@ export function BibleReader({
             {data.book_name} {data.chapter} · {data.total_verses} verses ·{" "}
             {translation}
           </p>
+          {selectedVerses.size > 0 && (
+            <p className="font-body text-[11px] text-gold">
+              {selectedVerses.size} verse{selectedVerses.size !== 1 ? "s" : ""}{" "}
+              selected
+            </p>
+          )}
         </div>
       </div>
-      {/* </div> */}
 
       {/* Chapter navigation */}
       <div className="shrink-0 border-t border-parchment-dark bg-parchment/95 backdrop-blur-sm">
@@ -183,7 +202,7 @@ export function BibleReader({
             <div />
           )}
 
-          {/* Progress indicator */}
+          {/* Progress dots */}
           <div className="flex items-center gap-1.5">
             {Array.from({ length: Math.min(data.max_chapters, 30) }, (_, i) => {
               const chNum = Math.ceil((i + 1) * (data.max_chapters / 30));
