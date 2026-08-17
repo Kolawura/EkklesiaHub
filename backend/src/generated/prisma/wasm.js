@@ -308,7 +308,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/adekola/Desktop/dev_folders/EkklesiaHub/backend/src/generated/prisma",
+      "value": "C:\\Dev Folder\\EkklesiaHub\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -317,12 +317,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/adekola/Desktop/dev_folders/EkklesiaHub/backend/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Dev Folder\\EkklesiaHub\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

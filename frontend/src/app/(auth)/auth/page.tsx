@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mail, User } from "lucide-react";
 import { DEFAULT_POST_LOGIN, useAuth } from "@/hooks/useAuth";
 import { useSearchParams } from "next/navigation";

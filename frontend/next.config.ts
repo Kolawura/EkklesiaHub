@@ -28,21 +28,24 @@ const nextConfig: NextConfig = {
       "@tanstack/react-query",
     ],
   },
-
-  // ── Headers: cache static assets aggressively ─────────────────────────────
-  async headers() {
-    return [
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-    ];
+   turbopack: {
+    root: __dirname,
   },
+
+  // ── Headers: cache static assets aggressively (don't ever do this again) ─────────────────────────────
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/_next/static/:path*",
+  //       headers: [
+  //         {
+  //           key: "Cache-Control",
+  //           value: "public, max-age=31536000, immutable",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
 };
 
 export default nextConfig;

@@ -6,6 +6,7 @@ import { Menu, X, ArrowRight } from "lucide-react";
 import { CrossOrnament } from "@/components/ui/CrossOrnament";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Features", href: "/features" },
@@ -56,6 +57,8 @@ export function PublicNav() {
             </Link>
           ))}
         </div>
+
+        <ThemeToggle />
 
         {/* Desktop CTAs — swap based on auth state */}
         <div className="hidden md:flex items-center gap-2 shrink-0">

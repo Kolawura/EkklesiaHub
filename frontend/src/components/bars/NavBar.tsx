@@ -1,23 +1,50 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Sun, Moon, X } from "lucide-react";
+import { Search, Palette, X, Check } from "lucide-react";
 import { NotificationBell } from "@/components/ui/NotificationPanel";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { ThemeToggle } from "../ui/ThemeToggle";
+
+type ThemeName = "sacred" | "light" | "dark" | "midnight" | "sepia" | "forest";
+
+const THEME_META: Record<ThemeName, { label: string; swatch: string }> = {
+  sacred: { label: "Sacred Editorial", swatch: "#b87d2c" },
+  light: { label: "Light", swatch: "#b8752a" },
+  dark: { label: "Dark", swatch: "#d4a255" },
+  midnight: { label: "Midnight", swatch: "#60a5fa" },
+  sepia: { label: "Sepia", swatch: "#9c5a1a" },
+  forest: { label: "Forest", swatch: "#4c7a3f" },
+};
+
+const THEME_ORDER: ThemeName[] = ["sacred", "light", "dark", "midnight", "sepia", "forest"];
 
 export default function NavBar() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const themeMenuRef = useRef<HTMLDivElement>(null);
 
-  // Avoid hydration mismatch on the theme toggle
   useEffect(() => setMounted(true), []);
+
+  // Close theme dropdown on outside click
+  useEffect(() => {
+    if (!themeMenuOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (themeMenuRef.current && !themeMenuRef.current.contains(e.target as Node)) {
+        setThemeMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [themeMenuOpen]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +57,8 @@ export default function NavBar() {
   const initials = user
     ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : null;
+
+  const current = (theme as ThemeName) ?? "sacred";
 
   return (
     <header className="h-13 shrink-0 bg-parchment border-b border-parchment-dark flex items-center px-5 gap-4 z-10">
@@ -61,23 +90,13 @@ export default function NavBar() {
       </form>
 
       <div className="ml-auto flex items-center gap-1">
-        {/* Theme toggle */}
-        {mounted && (
-          <button
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            className="p-1.5 text-ink-ghost hover:text-ink hover:bg-parchment-deep rounded-lg transition-colors"
-            title="Toggle theme"
-          >
-            {resolvedTheme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
-        )}
+        {/* Theme picker */}
+        <ThemeToggle />
 
         {/* Notifications */}
         <NotificationBell />
 
-        {/* User avatar — shows profile photo if set, otherwise initials */}
+        {/* User avatar */}
         {user && (
           <Link href="/profile" className="ml-1">
             {user.profileImg ? (

@@ -4,29 +4,14 @@
 @import "tw-animate-css";
 @import "./mention.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, [data-theme="midnight"], [data-theme="midnight"] *, [data-theme="obsidian"], [data-theme="obsidian"] *));
 
 /* ═══════════════════════════════════════
-   DESIGN TOKENS — Sacred Editorial
-   Parchment × Ink × Amber Gold
-   Playfair Display + Source Serif 4
+   @theme inline — semantic tokens ONLY.
+   var() references so they follow whichever
+   [data-theme] block is active at runtime.
 ═══════════════════════════════════════ */
 @theme inline {
-  /* Brand colors */
-  --color-parchment: #f7f3ec;
-  --color-parchment-deep: #ede5d6;
-  --color-parchment-dark: #e2d5bf;
-  --color-ink: #1a1208;
-  --color-ink-medium: #2e2112;
-  --color-ink-light: #4a3728;
-  --color-ink-faint: #7a6555;
-  --color-ink-ghost: #a89988;
-  --color-gold: #b87d2c;
-  --color-gold-light: #d4a255;
-  --color-gold-pale: #f0d89a;
-  --color-gold-bg: #fbf4e4;
-
-  /* Map to shadcn tokens so existing components still work */
   --color-background: var(--color-parchment);
   --color-foreground: var(--color-ink);
   --color-card: var(--color-parchment);
@@ -44,7 +29,6 @@
   --color-destructive: #8b2020;
   --color-ring: var(--color-gold-pale);
 
-  /* Sidebar */
   --color-sidebar: var(--color-parchment-deep);
   --color-sidebar-foreground: var(--color-ink);
   --color-sidebar-border: var(--color-parchment-dark);
@@ -53,13 +37,24 @@
   --color-sidebar-primary: var(--color-ink);
   --color-sidebar-primary-foreground: var(--color-parchment);
 
-  /* Typography */
+  --color-parchment: var(--color-parchment);
+  --color-parchment-deep: var(--color-parchment-deep);
+  --color-parchment-dark: var(--color-parchment-dark);
+  --color-ink: var(--color-ink);
+  --color-ink-medium: var(--color-ink-medium);
+  --color-ink-light: var(--color-ink-light);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-ink-ghost: var(--color-ink-ghost);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-gold-pale: var(--color-gold-pale);
+  --color-gold-bg: var(--color-gold-bg);
+
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "Source Serif 4", Georgia, serif;
   --font-sans: "Source Serif 4", Georgia, serif;
   --font-mono: "Courier New", monospace;
 
-  /* Radii */
   --radius: 0.625rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -68,9 +63,49 @@
 }
 
 /* ═══════════════════════════════════════
-   DARK MODE
+   THEME 1 — Sacred Editorial (default)
+   Parchment × Ink × Amber Gold
 ═══════════════════════════════════════ */
-.dark {
+:root,
+[data-theme="sacred"] {
+  --color-parchment: #f7f3ec;
+  --color-parchment-deep: #ede5d6;
+  --color-parchment-dark: #e2d5bf;
+  --color-ink: #1a1208;
+  --color-ink-medium: #2e2112;
+  --color-ink-light: #4a3728;
+  --color-ink-faint: #7a6555;
+  --color-ink-ghost: #a89988;
+  --color-gold: #b87d2c;
+  --color-gold-light: #d4a255;
+  --color-gold-pale: #f0d89a;
+  --color-gold-bg: #fbf4e4;
+}
+
+/* ═══════════════════════════════════════
+   THEME 2 — Light Amber
+   Pure White × Neutral Ink × Amber Accent
+═══════════════════════════════════════ */
+[data-theme="light"] {
+  --color-parchment: #ffffff;
+  --color-parchment-deep: #fafafa;
+  --color-parchment-dark: #e8e8e6;
+  --color-ink: #18181b;
+  --color-ink-medium: #3f3f46;
+  --color-ink-light: #52525b;
+  --color-ink-faint: #71717a;
+  --color-ink-ghost: #a1a1aa;
+  --color-gold: #b8752a;
+  --color-gold-light: #d4941f;
+  --color-gold-pale: #f5dfae;
+  --color-gold-bg: #fef8ee;
+}
+
+/* ═══════════════════════════════════════
+   THEME 3 — Dark
+   Near-black Ink × Amber Gold
+═══════════════════════════════════════ */
+[data-theme="dark"] {
   --color-parchment: #181210;
   --color-parchment-deep: #211a12;
   --color-parchment-dark: #2c2218;
@@ -83,6 +118,139 @@
   --color-gold-light: #b87d2c;
   --color-gold-pale: #4a3210;
   --color-gold-bg: #231b0e;
+}
+
+/* ═══════════════════════════════════════
+   THEME 4 — Midnight
+   Cool Slate × Blue Accent
+═══════════════════════════════════════ */
+[data-theme="midnight"] {
+  --color-parchment: #0b0f19;
+  --color-parchment-deep: #111827;
+  --color-parchment-dark: #1f2937;
+  --color-ink: #f1f5f9;
+  --color-ink-medium: #cbd5e1;
+  --color-ink-light: #94a3b8;
+  --color-ink-faint: #64748b;
+  --color-ink-ghost: #475569;
+  --color-gold: #60a5fa;
+  --color-gold-light: #93c5fd;
+  --color-gold-pale: #1e3a5f;
+  --color-gold-bg: #172033;
+}
+
+/* ═══════════════════════════════════════
+   THEME 5 — Sepia
+   Manuscript Reading Mode
+═══════════════════════════════════════ */
+[data-theme="sepia"] {
+  --color-parchment: #ece0c8;
+  --color-parchment-deep: #e2d3af;
+  --color-parchment-dark: #d4bf90;
+  --color-ink: #2b1d0e;
+  --color-ink-medium: #4a3520;
+  --color-ink-light: #6b4f30;
+  --color-ink-faint: #8a6f4f;
+  --color-ink-ghost: #a8916e;
+  --color-gold: #9c5a1a;
+  --color-gold-light: #b87d2c;
+  --color-gold-pale: #d9b26a;
+  --color-gold-bg: #f0dfb8;
+}
+
+/* ═══════════════════════════════════════
+   THEME 6 — Forest
+   Green Accent × Warm Neutral
+═══════════════════════════════════════ */
+[data-theme="forest"] {
+  --color-parchment: #f6f7f4;
+  --color-parchment-deep: #ecefe7;
+  --color-parchment-dark: #dde3d3;
+  --color-ink: #1c2a1a;
+  --color-ink-medium: #33452f;
+  --color-ink-light: #4f6349;
+  --color-ink-faint: #71856a;
+  --color-ink-ghost: #9cab93;
+  --color-gold: #4c7a3f;
+  --color-gold-light: #6a9b5a;
+  --color-gold-pale: #cfe3c5;
+  --color-gold-bg: #eef4ea;
+}
+
+/* ═══════════════════════════════════════
+   THEME 7 — Rose Quartz
+   Soft Blush × Warm Rose Accent
+═══════════════════════════════════════ */
+[data-theme="rose"] {
+  --color-parchment: #fdf6f5;
+  --color-parchment-deep: #f9ebe9;
+  --color-parchment-dark: #f0d5d2;
+  --color-ink: #2e1b1a;
+  --color-ink-medium: #4a2f2d;
+  --color-ink-light: #6b4644;
+  --color-ink-faint: #8f6664;
+  --color-ink-ghost: #bb9694;
+  --color-gold: #b8514a;
+  --color-gold-light: #d17870;
+  --color-gold-pale: #edc0bc;
+  --color-gold-bg: #fbe9e7;
+}
+
+/* ═══════════════════════════════════════
+   THEME 8 — Papyrus
+   Desert Cream × Terracotta Accent
+═══════════════════════════════════════ */
+[data-theme="papyrus"] {
+  --color-parchment: #f4ead9;
+  --color-parchment-deep: #ebdcbf;
+  --color-parchment-dark: #ddc79c;
+  --color-ink: #2c1d10;
+  --color-ink-medium: #4c331d;
+  --color-ink-light: #6e4c2c;
+  --color-ink-faint: #8f6a44;
+  --color-ink-ghost: #ad8c64;
+  --color-gold: #c1552a;
+  --color-gold-light: #db7746;
+  --color-gold-pale: #e8b28e;
+  --color-gold-bg: #f9e1cf;
+}
+
+/* ═══════════════════════════════════════
+   THEME 9 — Obsidian
+   True Black × Silver Accent (OLED / AMOLED-friendly)
+═══════════════════════════════════════ */
+[data-theme="obsidian"] {
+  --color-parchment: #000000;
+  --color-parchment-deep: #0a0a0a;
+  --color-parchment-dark: #1a1a1a;
+  --color-ink: #ececec;
+  --color-ink-medium: #c7c7c7;
+  --color-ink-light: #9d9d9d;
+  --color-ink-faint: #737373;
+  --color-ink-ghost: #4d4d4d;
+  --color-gold: #e0b64a;
+  --color-gold-light: #f0d089;
+  --color-gold-pale: #3a2f14;
+  --color-gold-bg: #141005;
+}
+
+/* ═══════════════════════════════════════
+   THEME 10 — Byzantine
+   Deep Purple × Royal Gold
+═══════════════════════════════════════ */
+[data-theme="byzantine"] {
+  --color-parchment: #f5f2f8;
+  --color-parchment-deep: #eae3f0;
+  --color-parchment-dark: #d8c9e3;
+  --color-ink: #241830;
+  --color-ink-medium: #3d2a4d;
+  --color-ink-light: #5a4270;
+  --color-ink-faint: #7e6690;
+  --color-ink-ghost: #a892b8;
+  --color-gold: #8b5a9e;
+  --color-gold-light: #a878bc;
+  --color-gold-pale: #ddc2e8;
+  --color-gold-bg: #f2e6f7;
 }
 
 /* ═══════════════════════════════════════
@@ -117,48 +285,25 @@ h6 {
    KEYFRAMES
 ═══════════════════════════════════════ */
 @keyframes heroIn {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes marqueeScroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 @keyframes cursorBlink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* ═══════════════════════════════════════
-   CUSTOM UTILITIES (non-Tailwind helpers)
+   CUSTOM UTILITIES
 ═══════════════════════════════════════ */
-
-/* Ruled manuscript lines */
 .bg-ruled {
   background-image: repeating-linear-gradient(
     0deg,
@@ -168,7 +313,10 @@ h6 {
     rgba(26, 18, 8, 0.026) 29px
   );
 }
-.dark .bg-ruled {
+
+[data-theme="dark"] .bg-ruled,
+[data-theme="midnight"] .bg-ruled,
+[data-theme="obsidian"] .bg-ruled {
   background-image: repeating-linear-gradient(
     0deg,
     transparent,
@@ -178,7 +326,6 @@ h6 {
   );
 }
 
-/* Gold reveal on top edge */
 .card-gold-top {
   position: relative;
   overflow: hidden;
@@ -190,12 +337,7 @@ h6 {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-gold),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -203,47 +345,30 @@ h6 {
   opacity: 1;
 }
 
-/* Marquee */
 .marquee-track {
   display: flex;
   width: max-content;
   animation: marqueeScroll 45s linear infinite;
 }
 
-/* Cursor blink */
 .cursor-blink {
   animation: cursorBlink 1.1s step-end infinite;
 }
 
-/* Hero entrance */
 .animate-hero-in {
   animation: heroIn 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-/* Stagger children */
 .stagger > * {
   animation: fadeUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
-.stagger > *:nth-child(1) {
-  animation-delay: 0ms;
-}
-.stagger > *:nth-child(2) {
-  animation-delay: 90ms;
-}
-.stagger > *:nth-child(3) {
-  animation-delay: 180ms;
-}
-.stagger > *:nth-child(4) {
-  animation-delay: 270ms;
-}
-.stagger > *:nth-child(5) {
-  animation-delay: 360ms;
-}
-.stagger > *:nth-child(6) {
-  animation-delay: 450ms;
-}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 90ms; }
+.stagger > *:nth-child(3) { animation-delay: 180ms; }
+.stagger > *:nth-child(4) { animation-delay: 270ms; }
+.stagger > *:nth-child(5) { animation-delay: 360ms; }
+.stagger > *:nth-child(6) { animation-delay: 450ms; }
 
-/* Prose / article body */
 .prose-ekk {
   font-family: var(--font-body);
   font-size: 1.0625rem;
@@ -274,7 +399,6 @@ h6 {
   text-decoration: underline;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

@@ -176,11 +176,12 @@ export function useBibleChapterMeta(
 export function useBibleTranslations() {
   return useQuery<TranslationInfo[]>({
     queryKey: ["bible-translations"],
-    queryFn: async () => {
-      const res: { data: { data: TranslationInfo[] } } = await getRequest(
+    queryFn: async (): Promise<TranslationInfo[]> => {
+      const res:  { data: TranslationInfo[] } = await getRequest(
         "/bible/translations",
       );
-      return res.data.data;
+      console.log("Translations ",res.data)
+      return res.data;
     },
     staleTime: Infinity,
     gcTime: Infinity,

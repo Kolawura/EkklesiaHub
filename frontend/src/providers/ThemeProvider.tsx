@@ -12,9 +12,10 @@ export const ThemeProvider = ({
 }: ThemeProviderProps) => {
   return (
     <NextThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
+      attribute="data-theme"
+      defaultTheme="sacred"
+      themes={["sacred", "light", "dark", "midnight", "sepia", "forest", "rose", "papyrus", "obsidian", "byzantine"]}
+      enableSystem={false}
       disableTransitionOnChange={disableTransitionOnChange}
     >
       {children}
