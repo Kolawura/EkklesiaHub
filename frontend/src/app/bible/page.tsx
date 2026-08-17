@@ -17,12 +17,14 @@ interface ReaderPrefs {
   fontSize: "sm" | "md" | "lg" | "xl";
   lineSpacing: "compact" | "normal" | "relaxed";
   showNumbers: boolean;
+  versify: boolean;
 }
 const DEFAULT_PREFS: ReaderPrefs = {
   translation: "KJV",
   fontSize: "md",
   lineSpacing: "normal",
   showNumbers: true,
+  versify: false,
 };
 function loadPrefs(): ReaderPrefs {
   if (typeof window === "undefined") return DEFAULT_PREFS;
@@ -268,7 +270,7 @@ export default function BiblePage() {
         </div>
 
         {/* CENTRE: Reading area */}
-        <div className="flex-1 flex flex-col overflow-hidden border-x border-parchment-dark">
+        <div className="flex flex-col h-screen overflow-hidden border-x border-parchment-dark">
           {/* Toolbar */}
           <BibleToolbar
             translation={prefs.translation}
@@ -277,21 +279,23 @@ export default function BiblePage() {
             fontSize={prefs.fontSize}
             lineSpacing={prefs.lineSpacing}
             showNumbers={prefs.showNumbers}
+            versify={prefs.versify}
             onFontSize={(s) => updatePrefs({ fontSize: s })}
             onLineSpacing={(s) => updatePrefs({ lineSpacing: s })}
             onShowNumbers={(v) => updatePrefs({ showNumbers: v })}
+            onVersify={(b) => updatePrefs({ versify: b })}
             onNavigate={navigate}
-          />
-
+            />
+          <div className="flex-1 overflow-y-auto">
           {/* Verse of the Day banner */}
           {showVotd && (
             <div className="shrink-0 relative border-b border-parchment-dark">
               <button
                 onClick={() => setShowVotd(false)}
-                className="absolute top-2 right-3 text-parchment/30 hover:text-parchment/60 transition-colors z-10"
+                className="absolute top-2 right-3 text-lg font-bold text-gold hover:text-red-600 transition-colors z-10 cursor-pointer p-0.75"
                 title="Dismiss"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
               <div className="px-8 py-5">
                 <VerseOfTheDay
@@ -315,10 +319,11 @@ export default function BiblePage() {
               fontSize={prefs.fontSize}
               lineSpacing={prefs.lineSpacing}
               showNumbers={prefs.showNumbers}
-              scrollToVerse={scrollToVerse}
-            />
+              scrollToVerse={scrollToVerse} 
+              versify={prefs.versify} 
+              />
           </div>
-
+          </div>
           {/* Multi-verse action bar */}
           {selectedVerses.size > 0 && (
             <VerseActionBar

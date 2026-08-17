@@ -22,6 +22,7 @@ interface BibleReaderProps {
   fontSize: "sm" | "md" | "lg" | "xl";
   lineSpacing: "compact" | "normal" | "relaxed";
   showNumbers: boolean;
+  versify: boolean;
   /** When set, the reader scrolls to this verse on mount/change */
   scrollToVerse?: number | null;
 }
@@ -49,6 +50,7 @@ export function BibleReader({
   fontSize,
   lineSpacing,
   showNumbers,
+  versify,
   scrollToVerse,
 }: BibleReaderProps) {
   const { data, isLoading, isError } = useBibleChapter(
@@ -58,7 +60,7 @@ export function BibleReader({
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const [hoveredVerse, setHoveredVerse] = useState<number | null>(null);
-
+  console.log("VERSIFY: ",versify)
   // Scroll to a specific verse when requested (e.g. from reference jump or sidebar)
   useEffect(() => {
     if (!scrollToVerse || !contentRef.current) return;
@@ -84,7 +86,7 @@ export function BibleReader({
 
   if (isError || !data)
     return (
-      <div className="flex flex-col items-center justify-center h-full py-20 text-center">
+      <div className="flex flex-col items-center justify-center h-screen py-20 text-center">
         <BookOpen size={40} className="text-parchment-dark mb-4" />
         <p className="font-body text-sm text-ink-faint mb-2">
           This chapter is not available in {translation}.
@@ -96,7 +98,7 @@ export function BibleReader({
     );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full sm:px-16 md:px-28 lg:px-40">
       {/* Chapter heading */}
       <div className="shrink-0 px-8 pt-10 pb-6">
         <p className="font-body text-xs uppercase tracking-[0.2em] text-gold mb-1.5">
@@ -119,7 +121,7 @@ export function BibleReader({
         <div className="max-w-2xl">
           <p
             className={cn(
-              "font-body text-ink-light",
+              "font-body text-ink-light space",
               FONT_SIZES[fontSize],
               LINE_SPACINGS[lineSpacing],
             )}
@@ -149,6 +151,7 @@ export function BibleReader({
                       : isHovered
                         ? "bg-parchment-deep"
                         : "",
+                        versify ? "flex gap-1" : "",
                   )}
                 >
                   {showNumbers && (
@@ -157,6 +160,7 @@ export function BibleReader({
                         "font-display font-bold mr-0.5 select-none transition-colors",
                         "text-[0.6em] relative top-[-0.15em]",
                         isSelected ? "text-gold" : "text-gold/50",
+                        versify ? "flex items-start pt-4" : "",
                       )}
                     >
                       {v.verse}

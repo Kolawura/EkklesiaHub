@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useReferenceJump } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 interface BibleToolbarProps {
   translation: string;
@@ -19,10 +20,12 @@ interface BibleToolbarProps {
   chapter: number;
   fontSize: "sm" | "md" | "lg" | "xl";
   lineSpacing: "compact" | "normal" | "relaxed";
-  showNumbers: boolean;
+  showNumbers: boolean; 
+  versify: boolean;
   onFontSize: (s: "sm" | "md" | "lg" | "xl") => void;
   onLineSpacing: (s: "compact" | "normal" | "relaxed") => void;
   onShowNumbers: (v: boolean) => void;
+  onVersify: (b:boolean) => void;
   onNavigate: (
     book: string,
     chapter: number,
@@ -38,9 +41,11 @@ export function BibleToolbar({
   fontSize,
   lineSpacing,
   showNumbers,
+  versify,
   onFontSize,
   onLineSpacing,
   onShowNumbers,
+  onVersify,
   onNavigate,
 }: BibleToolbarProps) {
   const [showSettings, setShowSettings] = useState(false);
@@ -100,6 +105,8 @@ export function BibleToolbar({
       </div>
 
       <div className="flex-1" />
+
+      <ThemeToggle />
 
       {/* Jump to reference */}
       <div ref={jumpRef} className="relative">
@@ -249,6 +256,30 @@ export function BibleToolbar({
                   className={cn(
                     "absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-parchment shadow-sm transition-transform",
                     showNumbers ? "translate-x-4.5" : "",
+                  )}
+                />
+              </button>
+            </div>
+
+             {/* Versify Text */}
+             <div className="flex items-center justify-between pt-1 border-t border-parchment-dark">
+              <div className="flex items-center gap-1.5">
+                <Hash size={12} className="text-ink-ghost" />
+                <p className="font-body text-xs text-ink-faint font-medium">
+                  Versify Text
+                </p>
+              </div>
+              <button
+                onClick={() => onVersify(!versify)}
+                className={cn(
+                  "relative w-9 h-5 rounded-full transition-colors",
+                  versify ? "bg-gold" : "bg-parchment-dark",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-parchment shadow-sm transition-transform",
+                    versify ? "translate-x-4.5" : "",
                   )}
                 />
               </button>

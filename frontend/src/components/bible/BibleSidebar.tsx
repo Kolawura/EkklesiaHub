@@ -495,7 +495,7 @@ export function BibleSidebar({
   };
 
   return (
-    <div className="flex flex-col h-full bg-parchment-deep border-r border-parchment-dark">
+    <div className="flex flex-col h-screen bg-parchment-deep border-r border-parchment-dark">
       {/* Header */}
       <div className="shrink-0 px-4 py-4 border-b border-parchment-dark">
         {/* Translation toggle */}
