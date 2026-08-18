@@ -60,7 +60,7 @@ export function BibleReader({
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const [hoveredVerse, setHoveredVerse] = useState<number | null>(null);
-  console.log("VERSIFY: ",versify)
+  console.log("VERSIFY: ", versify);
   // Scroll to a specific verse when requested (e.g. from reference jump or sidebar)
   useEffect(() => {
     if (!scrollToVerse || !contentRef.current) return;
@@ -98,7 +98,7 @@ export function BibleReader({
     );
 
   return (
-    <div className="flex flex-col h-full sm:px-16 md:px-28 lg:px-40">
+    <div className="flex flex-col h-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-40">
       {/* Chapter heading */}
       <div className="shrink-0 px-8 pt-10 pb-6">
         <p className="font-body text-xs uppercase tracking-[0.2em] text-gold mb-1.5">
@@ -151,7 +151,7 @@ export function BibleReader({
                       : isHovered
                         ? "bg-parchment-deep"
                         : "",
-                        versify ? "flex gap-1" : "",
+                    versify ? "flex gap-1" : "",
                   )}
                 >
                   {showNumbers && (

@@ -285,44 +285,44 @@ export default function BiblePage() {
             onShowNumbers={(v) => updatePrefs({ showNumbers: v })}
             onVersify={(b) => updatePrefs({ versify: b })}
             onNavigate={navigate}
-            />
+          />
           <div className="flex-1 overflow-y-auto">
-          {/* Verse of the Day banner */}
-          {showVotd && (
-            <div className="shrink-0 relative border-b border-parchment-dark">
-              <button
-                onClick={() => setShowVotd(false)}
-                className="absolute top-2 right-3 text-lg font-bold text-gold hover:text-red-600 transition-colors z-10 cursor-pointer p-0.75"
-                title="Dismiss"
-              >
-                <X size={16} />
-              </button>
-              <div className="px-8 py-5">
-                <VerseOfTheDay
-                  translation={prefs.translation}
-                  onNavigate={navigate}
-                  compact={false}
-                />
+            {/* Verse of the Day banner */}
+            {showVotd && (
+              <div className="shrink-0 relative border-b border-parchment-dark">
+                <button
+                  onClick={() => setShowVotd(false)}
+                  className="absolute top-2 right-3 text-lg font-bold text-gold hover:text-red-600 transition-colors z-10 cursor-pointer p-0.75"
+                  title="Dismiss"
+                >
+                  <X size={16} />
+                </button>
+                <div className="px-8 py-5">
+                  <VerseOfTheDay
+                    translation={prefs.translation}
+                    onNavigate={navigate}
+                    compact={false}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Reader */}
-          <div className="flex-1 overflow-hidden">
-            <BibleReader
-              translation={prefs.translation}
-              bookName={bookName}
-              chapter={chapter}
-              selectedVerses={selectedVerses}
-              onVerseClick={handleVerseClick}
-              onNavigate={navigate}
-              fontSize={prefs.fontSize}
-              lineSpacing={prefs.lineSpacing}
-              showNumbers={prefs.showNumbers}
-              scrollToVerse={scrollToVerse} 
-              versify={prefs.versify} 
+            {/* Reader */}
+            <div className="flex-1 overflow-hidden">
+              <BibleReader
+                translation={prefs.translation}
+                bookName={bookName}
+                chapter={chapter}
+                selectedVerses={selectedVerses}
+                onVerseClick={handleVerseClick}
+                onNavigate={navigate}
+                fontSize={prefs.fontSize}
+                lineSpacing={prefs.lineSpacing}
+                showNumbers={prefs.showNumbers}
+                scrollToVerse={scrollToVerse}
+                versify={prefs.versify}
               />
-          </div>
+            </div>
           </div>
           {/* Multi-verse action bar */}
           {selectedVerses.size > 0 && (
@@ -342,7 +342,7 @@ export default function BiblePage() {
         {/* RIGHT: Compare drawer */}
         <div
           className={cn(
-            "shrink-0 overflow-hidden transition-all duration-300",
+            "shrink-0 h-screen overflow-hidden transition-all duration-300",
             compareVerse ? "w-80" : "w-0",
           )}
         >
