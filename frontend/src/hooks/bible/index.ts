@@ -177,10 +177,10 @@ export function useBibleTranslations() {
   return useQuery<TranslationInfo[]>({
     queryKey: ["bible-translations"],
     queryFn: async (): Promise<TranslationInfo[]> => {
-      const res:  { data: TranslationInfo[] } = await getRequest(
+      const res: { data: TranslationInfo[] } = await getRequest(
         "/bible/translations",
       );
-      console.log("Translations ",res.data)
+      console.log("Translations ", res.data);
       return res.data;
     },
     staleTime: Infinity,
@@ -220,18 +220,28 @@ export function useCompareVerse(
     enabled: enabled && !!bookName && !!chapter && !!verse,
   });
 }
+/** get cache time for a specific query */
+function getTimeUntilMidnight() {
+  const now = new Date();
+
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  return tomorrow.getTime() - now.getTime();
+}
 
 /** Verse of the Day */
 export function useVerseOfTheDay(translation = "KJV") {
+  const today = new Date().toLocaleDateString("en-CA");
   return useQuery<VerseOfTheDay>({
-    queryKey: ["bible-votd", translation],
+    queryKey: ["bible-votd", translation, today],
     queryFn: async () => {
       const res = await api.get("/bible/votd", { params: { translation } });
-      console.log("Verse of the day:", res.data);
       return res.data.data;
     },
-    staleTime: 1000 * 60 * 60 * 24, // 24h — one verse per day
-    gcTime: 1000 * 60 * 60 * 24,
+    staleTime: getTimeUntilMidnight(), // Cache until midnight
+    gcTime: 24 * 60 * 60 * 1000, // Cache until midnight
   });
 }
 

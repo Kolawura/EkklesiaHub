@@ -1,8 +1,12 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 
 /*
  * Performance-tuned QueryClient.
@@ -18,6 +22,43 @@ import { ReactNode, useState } from "react";
  *   refetchOnWindowFocus — off by default; most content doesn't need it
  *   refetchOnReconnect   — on, so data refreshes when network comes back
  */
+function MidnightRefresh() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const scheduleMidnightRefresh = () => {
+      const now = new Date();
+
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      const delay = tomorrow.getTime() - now.getTime();
+
+      console.log(
+        `Next midnight refresh in ${Math.round(delay / 1000 / 60)} minutes`,
+      );
+
+      return setTimeout(() => {
+        console.log("🌙 Midnight reached — refreshing daily verse");
+
+        queryClient.invalidateQueries({
+          queryKey: ["bible-votd"],
+        });
+
+        // Schedule the next midnight
+        scheduleMidnightRefresh();
+      }, delay);
+    };
+
+    const timer = scheduleMidnightRefresh();
+
+    return () => clearTimeout(timer);
+  }, [queryClient]);
+
+  return null;
+}
+
 export default function ReactQueryProvider({
   children,
 }: {
@@ -47,6 +88,7 @@ export default function ReactQueryProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
+      <MidnightRefresh />
       {children}
       {/* DevTools only ship in development */}
       {process.env.NODE_ENV === "development" && (
