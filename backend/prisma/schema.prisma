@@ -131,18 +131,24 @@ model Tag {
 }
 
 model Comment {
-  id        String     @id @default(uuid())
-  content   String
-  author    User       @relation(fields: [authorId], references: [id])
-  authorId  String
-  post      Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-  parent    Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
-  parentId  String?
-  replies   Comment[]  @relation("CommentReplies")
-  reactions Reaction[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id            String     @id @default(uuid())
+  content       String
+  author        User       @relation(fields: [authorId], references: [id])
+  authorId      String
+  post          Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId        String
+  parent        Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId      String?
+  replies       Comment[]  @relation("CommentReplies")
+  reactions     Reaction[]
+  /// Scripture verses attached when the comment was composed.
+  /// Shape: { reference: string; text: string }[] — kept as JSON rather
+  /// than a join table since these are a denormalised snapshot of the
+  /// verse text at time of posting (translation-agnostic), not a live
+  /// reference back into the Bible DB.
+  scriptureRefs Json?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Reaction {

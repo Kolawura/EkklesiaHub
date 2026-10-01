@@ -241,7 +241,7 @@ export function useVerseOfTheDay(translation = "KJV") {
       return res.data.data;
     },
     staleTime: getTimeUntilMidnight(), // Cache until midnight
-    gcTime: 24 * 60 * 60 * 1000, // Cache until midnight
+    gcTime: 24 * 60 * 60 * 1000, // Cache for 24 hours
   });
 }
 

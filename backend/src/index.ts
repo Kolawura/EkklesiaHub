@@ -28,6 +28,21 @@ const PORT = process.env.PORT || 5000;
 const biblePool = new Pool({
   connectionString: process.env.BIBLE_DATABASE_URL,
 });
+
+// CRITICAL: pg.Pool emits a background 'error' event whenever an IDLE
+// client in the pool hits a connection problem (dropped connection, DB
+// restart, network blip, bad credentials on a reconnect attempt, etc.) —
+// this is separate from any single query's own try/catch, since it isn't
+// tied to a specific in-flight request. Node's default behavior for an
+// unhandled 'error' event on any EventEmitter is to THROW it, which here
+// means an uncaught exception that crashes the entire backend process —
+// taking down every route, not just the Bible ones. Registering a listener
+// (even just logging) is required to keep the server alive through a
+// transient Bible DB hiccup. See: https://node-postgres.com/apis/pool
+biblePool.on("error", (err) => {
+  console.error("❌ Unexpected error on idle Bible DB client:", err.message);
+});
+
 biblePool
   .query("SELECT COUNT(*) FROM bible_verses WHERE translation='NIV'")
   .then((r) => console.log(`✅ Bible DB: ${r.rows[0].count} NIV verses`))

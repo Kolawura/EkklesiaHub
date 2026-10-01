@@ -343,9 +343,15 @@ export class BibleService {
 
   // ── Private helpers ────────────────────────────────────────────────
   private resolveBook(input: string): number {
-    // Try as number first
-    const asNum = parseInt(input);
-    if (!isNaN(asNum) && asNum >= 1 && asNum <= 66) return asNum;
+    // Only treat the input as a raw book number if it is ENTIRELY numeric.
+    // (parseInt("1 Corinthians") === 1, which used to be silently accepted
+    // as book #1/Genesis — this guard forces names like "1 Corinthians",
+    // "2 Timothy", "3 John" etc. through the BOOK_MAP lookup below instead.)
+    const trimmed = input.trim();
+    if (/^\d+$/.test(trimmed)) {
+      const asNum = parseInt(trimmed, 10);
+      if (asNum >= 1 && asNum <= 66) return asNum;
+    }
 
     const num = resolveBookNumber(input);
     if (!num) {

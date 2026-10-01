@@ -18,12 +18,13 @@ export const createComment = async (req: AuthRequest, res: Response) => {
 
   try {
     const userId = req.userId!;
-    const { content, postId, parentId } = validatedBody.data;
+    const { content, postId, parentId, scriptureRefs } = validatedBody.data;
     const comment = await commentService.createComment({
       content,
       authorId: userId,
       postId,
       parentId,
+      scriptureRefs,
     });
     res.status(201).json({ success: true, message: "Comment added", comment });
   } catch (error: any) {

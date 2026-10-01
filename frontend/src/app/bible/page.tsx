@@ -60,7 +60,7 @@ function VerseActionBar({
   chapter: number;
   translation: string;
   selectedVerses: Set<number>;
-  onCompare: (verse: BibleVerse) => void;
+  onCompare: (verses: BibleVerse[]) => void;
   onClear: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -95,8 +95,12 @@ function VerseActionBar({
 
   const handleCompare = () => {
     if (!chapterData) return;
-    const verseData = chapterData.verses.find((v) => v.verse === first);
-    if (verseData) onCompare(verseData);
+    // Every selected verse gets compared, not just the first — order
+    // preserved as the user selected (CompareDrawer re-sorts for display).
+    const verseData = sorted
+      .map((vNum) => chapterData.verses.find((v) => v.verse === vNum))
+      .filter((v): v is BibleVerse => Boolean(v));
+    if (verseData.length > 0) onCompare(verseData);
   };
 
   return (
@@ -136,10 +140,8 @@ function VerseActionBar({
             className="inline-flex items-center gap-1.5 font-body text-xs px-3 py-1.5 rounded-lg border text-ink-ghost border-parchment-dark hover:text-gold hover:bg-gold-bg hover:border-gold-pale disabled:opacity-40 transition-all"
           >
             <GitCompare size={11} />
-            Compare translations
-            {sorted.length > 1 && (
-              <span className="text-[10px] text-ink-ghost">(first verse)</span>
-            )}
+            Compare{" "}
+            {sorted.length > 1 ? `${sorted.length} verses` : "translations"}
           </button>
 
           {/* Clear */}
@@ -167,7 +169,7 @@ export default function BiblePage() {
   const [chapter, setChapter] = useState(1);
   const [scrollToVerse, setScrollToVerse] = useState<number | null>(null);
   const [showVotd, setShowVotd] = useState(true);
-  const [compareVerse, setCompare] = useState<BibleVerse | null>(null);
+  const [compareVerses, setCompareVerses] = useState<BibleVerse[]>([]);
 
   // Multi-verse selection
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -203,7 +205,7 @@ export default function BiblePage() {
       setChapter(ch);
       setScrollToVerse(verse ?? null);
       setShowVotd(false);
-      setCompare(null);
+      setCompareVerses([]);
 
       if (verse != null) {
         const end = endVerse ?? verse;
@@ -249,11 +251,16 @@ export default function BiblePage() {
     [],
   );
 
-  // Clear selection when chapter changes
-  useEffect(() => {
-    clearSelection();
-    setScrollToVerse(null);
-  }, [bookName, chapter, clearSelection]);
+  // NOTE: bookName/chapter only ever change via navigate() above, which
+  // already sets scrollToVerse/selectedVerses correctly for BOTH cases —
+  // null/cleared for a plain chapter change, or the target verse/range for
+  // a verse-targeted jump. A separate "clear on chapter change" effect used
+  // to live here, but since it also fires on every verse-targeted
+  // navigation (bookName/chapter change then too), it was resetting
+  // scrollToVerse and the highlight back to nothing right after navigate()
+  // set them — which is why jumping to a verse in a different chapter
+  // (search results, cross-references, Verse of the Day, sidebar
+  // drill-down) never landed on the right spot.
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -331,8 +338,8 @@ export default function BiblePage() {
               chapter={chapter}
               translation={prefs.translation}
               selectedVerses={selectedVerses}
-              onCompare={(verse) => {
-                setCompare(verse);
+              onCompare={(verses) => {
+                setCompareVerses(verses);
               }}
               onClear={clearSelection}
             />
@@ -343,13 +350,13 @@ export default function BiblePage() {
         <div
           className={cn(
             "shrink-0 h-screen overflow-hidden transition-all duration-300",
-            compareVerse ? "w-80" : "w-0",
+            compareVerses.length > 0 ? "w-80" : "w-0",
           )}
         >
-          {compareVerse && (
+          {compareVerses.length > 0 && (
             <CompareDrawer
-              verse={compareVerse}
-              onClose={() => setCompare(null)}
+              verses={compareVerses}
+              onClose={() => setCompareVerses([])}
             />
           )}
         </div>

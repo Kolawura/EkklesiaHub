@@ -9961,6 +9961,7 @@ export namespace Prisma {
     authorId: number
     postId: number
     parentId: number
+    scriptureRefs: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -9993,6 +9994,7 @@ export namespace Prisma {
     authorId?: true
     postId?: true
     parentId?: true
+    scriptureRefs?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -10076,6 +10078,7 @@ export namespace Prisma {
     authorId: string
     postId: string
     parentId: string | null
+    scriptureRefs: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: CommentCountAggregateOutputType | null
@@ -10103,6 +10106,7 @@ export namespace Prisma {
     authorId?: boolean
     postId?: boolean
     parentId?: boolean
+    scriptureRefs?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
@@ -10119,6 +10123,7 @@ export namespace Prisma {
     authorId?: boolean
     postId?: boolean
     parentId?: boolean
+    scriptureRefs?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
@@ -10132,6 +10137,7 @@ export namespace Prisma {
     authorId?: boolean
     postId?: boolean
     parentId?: boolean
+    scriptureRefs?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
@@ -10145,11 +10151,12 @@ export namespace Prisma {
     authorId?: boolean
     postId?: boolean
     parentId?: boolean
+    scriptureRefs?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "authorId" | "postId" | "parentId" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "authorId" | "postId" | "parentId" | "scriptureRefs" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | UserDefaultArgs<ExtArgs>
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -10184,6 +10191,14 @@ export namespace Prisma {
       authorId: string
       postId: string
       parentId: string | null
+      /**
+       * Scripture verses attached when the comment was composed.
+       * Shape: { reference: string; text: string }[] — kept as JSON rather
+       * than a join table since these are a denormalised snapshot of the
+       * verse text at time of posting (translation-agnostic), not a live
+       * reference back into the Bible DB.
+       */
+      scriptureRefs: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["comment"]>
@@ -10619,6 +10634,7 @@ export namespace Prisma {
     readonly authorId: FieldRef<"Comment", 'String'>
     readonly postId: FieldRef<"Comment", 'String'>
     readonly parentId: FieldRef<"Comment", 'String'>
+    readonly scriptureRefs: FieldRef<"Comment", 'Json'>
     readonly createdAt: FieldRef<"Comment", 'DateTime'>
     readonly updatedAt: FieldRef<"Comment", 'DateTime'>
   }
@@ -19908,6 +19924,7 @@ export namespace Prisma {
     authorId: 'authorId',
     postId: 'postId',
     parentId: 'parentId',
+    scriptureRefs: 'scriptureRefs',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -20015,6 +20032,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -20029,6 +20054,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -20110,6 +20144,20 @@ export namespace Prisma {
    * Reference to a field of type 'PostStatus[]'
    */
   export type ListEnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -20669,6 +20717,7 @@ export namespace Prisma {
     authorId?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     parentId?: StringNullableFilter<"Comment"> | string | null
+    scriptureRefs?: JsonNullableFilter<"Comment">
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20684,6 +20733,7 @@ export namespace Prisma {
     authorId?: SortOrder
     postId?: SortOrder
     parentId?: SortOrderInput | SortOrder
+    scriptureRefs?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     author?: UserOrderByWithRelationInput
@@ -20702,6 +20752,7 @@ export namespace Prisma {
     authorId?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     parentId?: StringNullableFilter<"Comment"> | string | null
+    scriptureRefs?: JsonNullableFilter<"Comment">
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -20717,6 +20768,7 @@ export namespace Prisma {
     authorId?: SortOrder
     postId?: SortOrder
     parentId?: SortOrderInput | SortOrder
+    scriptureRefs?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CommentCountOrderByAggregateInput
@@ -20733,6 +20785,7 @@ export namespace Prisma {
     authorId?: StringWithAggregatesFilter<"Comment"> | string
     postId?: StringWithAggregatesFilter<"Comment"> | string
     parentId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
+    scriptureRefs?: JsonNullableWithAggregatesFilter<"Comment">
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
   }
@@ -21792,6 +21845,7 @@ export namespace Prisma {
   export type CommentCreateInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutCommentsInput
@@ -21807,6 +21861,7 @@ export namespace Prisma {
     authorId: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
@@ -21816,6 +21871,7 @@ export namespace Prisma {
   export type CommentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -21831,6 +21887,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
@@ -21843,6 +21900,7 @@ export namespace Prisma {
     authorId: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -21850,6 +21908,7 @@ export namespace Prisma {
   export type CommentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21860,6 +21919,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22901,6 +22961,29 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type CommentNullableScalarRelationFilter = {
     is?: CommentWhereInput | null
@@ -22913,6 +22996,7 @@ export namespace Prisma {
     authorId?: SortOrder
     postId?: SortOrder
     parentId?: SortOrder
+    scriptureRefs?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -22935,6 +23019,32 @@ export namespace Prisma {
     parentId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumReactionTypeFilter<$PrismaModel = never> = {
@@ -24973,6 +25083,29 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumReactionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ReactionType | EnumReactionTypeFieldRefInput<$PrismaModel>
@@ -25073,6 +25206,7 @@ export namespace Prisma {
   export type CommentCreateWithoutAuthorInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     post: PostCreateNestedOneWithoutCommentsInput
@@ -25086,6 +25220,7 @@ export namespace Prisma {
     content: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
@@ -25415,6 +25550,7 @@ export namespace Prisma {
     authorId?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     parentId?: StringNullableFilter<"Comment"> | string | null
+    scriptureRefs?: JsonNullableFilter<"Comment">
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
   }
@@ -26148,6 +26284,7 @@ export namespace Prisma {
   export type CommentCreateWithoutPostInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutCommentsInput
@@ -26161,6 +26298,7 @@ export namespace Prisma {
     content: string
     authorId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
@@ -26987,6 +27125,7 @@ export namespace Prisma {
   export type CommentCreateWithoutRepliesInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutCommentsInput
@@ -27001,6 +27140,7 @@ export namespace Prisma {
     authorId: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     reactions?: ReactionUncheckedCreateNestedManyWithoutCommentInput
@@ -27014,6 +27154,7 @@ export namespace Prisma {
   export type CommentCreateWithoutParentInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutCommentsInput
@@ -27027,6 +27168,7 @@ export namespace Prisma {
     content: string
     authorId: string
     postId: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
@@ -27207,6 +27349,7 @@ export namespace Prisma {
   export type CommentUpdateWithoutRepliesInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -27221,6 +27364,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reactions?: ReactionUncheckedUpdateManyWithoutCommentNestedInput
@@ -27373,6 +27517,7 @@ export namespace Prisma {
   export type CommentCreateWithoutReactionsInput = {
     id?: string
     content: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutCommentsInput
@@ -27387,6 +27532,7 @@ export namespace Prisma {
     authorId: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
@@ -27535,6 +27681,7 @@ export namespace Prisma {
   export type CommentUpdateWithoutReactionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -27549,6 +27696,7 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
@@ -28968,6 +29116,7 @@ export namespace Prisma {
     content: string
     postId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29120,6 +29269,7 @@ export namespace Prisma {
   export type CommentUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     post?: PostUpdateOneRequiredWithoutCommentsNestedInput
@@ -29133,6 +29283,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
@@ -29144,6 +29295,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29543,6 +29695,7 @@ export namespace Prisma {
     content: string
     authorId: string
     parentId?: string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29601,6 +29754,7 @@ export namespace Prisma {
   export type CommentUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -29614,6 +29768,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
@@ -29625,6 +29780,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29832,6 +29988,7 @@ export namespace Prisma {
     content: string
     authorId: string
     postId: string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29847,6 +30004,7 @@ export namespace Prisma {
   export type CommentUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutCommentsNestedInput
@@ -29860,6 +30018,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
@@ -29871,6 +30030,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    scriptureRefs?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

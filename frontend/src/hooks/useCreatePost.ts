@@ -2,11 +2,12 @@ import { generateSlug } from "@/lib/format";
 import { getRequest, postRequest } from "@/lib/service";
 import { EditorData, Community } from "@/lib/type";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "./useToast";
 
 export const useCreatePost = () => {
+  const router = useRouter();
   const [editorData, setEditorData] = useState<EditorData>({
     title: "",
     content: "",

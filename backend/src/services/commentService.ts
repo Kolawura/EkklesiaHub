@@ -6,11 +6,13 @@ export const createComment = async ({
   authorId,
   postId,
   parentId,
+  scriptureRefs,
 }: {
   content: string;
   authorId: string;
   postId: string;
   parentId?: string;
+  scriptureRefs?: { reference: string; text: string }[];
 }) => {
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (!post) throw new Error("Post not found");
@@ -31,7 +33,14 @@ export const createComment = async ({
   }
 
   const comment = await prisma.comment.create({
-    data: { content, authorId, postId, parentId },
+    data: {
+      content,
+      authorId,
+      postId,
+      parentId,
+      scriptureRefs:
+        scriptureRefs && scriptureRefs.length > 0 ? scriptureRefs : undefined,
+    },
     include: {
       author: { select: { id: true, username: true, profileImg: true } },
     },
@@ -43,19 +52,23 @@ export const createComment = async ({
       post.authorId,
       "NEW_COMMENT",
       `${comment.author.username} commented on your post`,
-      `/posts/${post.slug}`
+      `/posts/${post.slug}`,
     ).catch(() => {}); // swallow — notifications are best-effort
   }
 
   // Notify parent comment author on reply
   if (parentId) {
     const parent = await prisma.comment.findUnique({ where: { id: parentId } });
-    if (parent && parent.authorId !== authorId && parent.authorId !== post.authorId) {
+    if (
+      parent &&
+      parent.authorId !== authorId &&
+      parent.authorId !== post.authorId
+    ) {
       await createNotification(
         parent.authorId,
         "NEW_REPLY",
         `${comment.author.username} replied to your comment`,
-        `/posts/${post.slug}`
+        `/posts/${post.slug}`,
       ).catch(() => {});
     }
   }
@@ -83,7 +96,7 @@ export const getCommentsByPost = async (postId: string) => {
 export const updateComment = async (
   commentId: string,
   content: string,
-  userId: string
+  userId: string,
 ) => {
   const comment = await prisma.comment.findUnique({ where: { id: commentId } });
   if (!comment) throw new Error("Comment not found");
