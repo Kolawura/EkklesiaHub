@@ -7,6 +7,7 @@ const COLS = [
     links: [
       { label: "Features", href: "/features" },
       { label: "Communities", href: "/communities" },
+      { label: "Bible", href: "/bible" },
       { label: "About", href: "/about" },
     ],
   },
@@ -33,7 +34,10 @@ export function PublicFooter() {
         <div className="flex flex-col md:flex-row justify-between gap-10 pb-10 border-b border-parchment/10">
           {/* Brand */}
           <div className="shrink-0">
-            <Link href="/" className="flex items-center gap-2 font-display text-lg font-semibold text-parchment mb-2">
+            <Link
+              href="/"
+              className="flex items-center gap-2 font-display text-lg font-semibold text-parchment mb-2"
+            >
               <CrossOrnament className="w-5 h-5 text-gold-light" />
               EkklesiaHub
             </Link>
@@ -64,7 +68,8 @@ export function PublicFooter() {
         </div>
 
         <p className="font-body text-[12px] text-parchment/25 text-center py-5">
-          © {new Date().getFullYear()} EkklesiaHub. Built for writers everywhere. Made with care.
+          © {new Date().getFullYear()} EkklesiaHub. Built for writers
+          everywhere. Made with care.
         </p>
       </div>
     </footer>

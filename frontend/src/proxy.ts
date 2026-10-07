@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
  * "/"          → landing page
  * "/features"  → features marketing page
  * "/about"     → about marketing page
+ * "/terms", "/privacy" → legal pages (must be reachable before signup)
  * "/auth"      → login / register
  * "/communities" → public communities browse (read-only view)
  *
@@ -14,7 +15,14 @@ import { NextRequest, NextResponse } from "next/server";
  * with a ?from= param so they land back where they came from after login.
  */
 //
-const PUBLIC_EXACT = new Set(["/", "/features", "/about", "/bible"]);
+const PUBLIC_EXACT = new Set([
+  "/",
+  "/features",
+  "/about",
+  "/bible",
+  "/terms",
+  "/privacy",
+]);
 
 const PUBLIC_PREFIXES = [
   "/auth",
