@@ -28,6 +28,9 @@ const PORT = process.env.PORT || 5000;
 const biblePool = new Pool({
   connectionString: process.env.BIBLE_DATABASE_URL,
 });
+const ekklesiaDB = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 // CRITICAL: pg.Pool emits a background 'error' event whenever an IDLE
 // client in the pool hits a connection problem (dropped connection, DB
@@ -42,11 +45,19 @@ const biblePool = new Pool({
 biblePool.on("error", (err) => {
   console.error("❌ Unexpected error on idle Bible DB client:", err.message);
 });
+ekklesiaDB.on("error", (err) => {
+  console.error("❌ Unexpected error on idle DB client:", err.message);
+});
 
 biblePool
   .query("SELECT COUNT(*) FROM bible_verses WHERE translation='NIV'")
   .then((r) => console.log(`✅ Bible DB: ${r.rows[0].count} NIV verses`))
   .catch((e) => console.error("❌ Bible DB failed:", e.message));
+
+ekklesiaDB
+  .query("SELECT COUNT(*) FROM user")
+  .then((r) => console.log(`DataBase of ${r.rows[0].count} Users`))
+  .catch((e) => console.log("❌ DataBase Failed:", e.message));
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
   "http://localhost:3000",

@@ -102,6 +102,7 @@ CREATE TABLE "public"."Comment" (
     "authorId" TEXT NOT NULL,
     "postId" TEXT NOT NULL,
     "parentId" TEXT,
+    "scriptureRefs" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

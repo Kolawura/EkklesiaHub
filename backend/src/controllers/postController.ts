@@ -6,13 +6,11 @@ import { createPostSchema, updatePostSchema } from "../schema/postSchema";
 export const createPost = async (req: AuthRequest, res: Response) => {
   const validated = createPostSchema.safeParse(req.body);
   if (!validated.success)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Invalid input",
-        error: validated.error.issues,
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid input",
+      error: validated.error.issues,
+    });
 
   try {
     const post = await postService.createPost({
@@ -46,6 +44,19 @@ export const archivePost = async (req: AuthRequest, res: Response) => {
     return res
       .status(200)
       .json({ success: true, message: "Post archived", data: post });
+  } catch (error: any) {
+    return res
+      .status(error.message === "Post not found" ? 404 : 403)
+      .json({ success: false, message: error.message });
+  }
+};
+
+export const unpublishPost = async (req: AuthRequest, res: Response) => {
+  try {
+    const post = await postService.unpublishPost(req.params.id, req.userId!);
+    return res
+      .status(200)
+      .json({ success: true, message: "Post moved to drafts", data: post });
   } catch (error: any) {
     return res
       .status(error.message === "Post not found" ? 404 : 403)
@@ -136,13 +147,11 @@ export const recordView = async (req: Request, res: Response) => {
 export const updatePost = async (req: AuthRequest, res: Response) => {
   const validated = updatePostSchema.safeParse(req.body);
   if (!validated.success)
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Invalid input",
-        error: validated.error.issues,
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Invalid input",
+      error: validated.error.issues,
+    });
   try {
     const updated = await postService.updatePost(
       req.params.id,

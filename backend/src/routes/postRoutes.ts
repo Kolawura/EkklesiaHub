@@ -21,6 +21,7 @@ router.post("/", protectRoute, postController.createPost);
 router.get("/:id/edit", protectRoute, postController.getPostForEdit);
 router.patch("/:id/publish", protectRoute, postController.publishPost);
 router.patch("/:id/archive", protectRoute, postController.archivePost);
+router.patch("/:id/unpublish", protectRoute, postController.unpublishPost);
 router.patch("/:id/remove", protectRoute, postController.adminRemovePost);
 router.patch("/:id/pin", protectRoute, postController.pinPost);
 router.put("/:id", protectRoute, postController.updatePost);

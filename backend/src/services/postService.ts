@@ -4,6 +4,9 @@ import crypto from "crypto";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
+const REMOVED_MESSAGE =
+  "This post was removed by a moderator and can't be changed";
+
 /** Strip HTML tags and calculate reading time (avg 200 wpm) */
 export const calcReadingTime = (htmlContent: string): number => {
   const text = htmlContent
@@ -89,11 +92,17 @@ export const publishPost = async (id: string, userId: string) => {
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) throw new Error("Post not found");
   if (post.authorId !== userId) throw new Error("Not authorized");
+  // A moderator takedown is final for the author: it can't be undone by re-publishing.
+  if (post.status === "REMOVED") throw new Error(REMOVED_MESSAGE);
   if (post.status === "PUBLISHED") throw new Error("Post is already published");
 
   return prisma.post.update({
     where: { id },
-    data: { status: "PUBLISHED", publishedAt: new Date() },
+    data: {
+      status: "PUBLISHED",
+      // Keep the original publish date when restoring an archived/unpublished post.
+      publishedAt: post.publishedAt ?? new Date(),
+    },
   });
 };
 
@@ -101,8 +110,20 @@ export const archivePost = async (id: string, userId: string) => {
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) throw new Error("Post not found");
   if (post.authorId !== userId) throw new Error("Not authorized");
+  if (post.status === "REMOVED") throw new Error(REMOVED_MESSAGE);
 
   return prisma.post.update({ where: { id }, data: { status: "ARCHIVED" } });
+};
+
+/** Move a published or archived post back to DRAFT. Keeps publishedAt so a later re-publish retains the original date. */
+export const unpublishPost = async (id: string, userId: string) => {
+  const post = await prisma.post.findUnique({ where: { id } });
+  if (!post) throw new Error("Post not found");
+  if (post.authorId !== userId) throw new Error("Not authorized");
+  if (post.status === "REMOVED") throw new Error(REMOVED_MESSAGE);
+  if (post.status === "DRAFT") throw new Error("Post is already a draft");
+
+  return prisma.post.update({ where: { id }, data: { status: "DRAFT" } });
 };
 
 // ── admin takedown ─────────────────────────────────────────────────────────────
@@ -372,6 +393,9 @@ export const updatePost = async (
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) throw new Error("Post not found");
   if (post.authorId !== authorId) throw new Error("Not authorized");
+  // Content of a removed post may still be edited, but its status can't be changed by the author.
+  if (post.status === "REMOVED" && updates.status)
+    throw new Error(REMOVED_MESSAGE);
 
   const extra: any = {};
   if (updates.content) {
@@ -379,7 +403,7 @@ export const updatePost = async (
     extra.excerpt = makeExcerpt(updates.content);
   }
   if (updates.status === "PUBLISHED" && post.status !== "PUBLISHED") {
-    extra.publishedAt = new Date();
+    extra.publishedAt = post.publishedAt ?? new Date();
   }
 
   return prisma.post.update({
