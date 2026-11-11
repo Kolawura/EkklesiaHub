@@ -165,8 +165,12 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
       try {
         const url = await uploadImageFile(file);
         editor?.chain().focus().setImage({ src: url }).run();
-      } catch (err: { message: string }) {
-        setImageError(err.message ?? "Image upload failed.");
+      } catch (err) {
+        setImageError(
+          err instanceof Error && err.message
+            ? err.message
+            : "Image upload failed.",
+        );
       } finally {
         setUploadingImage(false);
       }

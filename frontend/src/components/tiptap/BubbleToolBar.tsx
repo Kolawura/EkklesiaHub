@@ -38,7 +38,7 @@ export function BubbleToolbar({ editor }: { editor: Editor }) {
   return (
     <BubbleMenu
       editor={editor}
-      tippyOptions={{ duration: 150, placement: "top" }}
+      options={{ placement: "top" }}
       shouldShow={({ from, to }) => from !== to}
     >
       <div className="flex items-center gap-0.5 bg-ink rounded-xl shadow-warm-lg px-1.5 py-1.5 border border-ink-medium">
