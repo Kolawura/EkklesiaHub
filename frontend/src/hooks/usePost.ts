@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "./useToast";
-import { applyPostChange, PostStatus } from "@/lib/postCache";
+import { applyPostChange, type PostStatus } from "@/lib/postCache";
 import { useAuth } from "./useAuth";
 import { usePathname } from "next/navigation";
 
@@ -113,19 +113,21 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
       : allPosts.filter((p) => p.status === filter);
 
   const updateMutation = useMutation({
-    mutationFn: (status?: string) =>
+    mutationFn: (status?: string | void) =>
       putRequest(`/posts/${postId}`, {
         title: editorData.title,
         content: editorData.content,
         coverImage: coverImage || undefined,
-        ...(status ? { status } : {}),
+        ...(typeof status === "string" && status ? { status } : {}),
       }),
     onSuccess: (data, status) => {
       if (data?.success) {
         applyPostChange(queryClient, {
           type: "edited",
           id: postId!,
-          status: status as PostStatus | undefined,
+          status: (typeof status === "string" ? status : undefined) as
+            | PostStatus
+            | undefined,
         });
         toast({ title: "Post updated!", variant: "success" });
         router.push(`/posts/${slug}`);

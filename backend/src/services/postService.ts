@@ -394,6 +394,7 @@ export const updatePost = async (
   if (!post) throw new Error("Post not found");
   if (post.authorId !== authorId) throw new Error("Not authorized");
   // Content of a removed post may still be edited, but its status can't be changed by the author.
+  // (updates.status can never be "REMOVED": the Zod schema only allows DRAFT | PUBLISHED | ARCHIVED.)
   if (post.status === "REMOVED" && updates.status)
     throw new Error(REMOVED_MESSAGE);
 
