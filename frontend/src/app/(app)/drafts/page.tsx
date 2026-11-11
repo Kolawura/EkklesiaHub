@@ -1,5 +1,14 @@
 "use client";
-import { FileText, Clock, Archive, Trash2, Pencil, Send } from "lucide-react";
+import {
+  FileText,
+  Clock,
+  Archive,
+  ArchiveRestore,
+  Trash2,
+  Pencil,
+  Send,
+  Undo2,
+} from "lucide-react";
 import Link from "next/link";
 import { cn, STATUS_PILL } from "@/lib/utils";
 import { fmt } from "@/lib/format";
@@ -13,6 +22,7 @@ export default function DraftsPage() {
     isMyPostsLoading,
     publishMutation,
     archiveMutation,
+    unpublishMutation,
     deleteMutation,
     confirmDelete,
     setConfirmDelete,
@@ -136,25 +146,45 @@ export default function DraftsPage() {
                     <Pencil size={14} />
                   </Link>
 
-                  {post.status === "DRAFT" && (
-                    <>
-                      <button
-                        onClick={() => publishMutation.mutate(post.id)}
-                        disabled={publishMutation.isPending}
-                        title="Publish"
-                        className="p-2 rounded-lg text-ink-ghost hover:text-green-700 hover:bg-green-50 transition-colors disabled:opacity-50"
-                      >
+                  {(post.status === "DRAFT" || post.status === "ARCHIVED") && (
+                    <button
+                      onClick={() => publishMutation.mutate(post.id)}
+                      disabled={publishMutation.isPending}
+                      title={
+                        post.status === "ARCHIVED"
+                          ? "Restore & publish"
+                          : "Publish"
+                      }
+                      className="p-2 rounded-lg text-ink-ghost hover:text-green-700 hover:bg-green-50 transition-colors disabled:opacity-50"
+                    >
+                      {post.status === "ARCHIVED" ? (
+                        <ArchiveRestore size={14} />
+                      ) : (
                         <Send size={14} />
-                      </button>
-                      <button
-                        onClick={() => archiveMutation.mutate(post.id)}
-                        disabled={archiveMutation.isPending}
-                        title="Archive"
-                        className="p-2 rounded-lg text-ink-ghost hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50"
-                      >
-                        <Archive size={14} />
-                      </button>
-                    </>
+                      )}
+                    </button>
+                  )}
+
+                  {post.status === "ARCHIVED" && (
+                    <button
+                      onClick={() => unpublishMutation.mutate(post.id)}
+                      disabled={unpublishMutation.isPending}
+                      title="Move to drafts"
+                      className="p-2 rounded-lg text-ink-ghost hover:text-gold hover:bg-gold-bg transition-colors disabled:opacity-50"
+                    >
+                      <Undo2 size={14} />
+                    </button>
+                  )}
+
+                  {post.status === "DRAFT" && (
+                    <button
+                      onClick={() => archiveMutation.mutate(post.id)}
+                      disabled={archiveMutation.isPending}
+                      title="Archive"
+                      className="p-2 rounded-lg text-ink-ghost hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50"
+                    >
+                      <Archive size={14} />
+                    </button>
                   )}
 
                   {confirmDelete === post.id ? (

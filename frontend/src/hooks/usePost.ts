@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "./useToast";
+import { applyPostChange, PostStatus } from "@/lib/postCache";
 import { useAuth } from "./useAuth";
 import { usePathname } from "next/navigation";
 
@@ -34,6 +35,8 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [ready, setReady] = useState(false);
   const [confirmDeleteEditPost, setConfirmDeleteEditPost] = useState(false);
+  // Set once a post is deleted so the detail/edit queries stop refetching a post that no longer exists.
+  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -45,7 +48,6 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
 
   // Sync search and page params to URL
   useEffect(() => {
-    console.log("URL sync effect running", pathname);
     if (pathname !== "/posts") return;
     const params = new URLSearchParams();
     if (debouncedSearch) params.set("search", debouncedSearch);
@@ -65,7 +67,7 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
   } = useQuery<ApiResponse<Post>>({
     queryKey: ["post-slug", slug],
     queryFn: () => getRequest(`/posts/slug/${slug}`),
-    enabled: !!slug,
+    enabled: !!slug && !isDeleted,
   });
 
   const post = editPostData?.data;
@@ -74,7 +76,7 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
   const { data: editData, isLoading: editLoading } = useQuery({
     queryKey: ["post-edit", postId],
     queryFn: () => getRequest(`/posts/${postId}/edit`),
-    enabled: !!postId,
+    enabled: !!postId && !isDeleted,
   });
 
   const editPost = editData?.data;
@@ -94,6 +96,8 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
         `/posts?search=${debouncedSearch}&page=${page}&limit=${limit}`,
       ),
     placeholderData: (prev) => prev,
+    // Only the /posts page passes a limit; drafts and edit pages don't need the feed.
+    enabled: limit != null,
   });
 
   const { data: myPosts, isLoading: isMyPostsLoading } = useQuery({
@@ -116,10 +120,13 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
         coverImage: coverImage || undefined,
         ...(status ? { status } : {}),
       }),
-    onSuccess: (data) => {
+    onSuccess: (data, status) => {
       if (data?.success) {
-        queryClient.invalidateQueries({ queryKey: ["post", slug] });
-        queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+        applyPostChange(queryClient, {
+          type: "edited",
+          id: postId!,
+          status: status as PostStatus | undefined,
+        });
         toast({ title: "Post updated!", variant: "success" });
         router.push(`/posts/${slug}`);
       } else {
@@ -133,10 +140,11 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
       toast({ title: "Failed to update post", variant: "destructive" }),
   });
 
+  // Works for drafts AND archived posts (restore). The API allows ARCHIVED -> PUBLISHED.
   const publishMutation = useMutation({
     mutationFn: (id: string) => patchRequest(`/posts/${id}/publish`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    onSuccess: (_res, id) => {
+      applyPostChange(queryClient, { type: "status", id, status: "PUBLISHED" });
       toast({ title: "Post published! 🎉", variant: "success" });
     },
     onError: () =>
@@ -145,18 +153,33 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
 
   const archiveMutation = useMutation({
     mutationFn: (id: string) => patchRequest(`/posts/${id}/archive`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    onSuccess: (_res, id) => {
+      applyPostChange(queryClient, { type: "status", id, status: "ARCHIVED" });
       toast({ title: "Post archived", variant: "success" });
     },
+    onError: () =>
+      toast({ title: "Failed to archive", variant: "destructive" }),
+  });
+
+  // Archived (or published) -> back to DRAFT, so it can be worked on again before publishing.
+  const unpublishMutation = useMutation({
+    mutationFn: (id: string) => patchRequest(`/posts/${id}/unpublish`, {}),
+    onSuccess: (_res, id) => {
+      applyPostChange(queryClient, { type: "status", id, status: "DRAFT" });
+      toast({ title: "Moved to drafts", variant: "success" });
+    },
+    onError: () =>
+      toast({ title: "Failed to move to drafts", variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteRequest(`/posts/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    onSuccess: (_res, id) => {
+      setIsDeleted(true); // stop detail/edit queries from refetching the deleted post
+      applyPostChange(queryClient, { type: "deleted", id });
       toast({ title: "Post deleted", variant: "success" });
       setConfirmDelete(null);
+      setConfirmDeleteEditPost(false);
     },
     onError: () => toast({ title: "Failed to delete", variant: "destructive" }),
   });
@@ -202,6 +225,7 @@ export const usePost = ({ limit, slug }: { limit?: number; slug?: string }) => {
     updateMutation,
     publishMutation,
     archiveMutation,
+    unpublishMutation,
     deleteMutation,
     confirmDelete,
     confirmDeleteEditPost,

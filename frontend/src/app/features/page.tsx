@@ -1,42 +1,47 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { PublicNav } from "@/components/bars/PublicNav";
 import { PublicFooter } from "@/components/bars/PublicFooter";
 import { CrossOrnament } from "@/components/ui/CrossOrnament";
 
+export const metadata: Metadata = {
+  title: "Features · EkklesiaHub",
+  description:
+    "A writing studio, a built-in Bible, faith communities, series, reading lists and honest analytics, all in one place for faith-driven writers.",
+};
+
 /* ── DATA ─────────────────────────────── */
 const FEATURES = [
   {
     icon: "✦",
     title: "Distraction-free Writing Studio",
-    desc: "A rich editor with slash commands and @mentions, built for long-form thought: theological essays, devotionals, sermon notes, and more.",
+    desc: "A rich editor with slash commands, @mentions and smart typography, built for long-form thought: essays, devotionals, sermon notes and more.",
   },
   {
     icon: "✞",
     title: "A Bible Beside Your Writing",
-    desc: "Read 25+ translations, compare verses side by side, and drop Scripture straight into your posts and comments.",
+    desc: "A full Bible reader with 25+ translations, search, and side-by-side comparison. Drop Scripture into your posts and comments.",
   },
   {
     icon: "◈",
     title: "Faith Communities",
-    desc: "Create or join communities organized by tradition, topic, or ministry. Public forums and private circles.",
+    desc: "Create or join communities organized by tradition, topic or ministry. Public spaces and private circles, with Admin, Writer and Member roles.",
   },
   {
     icon: "☰",
     title: "Series & Reading List",
-    desc: "Group posts into ordered series, save what you want to read, and track what you've finished.",
+    desc: "Group posts into ordered series, save what you want to read, and mark what you've finished.",
   },
   {
     icon: "◎",
     title: "Thoughtful Engagement",
-    desc: "Four reaction types (Like, Love, Clap, Insightful) and threaded comments built for real dialogue.",
+    desc: "Four reaction types (Like, Love, Clap, Insightful), threaded replies, and comments that can carry Scripture with them.",
   },
   {
     icon: "◉",
     title: "Author Analytics",
-    desc: "Understand how your writing resonates. Views, reactions, reading time, and top posts in one clear dashboard.",
+    desc: "See how your writing lands: views over time, reaction breakdown, average reading time and your top posts in one dashboard.",
   },
 ];
 
@@ -45,6 +50,36 @@ const HIGHLIGHTS = [
   { value: "10", label: "Reading themes" },
   { value: "4", label: "Reaction types" },
   { value: "Public & private", label: "Communities" },
+];
+
+const STUDY_POINTS = [
+  "A public Bible reader, no account needed to read",
+  "Compare a verse across translations side by side",
+  "Search Scripture and jump straight to any reference",
+  "Verse of the Day on the reader",
+  "Hover any reference in a comment to preview the verse",
+  "Adjustable text size for comfortable reading",
+];
+
+const GATHER_POINTS = [
+  "Follow writers and follow topics to shape your feed",
+  "Bookmark posts to come back to them later",
+  "Notifications for comments, replies, reactions and follows",
+  "Community admins can pin posts and manage member roles",
+  "Community analytics: members, new members and published posts",
+];
+
+const THEMES = [
+  { name: "Sacred Editorial", color: "#b87d2c" },
+  { name: "Light", color: "#b8752a" },
+  { name: "Dark", color: "#d4a255" },
+  { name: "Midnight", color: "#60a5fa" },
+  { name: "Sepia", color: "#9c5a1a" },
+  { name: "Forest", color: "#4c7a3f" },
+  { name: "Rose Quartz", color: "#b8514a" },
+  { name: "Papyrus", color: "#c1552a" },
+  { name: "Obsidian", color: "#e0b64a" },
+  { name: "Byzantine", color: "#8b5a9e" },
 ];
 
 const MARQUEE_ITEMS = [
@@ -66,16 +101,14 @@ const MARQUEE_ITEMS = [
 function EditorMock() {
   return (
     <div className="bg-parchment rounded-2xl overflow-hidden border border-parchment-dark shadow-warm-lg">
-      {/* toolbar */}
       <div className="flex items-center gap-2 px-4 py-3 bg-parchment-deep border-b border-parchment-dark">
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
         <span className="w-2.5 h-2.5 rounded-full bg-parchment-dark" />
         <span className="ml-auto font-body text-[11px] text-ink-ghost">
-          New Article · Draft saved
+          New Article
         </span>
       </div>
-      {/* body */}
       <div className="p-6 space-y-3">
         <div className="h-7 bg-ink rounded w-3/4" />
         <div className="h-3.5 bg-ink-ghost rounded w-2/5" />
@@ -98,48 +131,67 @@ function EditorMock() {
   );
 }
 
+function PointList({
+  points,
+  dark = false,
+}: {
+  points: string[];
+  dark?: boolean;
+}) {
+  return (
+    <ul className="space-y-2.5">
+      {points.map((p) => (
+        <li
+          key={p}
+          className={`flex items-start gap-2.5 font-body text-sm ${
+            dark ? "text-parchment/70" : "text-ink-faint"
+          }`}
+        >
+          <ChevronRight size={13} className="text-gold shrink-0 mt-1" />
+          {p}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /* ── MAIN ───────────────────────────── */
-export default function LandingPage() {
+export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-parchment text-ink overflow-x-hidden">
       <PublicNav />
 
       {/* ── HERO ── */}
       <section className="relative pt-36 pb-24 overflow-hidden bg-parchment">
-        {/* ghost watermark */}
         <span
           aria-hidden
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display font-black text-[clamp(5rem,16vw,16rem)] tracking-[0.18em] text-parchment-dark opacity-50 whitespace-nowrap pointer-events-none select-none z-0"
         >
           EKKLESIA
         </span>
-
-        {/* ruled lines */}
         <div
           aria-hidden
           className="absolute inset-0 bg-ruled pointer-events-none z-0"
         />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center animate-hero-in">
-          {/* eyebrow */}
           <div className="inline-flex items-center gap-2.5 font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-6">
             <CrossOrnament className="w-3.5 h-3.5" />
-            Where faith-driven writing lives
+            Features
             <CrossOrnament className="w-3.5 h-3.5" />
           </div>
 
           <h1 className="font-display text-[clamp(2.75rem,7vw,5.5rem)] font-bold tracking-tight leading-[1.08] text-ink mb-6">
-            Write with purpose.
+            Everything for the work.
             <br />
             <em className="not-italic text-gold font-semibold">
-              Connect with depth.
+              Nothing in the way.
             </em>
           </h1>
 
           <p className="font-body text-lg text-ink-faint max-w-xl mx-auto leading-relaxed mb-8">
-            EkklesiaHub is the platform for spiritual writers, theologians,
-            pastors, and curious seekers. Publish your voice, find your
-            community, and reach readers who care.
+            A writing studio, a Bible in the margin, and communities to share it
+            with. Here is what EkklesiaHub gives you today.
           </p>
 
           <div className="flex items-center justify-center gap-3 flex-wrap mb-10">
@@ -150,21 +202,19 @@ export default function LandingPage() {
               Start writing free <ArrowRight size={16} />
             </Link>
             <Link
-              href="/features"
+              href="/bible"
               className="inline-flex items-center gap-2 font-body text-base text-ink border border-ink-ghost/60 px-6 py-3 rounded-lg hover:bg-parchment-deep hover:border-ink-ghost transition-all"
             >
-              See all features
+              Try the Bible reader
             </Link>
           </div>
 
-          {/* divider */}
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px bg-gold-pale w-20" />
             <CrossOrnament className="w-4 h-4 text-gold/40" />
             <div className="h-px bg-gold-pale w-20" />
           </div>
 
-          {/* stats */}
           <div className="flex justify-center gap-10 flex-wrap stagger">
             {HIGHLIGHTS.map(({ value, label }) => (
               <div key={label} className="flex flex-col items-center gap-0.5">
@@ -205,8 +255,7 @@ export default function LandingPage() {
               Everything a faith writer needs
             </h2>
             <p className="font-body text-lg text-ink-faint max-w-md mx-auto leading-relaxed">
-              From first draft to engaged community — every tool crafted with
-              purpose-driven writers in mind.
+              From first draft to engaged community.
             </p>
           </div>
 
@@ -248,28 +297,21 @@ export default function LandingPage() {
                 </em>
               </h2>
               <p className="font-body text-base text-parchment/60 leading-relaxed">
-                Our editor respects the weight of your words. Clean, focused,
-                and powerful — with all the formatting you need for deep,
-                thoughtful writing.
+                Clean, focused and powerful, with the formatting deep writing
+                needs and a few quiet helpers that stay out of your way.
               </p>
-              <ul className="space-y-2.5">
-                {[
-                  "Rich text with blockquotes, headings & links",
-                  "Insert Bible verses as Scripture blocks",
-                  "Slash commands, @mentions & smart typography",
+              <PointList
+                dark
+                points={[
+                  "Headings, blockquotes, lists, code blocks and links",
+                  "Type / for commands, including Scripture blocks",
+                  "@mention other writers",
+                  "Smart quotes and dashes, plus gentle autocorrect that knows theological terms",
+                  "Cover images and tags, with excerpts generated automatically",
                   "Estimated reading time",
-                  "Community publishing or private drafts",
-                  "Cover images and custom excerpts",
-                ].map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2.5 font-body text-sm text-parchment/70"
-                  >
-                    <ChevronRight size={13} className="text-gold shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+                  "Save drafts privately, then publish to the platform or a community",
+                ]}
+              />
               <Link
                 href="/auth?tab=signup"
                 className="inline-flex items-center gap-2 font-body text-sm font-medium bg-gold text-ink px-5 py-2.5 rounded-lg hover:bg-gold-light transition-all hover:-translate-y-0.5 mt-2"
@@ -278,6 +320,81 @@ export default function LandingPage() {
               </Link>
             </div>
             <EditorMock />
+          </div>
+        </div>
+      </section>
+
+      {/* ── STUDY + GATHER ── */}
+      <section className="py-24 bg-parchment">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-parchment-deep border border-parchment-dark rounded-2xl p-8 space-y-5">
+            <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium">
+              Study
+            </p>
+            <h2 className="font-display text-[1.75rem] font-bold tracking-tight text-ink leading-tight">
+              A Bible that lives with your words
+            </h2>
+            <p className="font-body text-sm text-ink-faint leading-relaxed">
+              Scripture is hosted on our own servers, so verses load fast and
+              references in your writing always resolve.
+            </p>
+            <PointList points={STUDY_POINTS} />
+            <Link
+              href="/bible"
+              className="inline-flex items-center gap-2 font-body text-sm font-medium text-gold hover:text-ink transition-colors"
+            >
+              Open the Bible reader <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="bg-parchment-deep border border-parchment-dark rounded-2xl p-8 space-y-5">
+            <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium">
+              Gather
+            </p>
+            <h2 className="font-display text-[1.75rem] font-bold tracking-tight text-ink leading-tight">
+              Readers, writers and communities
+            </h2>
+            <p className="font-body text-sm text-ink-faint leading-relaxed">
+              Find the voices worth following and the rooms worth joining.
+            </p>
+            <PointList points={GATHER_POINTS} />
+            <Link
+              href="/communities"
+              className="inline-flex items-center gap-2 font-body text-sm font-medium text-gold hover:text-ink transition-colors"
+            >
+              Browse communities <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── THEMES ── */}
+      <section className="py-20 bg-parchment-deep">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-3">
+            Reading comfort
+          </p>
+          <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-ink mb-4">
+            Ten themes, one for every hour
+          </h2>
+          <p className="font-body text-base text-ink-faint max-w-lg mx-auto leading-relaxed mb-10">
+            From warm parchment to deep midnight. Switch any time from the
+            palette icon in the top bar; your choice is remembered.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {THEMES.map(({ name, color }) => (
+              <span
+                key={name}
+                className="inline-flex items-center gap-2 font-body text-sm text-ink-faint bg-parchment border border-parchment-dark rounded-full px-4 py-1.5"
+              >
+                <span
+                  aria-hidden
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: color }}
+                />
+                {name}
+              </span>
+            ))}
           </div>
         </div>
       </section>
@@ -292,12 +409,11 @@ export default function LandingPage() {
             Church first. But doors open wide.
           </h2>
           <p className="font-body text-lg text-ink-faint max-w-2xl mx-auto leading-relaxed mb-12">
-            EkklesiaHub was built by and for the faith community — but our
-            platform welcomes anyone drawn to spiritual writing, contemplative
-            thought, or questions about meaning, purpose, and life. Whether
-            you&apos;re a pastor, a philosopher, a seeker, or simply someone who
-            writes about things that matter — there&apos;s a community here for
-            you.
+            EkklesiaHub was built by and for the faith community, and it
+            welcomes anyone drawn to spiritual writing, contemplative thought,
+            or questions about meaning and purpose. Whether you&apos;re a
+            pastor, a philosopher, a seeker, or simply someone who writes about
+            things that matter, there&apos;s a place for you.
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -343,8 +459,7 @@ export default function LandingPage() {
             </em>
           </h2>
           <p className="font-body text-lg text-ink-faint max-w-md mx-auto leading-relaxed">
-            Find your community and start writing. Free to start. Powerful to
-            grow.
+            Find your community and start writing.
           </p>
           <Link
             href="/auth?tab=signup"
@@ -352,9 +467,7 @@ export default function LandingPage() {
           >
             Create your account <ArrowRight size={16} />
           </Link>
-          <p className="font-body text-xs text-ink-ghost mt-3">
-            Free forever for individual writers.
-          </p>
+          <p className="font-body text-xs text-ink-ghost mt-3">Free to join.</p>
         </div>
       </section>
 

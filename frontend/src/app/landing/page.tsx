@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Quote } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { PublicNav } from "@/components/bars/PublicNav";
 import { PublicFooter } from "@/components/bars/PublicFooter";
 import { CrossOrnament } from "@/components/ui/CrossOrnament";
@@ -11,7 +11,12 @@ const FEATURES = [
   {
     icon: "✦",
     title: "Distraction-free Writing Studio",
-    desc: "A rich editor built for long-form thought — theological essays, devotionals, sermon notes, spiritual memoirs, and more.",
+    desc: "A rich editor with slash commands and @mentions, built for long-form thought: theological essays, devotionals, sermon notes, and more.",
+  },
+  {
+    icon: "✞",
+    title: "A Bible Beside Your Writing",
+    desc: "Read 25+ translations, compare verses side by side, and drop Scripture straight into your posts and comments.",
   },
   {
     icon: "◈",
@@ -19,56 +24,27 @@ const FEATURES = [
     desc: "Create or join communities organized by tradition, topic, or ministry. Public forums and private circles.",
   },
   {
-    icon: "◉",
-    title: "Author Analytics",
-    desc: "Understand how your writing resonates. Views, reactions, reading time, and engagement — all in one clear dashboard.",
-  },
-  {
-    icon: "❋",
-    title: "Bookmarks & Library",
-    desc: "Save articles from across the platform and build a personal reading library sorted by topic or community.",
+    icon: "☰",
+    title: "Series & Reading List",
+    desc: "Group posts into ordered series, save what you want to read, and track what you've finished.",
   },
   {
     icon: "◎",
     title: "Thoughtful Engagement",
-    desc: "Multi-type reactions beyond a simple like — Insightful, Love, Clap, and more. Comments built for real dialogue.",
+    desc: "Four reaction types (Like, Love, Clap, Insightful) and threaded comments built for real dialogue.",
   },
   {
-    icon: "⊕",
-    title: "Drafts & Publishing",
-    desc: "Write privately, revise at your pace, then publish to your community or the whole platform.",
+    icon: "◉",
+    title: "Author Analytics",
+    desc: "Understand how your writing resonates. Views, reactions, reading time, and top posts in one clear dashboard.",
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "EkklesiaHub gave my theological writing a home. The community here engages with depth and genuine care.",
-    author: "Rev. Amara Osei",
-    role: "Pastor & Writer, Accra",
-    initials: "AO",
-  },
-  {
-    quote:
-      "Finally a platform that takes faith writing seriously. Whether you're a pastor or a curious seeker, there's a place for you.",
-    author: "Dr. James Whitfield",
-    role: "Seminary Professor, Nashville",
-    initials: "JW",
-  },
-  {
-    quote:
-      "I've connected with readers I never would have reached. The communities feel like genuine spaces for learning.",
-    author: "Sister Maria Luz",
-    role: "Theologian & Author, Manila",
-    initials: "ML",
-  },
-];
-
-const STATS = [
-  { value: "12,400+", label: "Writers" },
-  { value: "94,000+", label: "Articles" },
-  { value: "340+", label: "Communities" },
-  { value: "2.1M+", label: "Readers" },
+const HIGHLIGHTS = [
+  { value: "25+", label: "Bible translations" },
+  { value: "10", label: "Reading themes" },
+  { value: "4", label: "Reaction types" },
+  // { value: "Public & private", label: "Communities" },
 ];
 
 const MARQUEE_ITEMS = [
@@ -190,7 +166,7 @@ export default function LandingPage() {
 
           {/* stats */}
           <div className="flex justify-center gap-10 flex-wrap stagger">
-            {STATS.map(({ value, label }) => (
+            {HIGHLIGHTS.map(({ value, label }) => (
               <div key={label} className="flex flex-col items-center gap-0.5">
                 <span className="font-display text-[1.75rem] font-bold text-ink tracking-tight leading-none">
                   {value}
@@ -279,7 +255,8 @@ export default function LandingPage() {
               <ul className="space-y-2.5">
                 {[
                   "Rich text with blockquotes, headings & links",
-                  "Auto-save on every keystroke",
+                  "Insert Bible verses as Scripture blocks",
+                  "Slash commands, @mentions & smart typography",
                   "Estimated reading time",
                   "Community publishing or private drafts",
                   "Cover images and custom excerpts",
@@ -301,45 +278,6 @@ export default function LandingPage() {
               </Link>
             </div>
             <EditorMock />
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="py-24 bg-parchment-deep">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-3">
-              From the community
-            </p>
-            <h2 className="font-display text-[clamp(1.875rem,4vw,2.75rem)] font-bold tracking-tight text-ink">
-              Voices from EkklesiaHub
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger">
-            {TESTIMONIALS.map(({ quote, author, role, initials }) => (
-              <div
-                key={author}
-                className="bg-parchment border border-parchment-dark rounded-2xl p-6 flex flex-col gap-4 hover:shadow-warm-md transition-shadow"
-              >
-                <Quote size={24} className="text-gold-pale shrink-0" />
-                <p className="font-body text-base italic text-ink-light leading-relaxed flex-1">
-                  &quot;{quote}&quot;
-                </p>
-                <div className="flex items-center gap-3 pt-3 border-t border-parchment-deep">
-                  <div className="w-9 h-9 rounded-full bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-xs font-bold text-gold shrink-0">
-                    {initials}
-                  </div>
-                  <div>
-                    <p className="font-display text-sm font-semibold text-ink">
-                      {author}
-                    </p>
-                    <p className="font-body text-xs text-ink-ghost">{role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -405,8 +343,8 @@ export default function LandingPage() {
             </em>
           </h2>
           <p className="font-body text-lg text-ink-faint max-w-md mx-auto leading-relaxed">
-            Join thousands of writers who have found their community. Free to
-            start. Powerful to grow.
+            Find your community and start writing. Free to start. Powerful to
+            grow.
           </p>
           <Link
             href="/auth?tab=signup"

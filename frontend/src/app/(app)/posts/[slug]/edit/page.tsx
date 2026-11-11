@@ -10,6 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePost } from "@/hooks/usePost";
 import {
   Archive,
+  ArchiveRestore,
+  Undo2,
   Trash2,
   ImagePlus,
   X,
@@ -50,6 +52,7 @@ export default function EditPostPage() {
     editLoading,
     updateMutation,
     archiveMutation,
+    unpublishMutation,
     deleteMutation,
     confirmDeleteEditPost: confirmDelete,
     setConfirmDeleteEditPost: setConfirmDelete,
@@ -97,7 +100,8 @@ export default function EditPostPage() {
   }
 
   /* ── Loading state ── */
-  if (isLoading || editLoading || !ready) {
+  // deleteMutation.isSuccess: show the spinner while redirecting, never a "Post not found" flash
+  if (isLoading || editLoading || !ready || deleteMutation.isSuccess) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="w-7 h-7 border-2 border-parchment-dark border-t-gold rounded-full animate-spin" />
@@ -119,6 +123,7 @@ export default function EditPostPage() {
   const isPending =
     updateMutation.isPending ||
     archiveMutation.isPending ||
+    unpublishMutation.isPending ||
     deleteMutation.isPending;
 
   const isDraft = editPost.status === "DRAFT";
@@ -158,6 +163,17 @@ export default function EditPostPage() {
             </button>
           )}
 
+          {/* Move archived post back to drafts */}
+          {isArchived && postId && (
+            <button
+              onClick={() => unpublishMutation.mutate(postId)}
+              disabled={isPending}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 font-body text-xs text-ink-ghost hover:text-gold hover:bg-gold-bg rounded-lg disabled:opacity-40 transition-colors"
+            >
+              <Undo2 size={13} /> Move to drafts
+            </button>
+          )}
+
           {/* Delete */}
           {!confirmDelete ? (
             <button
@@ -174,7 +190,12 @@ export default function EditPostPage() {
               </span>
               {postId && (
                 <button
-                  onClick={() => deleteMutation.mutate(postId)}
+                  onClick={() =>
+                    deleteMutation.mutate(postId, {
+                      // Leave the page of a post that no longer exists
+                      onSuccess: () => router.replace("/posts"),
+                    })
+                  }
                   disabled={isPending}
                   className="font-body text-xs px-2.5 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
                 >
@@ -196,14 +217,15 @@ export default function EditPostPage() {
 
           <div className="w-px h-5 bg-parchment-dark mx-1" />
 
-          {/* Save & Publish — only for drafts */}
-          {isDraft && (
+          {/* Save & Publish (drafts) / Save & Restore (archived) */}
+          {(isDraft || isArchived) && (
             <button
               onClick={() => updateMutation.mutate("PUBLISHED")}
               disabled={isPending}
               className="inline-flex items-center gap-1.5 font-body text-sm text-ink-faint bg-parchment-deep border border-parchment-dark px-4 py-1.5 rounded-lg hover:bg-parchment-dark disabled:opacity-50 transition-colors"
             >
-              <Send size={13} /> Publish
+              {isArchived ? <ArchiveRestore size={13} /> : <Send size={13} />}
+              {isArchived ? "Restore & publish" : "Publish"}
             </button>
           )}
 
