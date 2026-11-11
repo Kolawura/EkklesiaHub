@@ -24,12 +24,18 @@ import { authLimiter, generalLimiter } from "./middlewares/rateLimiter";
 import path from "path";
 
 const app = express();
+
+// Behind a reverse proxy (Render, and Vercel in front of it) req.ip is the
+// proxy's address unless Express is told how many proxy hops to trust. Without
+// this, every visitor shares ONE rate-limit bucket. Set TRUST_PROXY on the host
+// (e.g. 2 for Vercel -> Render). Leave it unset for local development.
+const trustProxyHops = Number.parseInt(process.env.TRUST_PROXY ?? "", 10);
+if (Number.isInteger(trustProxyHops) && trustProxyHops > 0) {
+  app.set("trust proxy", trustProxyHops);
+}
 const PORT = process.env.PORT || 5000;
 const biblePool = new Pool({
   connectionString: process.env.BIBLE_DATABASE_URL,
-});
-const ekklesiaDB = new Pool({
-  connectionString: process.env.DATABASE_URL,
 });
 
 // CRITICAL: pg.Pool emits a background 'error' event whenever an IDLE
@@ -45,19 +51,6 @@ const ekklesiaDB = new Pool({
 biblePool.on("error", (err) => {
   console.error("❌ Unexpected error on idle Bible DB client:", err.message);
 });
-ekklesiaDB.on("error", (err) => {
-  console.error("❌ Unexpected error on idle DB client:", err.message);
-});
-
-biblePool
-  .query("SELECT COUNT(*) FROM bible_verses WHERE translation='NIV'")
-  .then((r) => console.log(`✅ Bible DB: ${r.rows[0].count} NIV verses`))
-  .catch((e) => console.error("❌ Bible DB failed:", e.message));
-
-ekklesiaDB
-  .query("SELECT COUNT(*) FROM user")
-  .then((r) => console.log(`DataBase of ${r.rows[0].count} Users`))
-  .catch((e) => console.log("❌ DataBase Failed:", e.message));
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
   "http://localhost:3000",

@@ -1,6 +1,35 @@
 import type { NextConfig } from "next";
 
+// Where the Express API lives (server-side only, NOT exposed to the browser).
+// Local dev falls back to localhost; production must set it explicitly.
+// Tolerates a trailing slash and a pasted "/api" suffix, since the rewrite below adds /api itself.
+const API_ORIGIN = (process.env.API_ORIGIN ?? "http://localhost:5000")
+  .trim()
+  .replace(/\/+$/, "")
+  .replace(/\/api$/i, "");
+
+if (process.env.NODE_ENV === "production" && !process.env.API_ORIGIN) {
+  // Fail the build loudly instead of shipping a site whose API calls 404.
+  throw new Error(
+    "API_ORIGIN is not set. Add it in your host's environment variables, e.g. https://your-api.onrender.com (no trailing slash, no /api).",
+  );
+}
+
 const nextConfig: NextConfig = {
+  // ── API proxy ──────────────────────────────────────────────────────────────
+  // The browser only ever talks to this site (NEXT_PUBLIC_API_BASE_URL=/api);
+  // Next forwards /api/* to the Express server. That makes the auth cookie
+  // first-party (so it is actually sent, and visible to proxy.ts), and removes
+  // CORS from the picture.
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${API_ORIGIN}/api/:path*`,
+      },
+    ];
+  },
+
   // ── Compression ────────────────────────────────────────────────────────────
   compress: true,
 
@@ -28,7 +57,7 @@ const nextConfig: NextConfig = {
       "@tanstack/react-query",
     ],
   },
-   turbopack: {
+  turbopack: {
     root: __dirname,
   },
 
