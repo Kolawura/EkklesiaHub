@@ -1,6 +1,6 @@
 import NavBar from "@/components/bars/NavBar";
 import { SideBar } from "@/components/bars/SideBar";
-import { AuthGuard } from "@/components/auth/AuthGuard";
+import { AuthGuard } from "@/components/Auth/AuthGuard";
 
 /*
  * Application shell — every route in this group requires a valid session.
