@@ -86,7 +86,7 @@ export function BibleReader({
 
   if (isError || !data)
     return (
-      <div className="flex flex-col items-center justify-center h-screen py-20 text-center">
+      <div className="flex flex-col items-center justify-center h-full min-h-[50vh] px-6 py-20 text-center">
         <BookOpen size={40} className="text-parchment-dark mb-4" />
         <p className="font-body text-sm text-ink-faint mb-2">
           This chapter is not available in {translation}.
@@ -98,13 +98,13 @@ export function BibleReader({
     );
 
   return (
-    <div className="flex flex-col h-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-40">
+    <div className="mx-auto flex h-full w-full max-w-3xl flex-col">
       {/* Chapter heading */}
-      <div className="shrink-0 px-8 pt-10 pb-6">
+      <div className="shrink-0 px-4 sm:px-8 pt-6 sm:pt-10 pb-5 sm:pb-6">
         <p className="font-body text-xs uppercase tracking-[0.2em] text-gold mb-1.5">
           {translation}
         </p>
-        <h1 className="font-display text-[2.25rem] font-bold text-ink tracking-tight leading-tight">
+        <h1 className="font-display text-[1.75rem] sm:text-[2.25rem] font-bold text-ink tracking-tight leading-tight break-words">
           {data.book_name}
         </h1>
         <p className="font-display text-[1.125rem] text-ink-faint mt-1">
@@ -116,7 +116,7 @@ export function BibleReader({
       {/* Verses */}
       <div
         ref={contentRef}
-        className="flex-1 overflow-y-auto px-8 pb-16 scroll-smooth"
+        className="flex-1 overflow-y-auto px-4 sm:px-8 pb-16 scroll-smooth"
       >
         <div className="max-w-2xl">
           <p
@@ -190,24 +190,24 @@ export function BibleReader({
 
       {/* Chapter navigation */}
       <div className="shrink-0 border-t border-parchment-dark bg-parchment/95 backdrop-blur-sm">
-        <div className="flex items-center justify-between px-8 py-4">
+        <div className="flex items-center justify-between gap-2 px-3 sm:px-8 py-2.5 sm:py-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] sm:pb-4">
           {data.prev_chapter ? (
             <button
               onClick={() => onNavigate(data.book_name, data.prev_chapter!)}
-              className="inline-flex items-center gap-2 font-body text-sm text-ink-faint hover:text-gold transition-colors group"
+              className="inline-flex items-center gap-1.5 sm:gap-2 py-2 pr-2 font-body text-sm text-ink-faint hover:text-gold transition-colors group"
             >
               <ChevronLeft
                 size={16}
                 className="group-hover:-translate-x-0.5 transition-transform"
               />
-              Chapter {data.prev_chapter}
+              <span className="hidden sm:inline">Chapter&nbsp;</span>{data.prev_chapter}
             </button>
           ) : (
             <div />
           )}
 
           {/* Progress dots */}
-          <div className="flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-1.5">
             {Array.from({ length: Math.min(data.max_chapters, 30) }, (_, i) => {
               const chNum = Math.ceil((i + 1) * (data.max_chapters / 30));
               const isActive = Math.abs(chNum - data.chapter) < 2;
@@ -232,9 +232,9 @@ export function BibleReader({
           {data.next_chapter ? (
             <button
               onClick={() => onNavigate(data.book_name, data.next_chapter!)}
-              className="inline-flex items-center gap-2 font-body text-sm text-ink-faint hover:text-gold transition-colors group"
+              className="inline-flex items-center gap-1.5 sm:gap-2 py-2 pl-2 font-body text-sm text-ink-faint hover:text-gold transition-colors group"
             >
-              Chapter {data.next_chapter}
+              <span className="hidden sm:inline">Chapter&nbsp;</span>{data.next_chapter}
               <ChevronRight
                 size={16}
                 className="group-hover:translate-x-0.5 transition-transform"

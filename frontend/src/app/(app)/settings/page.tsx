@@ -37,9 +37,9 @@ export default function SettingsPage() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-9">
+    <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       <div className="mb-8">
-        <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
           Settings
         </h1>
         <p className="font-body text-sm text-ink-faint mt-1">

@@ -62,7 +62,7 @@ export default function PostDetailPage() {
 
   if (isError || !post)
     return (
-      <div className="max-w-2xl mx-auto px-6 py-24 text-center">
+      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 sm:py-24 text-center">
         <h2 className="font-display text-2xl font-bold text-ink mb-2">
           Post not found
         </h2>
@@ -79,10 +79,10 @@ export default function PostDetailPage() {
     );
 
   return (
-    <div className="min-h-screen bg-parchment">
+    <div className="min-h-full bg-parchment">
       {/* Sticky top bar */}
       <div className="sticky top-0 z-20 bg-parchment/90 backdrop-blur-sm border-b border-parchment-dark">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-4 py-2.5 sm:px-6 sm:py-3 flex items-center justify-between">
           <button
             onClick={() => router.back()}
             className="inline-flex items-center gap-1.5 font-body text-sm text-ink-faint hover:text-ink transition-colors"
@@ -125,10 +125,10 @@ export default function PostDetailPage() {
         </div>
       </div>
 
-      <article className="max-w-3xl mx-auto px-6 py-12">
+      <article className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-12">
         {/* Cover */}
         {post.coverImage && (
-          <div className="aspect-video rounded-2xl overflow-hidden mb-10 border border-parchment-dark shadow-warm-sm">
+          <div className="aspect-video rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-10 border border-parchment-dark shadow-warm-sm">
             <img
               src={post.coverImage}
               alt={post.title}
@@ -168,7 +168,7 @@ export default function PostDetailPage() {
         </h1>
 
         {/* Author row */}
-        <div className="flex items-center gap-4 mb-10 pb-8 border-b border-parchment-dark">
+        <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-parchment-dark">
           <Link href={`/profile/${post.author?.id}`} className="shrink-0">
             <div className="w-12 h-12 rounded-2xl bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-base font-bold text-gold hover:opacity-75 transition-opacity overflow-hidden">
               {post.author?.profileImg ? (
@@ -213,7 +213,7 @@ export default function PostDetailPage() {
         <PostContent html={post.content} />
 
         {/* Reactions */}
-        <div className="flex flex-wrap items-center gap-2.5 py-6 border-t border-b border-parchment-dark mb-12">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 py-4 sm:py-6 border-t border-b border-parchment-dark mb-10 sm:mb-12">
           {REACTIONS.map(({ type, icon: Icon, label }) => {
             const count = counts[type] ?? 0;
             return (
@@ -285,7 +285,7 @@ export default function PostDetailPage() {
               <div className="w-9 h-9 rounded-full bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-xs font-bold text-gold shrink-0">
                 {user?.username?.slice(0, 2).toUpperCase() ?? "?"}
               </div>
-              <div className="flex-1 flex gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-2 sm:flex-row">
                 <textarea
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
@@ -296,7 +296,7 @@ export default function PostDetailPage() {
                   }
                   disabled={!isAuthenticated}
                   rows={2}
-                  className="flex-1 px-4 py-2.5 font-body text-sm border border-parchment-dark rounded-xl bg-parchment text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 resize-none transition-all disabled:opacity-50"
+                  className="flex-1 min-w-0 px-4 py-2.5 font-body text-sm border border-parchment-dark rounded-xl bg-parchment text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 resize-none transition-all disabled:opacity-50"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
@@ -311,7 +311,7 @@ export default function PostDetailPage() {
                     commentMutation.isPending ||
                     !isAuthenticated
                   }
-                  className="self-end inline-flex items-center gap-1.5 px-4 py-2.5 font-body text-sm font-medium bg-ink text-parchment rounded-xl hover:bg-ink-medium disabled:opacity-40 transition-all"
+                  className="self-end inline-flex items-center justify-center gap-1.5 px-4 py-2.5 font-body text-sm font-medium bg-ink text-parchment rounded-xl hover:bg-ink-medium disabled:opacity-40 transition-all"
                 >
                   {commentMutation.isPending ? (
                     <span className="w-3.5 h-3.5 border-2 border-parchment/30 border-t-parchment rounded-full animate-spin" />
@@ -325,7 +325,7 @@ export default function PostDetailPage() {
 
             {/* Scripture attachment for comment */}
             {isAuthenticated && (
-              <div className="pl-12">
+              <div className="pl-0 sm:pl-12">
                 <ScriptureInput
                   attached={attachedVerses}
                   onAttach={(reference, text) =>
@@ -358,7 +358,7 @@ export default function PostDetailPage() {
                     }}
                   />
                   {comment.replies?.length > 0 && (
-                    <div className="ml-11 mt-3 space-y-3 border-l-2 border-parchment-dark pl-4">
+                    <div className="ml-3 sm:ml-11 mt-3 space-y-3 border-l-2 border-parchment-dark pl-3 sm:pl-4">
                       {comment.replies.map((reply) => (
                         <CommentItem key={reply.id} comment={reply} isReply />
                       ))}

@@ -17,7 +17,7 @@ export function PostCard({
   const authorInitial = post.author.username[0].toUpperCase();
 
   return (
-    <article className="group border-b border-parchment-dark last:border-0 py-7 flex gap-5">
+    <article className="group border-b border-parchment-dark last:border-0 py-5 sm:py-7 flex gap-3 sm:gap-5">
       <div className="flex-1 min-w-0">
         {/* Author row */}
         <div className="flex items-center gap-2 flex-wrap mb-2.5">
@@ -68,7 +68,7 @@ export function PostCard({
 
         {/* Title */}
         <Link href={`/posts/${post.slug}`}>
-          <h2 className="font-display text-xl font-bold text-ink mb-1.5 group-hover:text-gold transition-colors line-clamp-2 leading-snug">
+          <h2 className="font-display text-lg sm:text-xl font-bold text-ink mb-1.5 group-hover:text-gold transition-colors line-clamp-2 leading-snug">
             {post.title}
           </h2>
         </Link>
@@ -137,7 +137,7 @@ export function PostCard({
       {/* Cover image */}
       {post.coverImage && (
         <Link href={`/posts/${post.slug}`} className="shrink-0 self-start">
-          <div className="w-28 h-20 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
+          <div className="w-20 h-16 sm:w-28 sm:h-20 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
             <img
               src={post.coverImage}
               alt={post.title}

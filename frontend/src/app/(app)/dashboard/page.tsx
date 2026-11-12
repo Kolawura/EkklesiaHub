@@ -20,11 +20,11 @@ export default function DashboardPage() {
   const { s, topPosts, recentPosts, isLoading } = useAnalytics();
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-9">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-8 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight leading-tight">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight leading-tight">
             Welcome back, {user?.firstName}
           </h1>
           <p className="font-body text-sm text-ink-faint mt-1">
@@ -33,7 +33,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href="/new"
-          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
+          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-3 sm:px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
         >
           <PenLine size={13} /> Write
         </Link>
@@ -81,7 +81,7 @@ export default function DashboardPage() {
                 <div className="w-9 h-9 rounded-xl bg-gold-bg border border-gold-pale flex items-center justify-center text-gold mb-3 group-hover:bg-gold-bg/80 transition-colors">
                   <Icon size={15} />
                 </div>
-                <p className="font-display text-[2rem] font-bold text-ink tracking-tight leading-none">
+                <p className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight leading-none">
                   {value}
                 </p>
                 <p className="font-body text-xs text-ink-ghost mt-1.5">

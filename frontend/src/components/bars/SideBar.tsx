@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -14,12 +15,14 @@ import {
   Library,
   BookOpen,
   Rss,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { CrossOrnament } from "@/components/ui/CrossOrnament";
 import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/useSideBarStore";
 
 const NAV = [
   // Core
@@ -39,7 +42,7 @@ const NAV = [
 
   // Separator — discover
   { id: "sep-discover", label: "Discover", separator: true },
-  { id: "bible", label: "Bible", icon: BookOpen, href: "/bible" }, // ← ADD THIS
+  { id: "bible", label: "Bible", icon: BookOpen, href: "/bible" },
   { id: "feed", label: "Tag Feed", icon: Rss, href: "/feed" },
   {
     id: "communities",
@@ -67,99 +70,150 @@ const NAV = [
 export const SideBar = () => {
   const pathname = usePathname();
   const { user, logoutMutation } = useAuth();
+  const { mobileOpen, closeMobile } = useSidebarStore();
 
   const initials = user
     ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : "?";
 
+  // Mobile drawer: close after navigating, and on Escape.
+  useEffect(() => {
+    closeMobile();
+  }, [pathname, closeMobile]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeMobile();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileOpen, closeMobile]);
+
   return (
-    <aside className="w-56 h-screen bg-parchment-deep border-r border-parchment-dark flex flex-col shrink-0">
-      {/* Brand */}
-      <div className="px-4 py-4 border-b border-parchment-dark">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 font-display text-[1.0625rem] font-semibold text-ink tracking-tight"
-        >
-          <CrossOrnament className="w-4 h-4 text-gold" />
-          EkklesiaHub
-        </Link>
-        <p className="font-body text-[10px] uppercase tracking-widest text-ink-ghost mt-0.5 pl-0.5">
-          Writers Community
-        </p>
-      </div>
+    <>
+      {/* Backdrop — mobile/tablet only */}
+      <div
+        onClick={closeMobile}
+        aria-hidden="true"
+        className={cn(
+          "fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
+          mobileOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+      />
 
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-2 overflow-y-auto space-y-0">
-        {NAV.map((item) => {
-          // Section separator
-          if ("separator" in item) {
-            return (
-              <div key={item.id} className="pt-3 pb-1 px-2">
-                <p className="font-body text-[9px] uppercase tracking-widest text-ink-ghost font-medium">
-                  {item.label}
-                </p>
-              </div>
-            );
-          }
-
-          const Icon = item.icon!;
-          const active =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(item.href!);
-
-          return (
+      {/*
+        < lg : off-canvas drawer (invisible + translated away until opened, so
+               it is not tab-focusable while closed)
+        ≥ lg : normal in-flow sidebar column, always visible
+      */}
+      <aside
+        id="app-sidebar"
+        aria-label="Main navigation"
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-72 max-w-[85vw] flex-col shrink-0",
+          "bg-parchment-deep border-r border-parchment-dark shadow-warm-lg",
+          "transition-[transform,visibility] duration-300 ease-out",
+          "lg:visible lg:static lg:z-auto lg:h-dvh lg:w-56 lg:max-w-none lg:translate-x-0 lg:shadow-none lg:transition-none",
+          mobileOpen ? "visible translate-x-0" : "invisible -translate-x-full",
+        )}
+      >
+        {/* Brand */}
+        <div className="flex items-start justify-between gap-2 px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] border-b border-parchment-dark">
+          <div className="min-w-0">
             <Link
-              key={item.id}
-              href={item.href!}
-              className={cn(
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg font-body text-sm transition-all",
-                active
-                  ? "bg-gold-bg text-gold border border-gold-pale font-medium"
-                  : "text-ink-faint hover:bg-parchment-dark hover:text-ink",
-              )}
+              href="/dashboard"
+              className="flex items-center gap-2 font-display text-[1.0625rem] font-semibold text-ink tracking-tight"
             >
-              <Icon size={14} className="shrink-0" />
-              {item.label}
+              <CrossOrnament className="w-4 h-4 text-gold" />
+              EkklesiaHub
             </Link>
-          );
-        })}
-      </nav>
-
-      {/* User */}
-      <div className="px-3 py-3 border-t border-parchment-dark">
-        <div className="flex items-center gap-2.5">
-          <Link href="/profile" className="shrink-0">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-[10px] font-bold text-gold hover:opacity-80 transition-opacity cursor-pointer">
-              {user?.profileImg ? (
-                <img
-                  src={user.profileImg}
-                  alt={user.firstName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                initials
-              )}
-            </div>
-          </Link>
-          <div className="flex-1 min-w-0">
-            <p className="font-body text-xs font-medium text-ink truncate">
-              {user ? `${user.firstName} ${user.lastName}` : "Guest"}
-            </p>
-            <p className="font-body text-[10px] text-ink-ghost truncate">
-              {user?.email ?? ""}
+            <p className="font-body text-[10px] uppercase tracking-widest text-ink-ghost mt-0.5 pl-0.5">
+              Writers Community
             </p>
           </div>
           <button
-            onClick={() => logoutMutation.mutate()}
-            disabled={logoutMutation.isPending}
-            title="Sign out"
-            className="text-ink-ghost hover:text-red-700 transition-colors disabled:opacity-40 shrink-0"
+            type="button"
+            onClick={closeMobile}
+            aria-label="Close menu"
+            className="-mr-1.5 -mt-1 rounded-lg p-2 text-ink-ghost transition-colors hover:bg-parchment-dark hover:text-ink lg:hidden"
           >
-            <LogOut size={13} />
+            <X size={18} />
           </button>
         </div>
-      </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-2 py-2 overflow-y-auto space-y-0">
+          {NAV.map((item) => {
+            // Section separator
+            if ("separator" in item) {
+              return (
+                <div key={item.id} className="pt-3 pb-1 px-2">
+                  <p className="font-body text-[9px] uppercase tracking-widest text-ink-ghost font-medium">
+                    {item.label}
+                  </p>
+                </div>
+              );
+            }
+
+            const Icon = item.icon!;
+            const active =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname.startsWith(item.href!);
+
+            return (
+              <Link
+                key={item.id}
+                href={item.href!}
+                className={cn(
+                  "flex items-center gap-2.5 px-3 py-2.5 lg:py-2 rounded-lg font-body text-sm transition-all",
+                  active
+                    ? "bg-gold-bg text-gold border border-gold-pale font-medium"
+                    : "text-ink-faint hover:bg-parchment-dark hover:text-ink",
+                )}
+              >
+                <Icon size={15} className="shrink-0 lg:h-3.5 lg:w-3.5" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User */}
+        <div className="px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-parchment-dark">
+          <div className="flex items-center gap-2.5">
+            <Link href="/profile" className="shrink-0">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-[10px] font-bold text-gold hover:opacity-80 transition-opacity cursor-pointer">
+                {user?.profileImg ? (
+                  <img
+                    src={user.profileImg}
+                    alt={user.firstName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  initials
+                )}
+              </div>
+            </Link>
+            <div className="flex-1 min-w-0">
+              <p className="font-body text-xs font-medium text-ink truncate">
+                {user ? `${user.firstName} ${user.lastName}` : "Guest"}
+              </p>
+              <p className="font-body text-[10px] text-ink-ghost truncate">
+                {user?.email ?? ""}
+              </p>
+            </div>
+            <button
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              title="Sign out"
+              aria-label="Sign out"
+              className="-mr-1 rounded-lg p-2 text-ink-ghost hover:bg-parchment-dark hover:text-red-700 transition-colors disabled:opacity-40 shrink-0"
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
+        </div>
     </aside>
+    </>
   );
 };

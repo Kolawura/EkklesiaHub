@@ -56,7 +56,7 @@ export default function AboutPage() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="relative pt-36 pb-20 text-center overflow-hidden">
+      <section className="relative pt-28 sm:pt-36 pb-20 text-center overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 bg-ruled pointer-events-none"
@@ -82,7 +82,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission + Timeline */}
-      <section className="py-24 bg-parchment">
+      <section className="py-16 sm:py-24 bg-parchment">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div>
             <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-4">
@@ -137,7 +137,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-24 bg-parchment-deep">
+      <section className="py-16 sm:py-24 bg-parchment-deep">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-3">
@@ -169,7 +169,7 @@ export default function AboutPage() {
       </section>
 
       {/* Built by */}
-      <section className="py-20 bg-parchment">
+      <section className="py-14 sm:py-20 bg-parchment">
         <div className="max-w-2xl mx-auto px-6 text-center space-y-3">
           <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium">
             Built by
@@ -185,7 +185,7 @@ export default function AboutPage() {
       </section>
 
       {/* Scripture section */}
-      <section className="py-24 bg-ink relative overflow-hidden">
+      <section className="py-16 sm:py-24 bg-ink relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 bg-ruled pointer-events-none"
@@ -209,7 +209,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-28 bg-parchment-deep relative overflow-hidden">
+      <section className="py-14 sm:py-20 sm:py-28 bg-parchment-deep relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"

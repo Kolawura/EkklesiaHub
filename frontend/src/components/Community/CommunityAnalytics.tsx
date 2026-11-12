@@ -24,7 +24,7 @@ export function CommunityAnalytics({
             key={label}
             className="bg-parchment border border-parchment-dark rounded-2xl p-5"
           >
-            <p className="font-display text-[2rem] font-bold text-ink tracking-tight leading-none">
+            <p className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight leading-none">
               {value}
             </p>
             <p className="font-body text-xs text-ink-ghost mt-1.5">{label}</p>

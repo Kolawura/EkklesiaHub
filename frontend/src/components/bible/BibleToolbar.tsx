@@ -9,10 +9,13 @@ import {
   Search,
   ArrowRight,
   Loader2,
+  Library,
+  ArrowLeft,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ThemeToggle } from "../ui/ThemeToggle";
 import { useReferenceJump } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "../ui/ThemeToggle";
 
 interface BibleToolbarProps {
   translation: string;
@@ -26,6 +29,8 @@ interface BibleToolbarProps {
   onLineSpacing: (s: "compact" | "normal" | "relaxed") => void;
   onShowNumbers: (v: boolean) => void;
   onVersify: (b:boolean) => void;
+  /** Opens the book navigator drawer (shown below xl, where the sidebar is hidden). */
+  onOpenBooks?: () => void;
   onNavigate: (
     book: string,
     chapter: number,
@@ -46,8 +51,10 @@ export function BibleToolbar({
   onLineSpacing,
   onShowNumbers,
   onVersify,
+  onOpenBooks,
   onNavigate,
 }: BibleToolbarProps) {
+  const router = useRouter();
   const [showSettings, setShowSettings] = useState(false);
   const [showJump, setShowJump] = useState(false);
   const [jumpInput, setJumpInput] = useState("");
@@ -94,14 +101,43 @@ export function BibleToolbar({
   };
 
   return (
-    <div className="shrink-0 flex items-center gap-2 px-5 py-2.5 border-b border-parchment-dark bg-parchment/95 backdrop-blur-sm z-10">
+    <div className="relative shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 border-b border-parchment-dark bg-parchment/95 z-10">
+      {/* Back: previous page if there is one, otherwise home */}
+      <button
+        type="button"
+        onClick={() =>
+          window.history.length > 1 ? router.back() : router.push("/")
+        }
+        aria-label="Go back"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-parchment-dark px-2.5 py-2 sm:py-1.5 font-body text-xs text-ink-faint transition-all hover:bg-parchment-deep hover:text-ink"
+      >
+        <ArrowLeft size={14} />
+        <span className="hidden sm:inline">Back</span>
+      </button>
+
+      {/* Open book navigator — the sidebar is a drawer below xl */}
+      {onOpenBooks && (
+        <button
+          type="button"
+          onClick={onOpenBooks}
+          aria-label="Browse books"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-parchment-dark px-2.5 py-2 font-body text-xs text-ink-faint transition-all hover:bg-parchment-deep hover:text-ink xl:hidden"
+        >
+          <Library size={14} />
+          <span className="hidden sm:inline">Books</span>
+        </button>
+      )}
+
       {/* Current location breadcrumb */}
-      <div className="flex items-center gap-1.5 font-body text-sm text-ink-faint">
-        <span className="text-gold font-medium">{translation}</span>
-        <span className="text-parchment-dark">/</span>
-        <span>{bookName}</span>
-        <span className="text-parchment-dark">/</span>
-        <span>Chapter {chapter}</span>
+      <div className="flex min-w-0 items-center gap-1.5 font-body text-sm text-ink-faint">
+        <span className="shrink-0 text-gold font-medium">{translation}</span>
+        <span className="shrink-0 text-parchment-dark">/</span>
+        <span className="truncate">{bookName}</span>
+        <span className="shrink-0 text-parchment-dark">/</span>
+        <span className="shrink-0 whitespace-nowrap">
+          <span className="hidden sm:inline">Chapter </span>
+          {chapter}
+        </span>
       </div>
 
       <div className="flex-1" />
@@ -113,18 +149,18 @@ export function BibleToolbar({
         <button
           onClick={() => setShowJump(!showJump)}
           className={cn(
-            "inline-flex items-center gap-1.5 font-body text-xs px-3 py-1.5 rounded-lg border transition-all",
+            "inline-flex items-center gap-1.5 font-body text-xs px-2.5 sm:px-3 py-2 sm:py-1.5 rounded-lg border transition-all",
             showJump
               ? "bg-gold-bg text-gold border-gold-pale"
               : "text-ink-ghost border-parchment-dark hover:text-ink hover:bg-parchment-deep",
           )}
         >
-          <Search size={12} />
-          Jump to
+          <Search size={13} />
+          <span className="hidden sm:inline">Jump to</span>
         </button>
 
         {showJump && (
-          <div className="absolute right-0 top-full mt-2 w-72 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-20 p-4">
+          <div className="fixed inset-x-3 top-14 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-72 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-20 p-4">
             <p className="font-body text-xs text-ink-ghost mb-2">
               Type a reference e.g. <span className="text-gold">John 3:16</span>
             </p>
@@ -166,7 +202,7 @@ export function BibleToolbar({
         <button
           onClick={() => setShowSettings(!showSettings)}
           className={cn(
-            "p-1.5 rounded-lg border transition-all",
+            "p-2 sm:p-1.5 rounded-lg border transition-all",
             showSettings
               ? "bg-gold-bg text-gold border-gold-pale"
               : "text-ink-ghost border-parchment-dark hover:text-ink hover:bg-parchment-deep",
@@ -177,7 +213,7 @@ export function BibleToolbar({
         </button>
 
         {showSettings && (
-          <div className="absolute right-0 top-full mt-2 w-64 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-20 p-4 space-y-5">
+          <div className="fixed inset-x-3 top-14 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-20 p-4 space-y-5">
             {/* Font size */}
             <div>
               <div className="flex items-center gap-1.5 mb-2.5">

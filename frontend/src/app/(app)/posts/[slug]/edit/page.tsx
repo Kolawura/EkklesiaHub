@@ -132,17 +132,17 @@ export default function EditPostPage() {
   return (
     <div className="h-full flex flex-col bg-parchment">
       {/* ── Top action bar ── */}
-      <div className="shrink-0 flex items-center justify-between px-5 py-2.5 border-b border-parchment-dark bg-parchment/95 backdrop-blur-sm z-30">
+      <div className="shrink-0 flex items-center justify-between gap-2 px-3 sm:px-5 py-2.5 border-b border-parchment-dark bg-parchment/95 sm:backdrop-blur-sm z-30">
         {/* Left: back */}
         <button
           onClick={() => router.push(`/posts/${slug}`)}
-          className="font-body text-sm text-ink-ghost hover:text-ink transition-colors"
+          className="shrink-0 py-2 font-body text-sm text-ink-ghost hover:text-ink transition-colors"
         >
-          ← Back to post
+          ← <span className="hidden sm:inline">Back to post</span><span className="sm:hidden">Back</span>
         </button>
 
         {/* Right: actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-1.5">
           {/* Bible drawer — inline mode */}
           <BibleDrawer
             mode="inline"
@@ -150,16 +150,16 @@ export default function EditPostPage() {
             onInsert={handleScriptureInsert}
           />
 
-          <div className="w-px h-5 bg-parchment-dark mx-1" />
+          <div className="hidden sm:block w-px h-5 bg-parchment-dark mx-1" />
 
           {/* Archive */}
           {!isArchived && postId && (
             <button
               onClick={() => archiveMutation.mutate(postId)}
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 font-body text-xs text-ink-ghost hover:text-amber-600 hover:bg-amber-50 rounded-lg disabled:opacity-40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 font-body text-xs text-ink-ghost hover:text-amber-600 hover:bg-amber-50 rounded-lg disabled:opacity-40 transition-colors"
             >
-              <Archive size={13} /> Archive
+              <Archive size={13} /> <span className="hidden sm:inline">Archive</span>
             </button>
           )}
 
@@ -168,9 +168,9 @@ export default function EditPostPage() {
             <button
               onClick={() => unpublishMutation.mutate(postId)}
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 font-body text-xs text-ink-ghost hover:text-gold hover:bg-gold-bg rounded-lg disabled:opacity-40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 font-body text-xs text-ink-ghost hover:text-gold hover:bg-gold-bg rounded-lg disabled:opacity-40 transition-colors"
             >
-              <Undo2 size={13} /> Move to drafts
+              <Undo2 size={13} /> <span className="hidden sm:inline">Move to drafts</span>
             </button>
           )}
 
@@ -179,13 +179,13 @@ export default function EditPostPage() {
             <button
               onClick={() => setConfirmDelete(true)}
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 font-body text-xs text-ink-ghost hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 font-body text-xs text-ink-ghost hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-40 transition-colors"
             >
-              <Trash2 size={13} /> Delete
+              <Trash2 size={13} /> <span className="hidden sm:inline">Delete</span>
             </button>
           ) : (
             <div className="flex items-center gap-1.5">
-              <span className="font-body text-xs text-red-600 font-medium">
+              <span className="hidden sm:inline font-body text-xs text-red-600 font-medium">
                 Delete permanently?
               </span>
               {postId && (
@@ -222,10 +222,10 @@ export default function EditPostPage() {
             <button
               onClick={() => updateMutation.mutate("PUBLISHED")}
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 font-body text-sm text-ink-faint bg-parchment-deep border border-parchment-dark px-4 py-1.5 rounded-lg hover:bg-parchment-dark disabled:opacity-50 transition-colors"
+              className="inline-flex items-center gap-1.5 font-body text-sm text-ink-faint bg-parchment-deep border border-parchment-dark px-3 sm:px-4 py-2 sm:py-1.5 rounded-lg hover:bg-parchment-dark disabled:opacity-50 transition-colors"
             >
               {isArchived ? <ArchiveRestore size={13} /> : <Send size={13} />}
-              {isArchived ? "Restore & publish" : "Publish"}
+              <span className="hidden sm:inline">{isArchived ? "Restore & publish" : "Publish"}</span>
             </button>
           )}
 
@@ -233,21 +233,21 @@ export default function EditPostPage() {
           <button
             onClick={() => updateMutation.mutate()}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-5 py-1.5 rounded-lg hover:bg-ink-medium disabled:opacity-50 transition-all"
+            className="inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-3.5 sm:px-5 py-2 sm:py-1.5 rounded-lg hover:bg-ink-medium disabled:opacity-50 transition-all"
           >
             {updateMutation.isPending ? (
               <span className="w-3.5 h-3.5 border-2 border-parchment/30 border-t-parchment rounded-full animate-spin" />
             ) : (
               <Save size={13} />
             )}
-            Save changes
+            <span className="hidden min-[400px]:inline">Save</span><span className="hidden sm:inline">&nbsp;changes</span>
           </button>
         </div>
       </div>
 
       {/* ── Editor area ── */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-6 py-10">
+        <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 sm:py-10">
           {/* ── Cover image — click overlay approach (no drop zone) ── */}
           {coverImage ? (
             /* Existing cover: show preview with change / remove overlay */
@@ -258,7 +258,7 @@ export default function EditPostPage() {
                 className="w-full h-full object-cover"
               />
               {/* Hover overlay */}
-              <div className="absolute inset-0 bg-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+              <div className="absolute inset-0 bg-ink/40 hoverable:opacity-0 hoverable:group-hover:opacity-100 touch:bg-transparent touch:items-end touch:justify-end touch:p-3 transition-opacity flex items-center justify-center gap-3">
                 <button
                   onClick={() => coverInputRef.current?.click()}
                   disabled={uploadingCover}

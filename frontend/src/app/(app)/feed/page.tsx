@@ -73,11 +73,11 @@ export default function TagFeedPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-9">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-7 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight flex items-center gap-2">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight flex items-center gap-2">
             <Rss size={24} className="text-gold" />
             Tag Feed
           </h1>
@@ -99,7 +99,7 @@ export default function TagFeedPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-6">
         {/* ── Left: Post feed ── */}
         <div>
           {/* Followed tags pills */}

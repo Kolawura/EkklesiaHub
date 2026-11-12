@@ -53,7 +53,7 @@ export default function ProfilePage() {
     "w-full px-3.5 py-2.5 font-body text-sm bg-parchment border border-parchment-dark rounded-xl text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 transition-all";
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
       {/* ── Profile card ── */}
       <div className="bg-parchment border border-parchment-dark rounded-2xl overflow-hidden mb-6">
         {/* ── Banner ── */}
@@ -108,9 +108,9 @@ export default function ProfilePage() {
           />
         </div>
 
-        <div className="px-6 pb-6">
+        <div className="px-4 sm:px-6 pb-6">
           {/* ── Avatar + action buttons row ── */}
-          <div className="flex items-end justify-between -mt-10 mb-5 gap-3">
+          <div className="flex flex-wrap items-end justify-between -mt-10 mb-5 gap-3">
             {/* Avatar */}
             <div className="shrink-0 relative">
               <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-parchment shadow-warm-md bg-gold-bg">
@@ -162,7 +162,7 @@ export default function ProfilePage() {
 
             {/* Save / Cancel  or  Edit button */}
             {editing ? (
-              <div className="flex items-center gap-2 self-start mt-11">
+              <div className="flex items-center gap-2 self-start mt-3 sm:mt-11">
                 <button
                   onClick={() => updateMutation.mutate()}
                   disabled={!canSave || updateMutation.isPending}
@@ -186,7 +186,7 @@ export default function ProfilePage() {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="self-start mt-11 inline-flex items-center gap-1.5 font-body text-sm text-ink-faint border border-parchment-dark px-3.5 py-1.5 rounded-lg hover:bg-parchment-deep hover:text-ink transition-all"
+                className="self-start mt-3 sm:mt-11 inline-flex items-center gap-1.5 font-body text-sm text-ink-faint border border-parchment-dark px-3.5 py-1.5 rounded-lg hover:bg-parchment-deep hover:text-ink transition-all"
               >
                 <Pencil size={12} /> Edit profile
               </button>
@@ -197,7 +197,7 @@ export default function ProfilePage() {
           {editing ? (
             <div className="space-y-4">
               {/* Name row */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-body text-xs font-medium text-ink-faint mb-1.5">
                     First name
@@ -343,7 +343,7 @@ export default function ProfilePage() {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         {[
           { label: "Posts", value: myPosts.length, icon: FileText },
           { label: "Views", value: totalViews.toLocaleString(), icon: Eye },
@@ -373,7 +373,7 @@ export default function ProfilePage() {
 
       {/* ── Posts list ── */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h2 className="font-display text-lg font-semibold text-ink">
             Published posts
           </h2>
@@ -404,7 +404,7 @@ export default function ProfilePage() {
               <Link
                 key={post.id}
                 href={`/posts/${post.slug}`}
-                className="group flex items-center justify-between px-5 py-3.5 hover:bg-parchment-deep transition-colors gap-4"
+                className="group flex items-center justify-between px-5 py-3.5 hover:bg-parchment-deep transition-colors gap-3 sm:gap-4"
               >
                 <div className="min-w-0 flex-1">
                   <p className="font-body text-sm font-medium text-ink group-hover:text-gold transition-colors line-clamp-1">

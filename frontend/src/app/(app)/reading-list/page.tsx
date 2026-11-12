@@ -78,10 +78,10 @@ export default function ReadingListPage() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-9">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="mb-7">
-        <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
           Reading List
         </h1>
         <p className="font-body text-sm text-ink-faint mt-1">
@@ -90,7 +90,7 @@ export default function ReadingListPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-7">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-7">
         {[
           { label: "Saved", value: stats.total },
           { label: "Unread", value: stats.unread },
@@ -109,13 +109,13 @@ export default function ReadingListPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1.5 mb-7 border-b border-parchment-dark pb-0">
+      <div className="flex items-center gap-0.5 sm:gap-1.5 mb-7 border-b border-parchment-dark pb-0 overflow-x-auto scrollbar-none">
         {FILTERS.map(({ id, label, count }) => (
           <button
             key={id}
             onClick={() => setFilter(id)}
             className={cn(
-              "px-4 py-2.5 font-body text-sm border-b-2 -mb-px transition-all",
+              "px-3 sm:px-4 py-3 sm:py-2.5 font-body text-sm border-b-2 -mb-px transition-all whitespace-nowrap shrink-0",
               filter === id
                 ? "text-gold border-gold font-medium"
                 : "text-ink-ghost border-transparent hover:text-ink-faint",
@@ -168,7 +168,7 @@ export default function ReadingListPage() {
                 {/* Cover */}
                 {post.coverImage && (
                   <Link href={`/posts/${post.slug}`} className="shrink-0">
-                    <div className="w-24 h-18 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
+                    <div className="w-20 h-16 sm:w-24 sm:h-18 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
                       <img
                         src={post.coverImage}
                         alt={post.title}

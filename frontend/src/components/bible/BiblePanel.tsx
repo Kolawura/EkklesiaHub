@@ -183,7 +183,7 @@ function VerseCard({
         className="font-body text-sm text-ink-light leading-relaxed [&_em]:not-italic [&_em]:font-semibold [&_em]:text-gold"
         dangerouslySetInnerHTML={{ __html: verse.snippet || verse.text }}
       />
-      <div className="flex items-center gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 mt-3 hoverable:opacity-0 hoverable:group-hover:opacity-100 transition-opacity">
         <CopyButton text={formatted} />
         {showInsert && onInsert && (
           <button
@@ -554,7 +554,7 @@ export function BiblePanel({
     <div
       className={cn(
         "flex flex-col bg-parchment border border-parchment-dark rounded-2xl overflow-hidden",
-        compact ? "max-h-104" : "h-full",
+        compact ? "h-full sm:h-auto sm:max-h-104" : "h-full",
       )}
     >
       {/* Header */}

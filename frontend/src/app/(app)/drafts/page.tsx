@@ -33,11 +33,11 @@ export default function DraftsPage() {
   } = usePost({});
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-9">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-7 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
             Drafts
           </h1>
           <p className="font-body text-sm text-ink-faint mt-1">
@@ -46,7 +46,7 @@ export default function DraftsPage() {
         </div>
         <Link
           href="/new"
-          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
+          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-3 sm:px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
         >
           <Pencil size={13} /> New post
         </Link>
@@ -59,7 +59,7 @@ export default function DraftsPage() {
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "font-body text-sm px-4 py-1.5 rounded-full border transition-all",
+              "font-body text-sm px-3.5 sm:px-4 py-2 sm:py-1.5 rounded-full border transition-all",
               filter === f
                 ? "bg-ink text-parchment border-ink"
                 : "bg-transparent text-ink-faint border-parchment-dark hover:bg-parchment-deep hover:border-ink-ghost",
@@ -127,7 +127,7 @@ export default function DraftsPage() {
                     )}
                   </h3>
 
-                  <div className="flex items-center gap-3 font-body text-xs text-ink-ghost">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-xs text-ink-ghost">
                     <span className="flex items-center gap-1">
                       <Clock size={10} />
                       {post.readingTime} min read

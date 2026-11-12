@@ -25,6 +25,8 @@ interface BibleSidebarProps {
   bookName: string;
   chapter: number;
   onTranslationChange: (t: string) => void;
+  /** Provided when the sidebar is shown as a drawer (< xl) — renders a close button. */
+  onClose?: () => void;
   onNavigate: (
     book: string,
     chapter: number,
@@ -53,7 +55,7 @@ function TranslationPicker({
   return (
     // left-0 right-0 makes the dropdown exactly as wide as the sidebar header,
     // preventing it from overflowing either edge.
-    <div className="absolute right-0 top-full mt-1.5 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-30 overflow-hidden">
+    <div className="absolute inset-x-0 top-full mt-1.5 bg-parchment border border-parchment-dark rounded-2xl shadow-warm-lg z-30 overflow-hidden">
       <div className="px-4 py-3 border-b border-parchment-dark flex items-center justify-between">
         <p className="font-display text-sm font-semibold text-ink">
           Translation
@@ -428,6 +430,7 @@ export function BibleSidebar({
   bookName,
   chapter,
   onTranslationChange,
+  onClose,
   onNavigate,
 }: BibleSidebarProps) {
   const [panel, setPanel] = useState<Panel>("navigator");
@@ -495,9 +498,22 @@ export function BibleSidebar({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-parchment-deep border-r border-parchment-dark">
+    <div className="flex flex-col h-full bg-parchment-deep border-r border-parchment-dark">
       {/* Header */}
-      <div className="shrink-0 px-4 py-4 border-b border-parchment-dark">
+      <div className="shrink-0 px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] xl:pt-4 border-b border-parchment-dark">
+        {onClose && (
+          <div className="-mt-1 mb-2 flex items-center justify-between xl:hidden">
+            <p className="font-display text-sm font-semibold text-ink">Browse the Bible</p>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close book navigator"
+              className="-mr-1.5 rounded-lg p-2 text-ink-ghost transition-colors hover:bg-parchment-dark hover:text-ink"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        )}
         {/* Translation toggle */}
         <div ref={transRef} className="relative mb-3">
           <button
@@ -548,7 +564,7 @@ export function BibleSidebar({
                 }
               }}
               className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg font-body text-xs font-medium transition-all",
+                "flex-1 flex items-center justify-center gap-1.5 py-2 xl:py-1.5 rounded-lg font-body text-xs font-medium transition-all",
                 panel === id
                   ? "bg-ink text-parchment"
                   : "text-ink-ghost hover:text-ink hover:bg-parchment-dark",

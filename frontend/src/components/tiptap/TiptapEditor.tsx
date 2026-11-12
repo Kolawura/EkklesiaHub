@@ -190,6 +190,7 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
             value={title}
             onChange={handleTitleChange}
             placeholder="Article title"
+            data-keep-size
             rows={1}
             className="w-full font-display font-bold text-[clamp(2rem,4vw,2.75rem)] tracking-tight leading-tight text-ink placeholder-parchment-dark bg-transparent border-none outline-none resize-none overflow-hidden mb-6"
             style={{ minHeight: "3rem" }}
@@ -204,7 +205,7 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
 
         {/* Sticky block toolbar */}
         {editable && editor && (
-          <div className="sticky top-0 z-20 bg-parchment/95 backdrop-blur-sm border-y border-parchment-dark py-2 mb-6 -mx-6 px-6">
+          <div className="sticky top-0 z-20 bg-parchment/95 backdrop-blur-sm border-y border-parchment-dark py-2 mb-6 -mx-4 px-4 sm:-mx-6 sm:px-6">
             <BlockBar
               editor={editor}
               onInlineImageUpload={() => inlineImageRef.current?.click()}

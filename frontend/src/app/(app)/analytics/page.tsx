@@ -41,11 +41,11 @@ export default function AnalyticsPage() {
   const totalReactions = reactionBreakdown.reduce((acc, r) => acc + r.count, 0);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-9">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-8 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
             Analytics
           </h1>
           <p className="font-body text-sm text-ink-faint mt-1">

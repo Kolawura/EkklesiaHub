@@ -23,7 +23,7 @@ export function LegalPage({
   return (
     <div className="min-h-screen bg-parchment text-ink overflow-x-hidden">
       <PublicNav />
-      <header className="relative pt-36 pb-12 text-center">
+      <header className="relative pt-28 sm:pt-36 pb-12 text-center">
         <div
           aria-hidden
           className="absolute inset-0 bg-ruled pointer-events-none"

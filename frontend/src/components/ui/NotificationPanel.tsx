@@ -106,7 +106,7 @@ export function NotificationBell() {
       {/* Bell button */}
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-1.5 text-ink-ghost hover:text-ink hover:bg-parchment-deep rounded-lg transition-colors"
+        className="relative p-2 sm:p-1.5 text-ink-ghost hover:text-ink hover:bg-parchment-deep rounded-lg transition-colors"
         aria-label="Notifications"
       >
         <Bell size={17} />
@@ -119,7 +119,7 @@ export function NotificationBell() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-96 max-h-130 flex flex-col bg-parchment rounded-2xl shadow-warm-lg border border-parchment-dark z-50 overflow-hidden">
+        <div className="fixed inset-x-3 top-[calc(3.25rem+env(safe-area-inset-top)+0.5rem)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 max-h-[min(32.5rem,calc(100dvh-6rem))] flex flex-col bg-parchment rounded-2xl shadow-warm-lg border border-parchment-dark z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-parchment-dark shrink-0">
             <h3 className="font-display text-[0.9375rem] font-semibold text-ink flex items-center gap-2">
@@ -214,7 +214,7 @@ export function NotificationBell() {
                     </div>
 
                     {/* Actions — appear on hover */}
-                    <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-0.5 shrink-0 hoverable:opacity-0 hoverable:group-hover:opacity-100 transition-opacity">
                       {!n.read && (
                         <button
                           onClick={() => markRead.mutate(n.id)}

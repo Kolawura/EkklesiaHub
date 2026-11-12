@@ -105,7 +105,7 @@ export default function LandingPage() {
       <PublicNav />
 
       {/* ── HERO ── */}
-      <section className="relative pt-36 pb-24 overflow-hidden bg-parchment">
+      <section className="relative pt-28 sm:pt-36 pb-24 overflow-hidden bg-parchment">
         {/* ghost watermark */}
         <span
           aria-hidden
@@ -195,7 +195,7 @@ export default function LandingPage() {
       </div>
 
       {/* ── FEATURES ── */}
-      <section className="py-24 bg-parchment">
+      <section className="py-16 sm:py-24 bg-parchment">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-3">
@@ -232,7 +232,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── EDITOR SHOWCASE ── */}
-      <section className="py-24 bg-ink relative overflow-hidden">
+      <section className="py-16 sm:py-24 bg-ink relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 bg-ruled opacity-100" />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -283,7 +283,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── OPEN TO ALL ── */}
-      <section className="py-24 bg-parchment">
+      <section className="py-16 sm:py-24 bg-parchment">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <p className="font-body text-[11px] uppercase tracking-[0.14em] text-gold font-medium mb-4">
             Built for everyone
@@ -324,7 +324,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-28 bg-parchment-deep relative overflow-hidden">
+      <section className="py-14 sm:py-20 sm:py-28 bg-parchment-deep relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"

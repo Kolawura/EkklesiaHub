@@ -181,7 +181,7 @@ export default function SeriesDetailPage() {
     "w-full px-3.5 py-2.5 font-body text-sm bg-parchment border border-parchment-dark rounded-xl text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 transition-all";
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-9">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Back link */}
       <Link
         href="/series"
@@ -510,7 +510,7 @@ export default function SeriesDetailPage() {
 
                 {/* Reorder + remove — owner only */}
                 {isOwner && (
-                  <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <div className="flex items-center gap-0.5 hoverable:opacity-0 hoverable:group-hover:opacity-100 transition-opacity shrink-0">
                     <button
                       onClick={() => movePost(index, "up")}
                       disabled={index === 0 || reorderMutation.isPending}

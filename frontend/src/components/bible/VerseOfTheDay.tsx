@@ -76,7 +76,7 @@ export function VerseOfTheDay({
       <div className="absolute top-0 right-0 w-64 h-64 bg-gold/8 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
-      <div className="relative px-8 py-8">
+      <div className="relative px-5 py-6 sm:px-8 sm:py-8">
         {/* Label */}
         <div className="flex items-center gap-2 mb-6">
           <Sparkles size={13} className="text-gold" />

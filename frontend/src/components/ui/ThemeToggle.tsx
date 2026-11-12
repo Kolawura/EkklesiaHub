@@ -73,14 +73,14 @@ export function ThemeToggle({ className = "" }: ThemeToggleProps) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`p-1.5 text-ink-ghost hover:text-ink hover:bg-parchment-deep rounded-lg transition-colors ${className}`}
+        className={`p-2 sm:p-1.5 text-ink-ghost hover:text-ink hover:bg-parchment-deep rounded-lg transition-colors ${className}`}
         title={`Theme: ${THEME_META[current]?.label ?? "Light"}`}
       >
         <Palette size={15} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-48 bg-parchment border border-parchment-dark rounded-lg shadow-lg py-1.5 z-5000000">
+        <div className="absolute right-0 top-full mt-2 w-48 max-h-[70dvh] overflow-y-auto bg-parchment border border-parchment-dark rounded-lg shadow-lg py-1.5 z-5000000">
           {THEME_ORDER.map((name) => {
             const meta = THEME_META[name];
             const active = current === name;

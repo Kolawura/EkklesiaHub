@@ -68,11 +68,11 @@ export default function SeriesPage() {
     "w-full px-3.5 py-2.5 font-body text-sm bg-parchment border border-parchment-dark rounded-xl text-ink placeholder-ink-ghost outline-none focus:border-gold-pale focus:ring-2 focus:ring-gold/10 transition-all";
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-9">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-7 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
             Series
           </h1>
           <p className="font-body text-sm text-ink-faint mt-1">

@@ -100,7 +100,7 @@ export function ImageUpload({
           />
 
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-ink/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2.5">
+          <div className="absolute inset-0 bg-ink/50 hoverable:opacity-0 hoverable:group-hover:opacity-100 touch:bg-transparent touch:items-end touch:justify-end touch:p-2 transition-opacity flex items-center justify-center gap-2.5">
             <button
               type="button"
               onClick={() => inputRef.current?.click()}

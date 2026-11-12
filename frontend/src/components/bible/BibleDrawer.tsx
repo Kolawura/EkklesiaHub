@@ -55,24 +55,32 @@ export function BibleDrawer({
           onClick={() => setOpen(!open)}
           title="Scripture reference"
           className={cn(
-            "inline-flex items-center gap-1.5 px-2.5 py-1.5 font-body text-xs rounded-lg border transition-all",
+            "inline-flex items-center gap-1.5 px-2.5 py-2 sm:py-1.5 font-body text-xs rounded-lg border transition-all",
             open
               ? "bg-gold-bg text-gold border-gold-pale"
               : "text-ink-ghost border-parchment-dark hover:text-ink hover:bg-parchment-deep",
           )}
         >
           <BookOpen size={12} />
-          Scripture
+          <span className="hidden sm:inline">Scripture</span>
         </button>
 
         {open && (
-          <div className="absolute right-0 top-full mt-2 w-90 h-130 z-40 shadow-warm-lg rounded-2xl overflow-hidden">
+          <>
+          {/* < sm: full-width sheet under the header; ≥ sm: anchored popover */}
+          <div
+            className="fixed inset-0 z-30 bg-ink/30 sm:hidden"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="fixed inset-x-3 bottom-3 top-16 z-40 overflow-hidden rounded-2xl shadow-warm-lg sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:mt-2 sm:h-130 sm:w-90">
             <BiblePanel
               onInsert={handleInsert}
               showInsert={showInsert}
               compact
             />
           </div>
+          </>
         )}
       </div>
     );
@@ -86,7 +94,7 @@ export function BibleDrawer({
         onClick={() => setOpen(!open)}
         title="Look up a Bible verse"
         className={cn(
-          "fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 font-body text-sm font-medium px-4 py-2.5 rounded-full shadow-warm-lg border transition-all",
+          "fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 sm:bottom-6 sm:right-6 z-40 inline-flex items-center gap-2 font-body text-sm font-medium px-4 py-2.5 rounded-full shadow-warm-lg border transition-all",
           open
             ? "bg-gold text-ink border-gold"
             : "bg-ink text-parchment border-ink hover:bg-ink-medium",
@@ -107,26 +115,37 @@ export function BibleDrawer({
       {/* Slide-in drawer */}
       <div
         className={cn(
-          "fixed right-0 top-0 bottom-0 z-50 w-95 shadow-warm-lg transition-transform duration-300",
-          open ? "translate-x-0" : "translate-x-full",
+          "fixed right-0 top-0 bottom-0 z-50 w-full max-w-95 shadow-warm-lg transition-transform duration-300",
+          open ? "translate-x-0" : "invisible translate-x-full",
         )}
       >
         <div className="h-full flex flex-col">
+          {/* Mobile close bar (the side tab below sits off-screen on phones) */}
+          {open && (
+            <button
+              onClick={() => setOpen(false)}
+              className="flex shrink-0 items-center justify-end gap-1.5 border-b border-parchment-dark bg-parchment px-4 py-2.5 font-body text-xs text-ink-faint sm:hidden"
+            >
+              Close <X size={14} />
+            </button>
+          )}
           {/* Close button overlay */}
           {open && (
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3.5 -left-11 p-2 bg-parchment border border-parchment-dark rounded-l-xl text-ink-ghost hover:text-ink transition-colors z-10"
+              className="absolute top-3.5 -left-11 hidden sm:block p-2 bg-parchment border border-parchment-dark rounded-l-xl text-ink-ghost hover:text-ink transition-colors z-10"
             >
               <X size={15} />
             </button>
           )}
 
-          <BiblePanel
-            onInsert={handleInsert}
-            showInsert={showInsert}
-            compact={false}
-          />
+          <div className="min-h-0 flex-1">
+            <BiblePanel
+              onInsert={handleInsert}
+              showInsert={showInsert}
+              compact={false}
+            />
+          </div>
         </div>
       </div>
     </>

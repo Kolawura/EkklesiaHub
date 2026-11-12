@@ -23,7 +23,7 @@ export function BlockBar({
     ].join(" ");
 
   return (
-    <div className="flex items-center gap-0.5 flex-wrap">
+    <div className="flex items-center gap-0.5 flex-nowrap overflow-x-auto scrollbar-none sm:flex-wrap sm:overflow-visible [&>*]:shrink-0">
       {/* Headings */}
       {([1, 2, 3] as const).map((lvl) => (
         <button

@@ -39,7 +39,10 @@ function AuthPage() {
         from !== "/" &&
         from !== "/features" &&
         from !== "/about" &&
-        from.startsWith("/")
+        // Same-origin paths only: block "//evil.com", "/\evil.com" and
+        // anything that isn't a plain absolute path (open-redirect guard).
+        /^\/(?![/\\])/.test(from) &&
+        !from.startsWith("/auth")
       ) {
         return from;
       }
@@ -70,7 +73,7 @@ function AuthPage() {
   if (isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
+    <div className="min-h-dvh grid md:grid-cols-2">
       {/* ── LEFT: Illuminated panel ── */}
       <div className="hidden md:flex flex-col justify-between bg-ink px-12 py-14 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 bg-ruled opacity-100" />

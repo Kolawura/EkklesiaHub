@@ -56,7 +56,7 @@ export default function PublicProfilePage() {
     `${profile.firstName?.[0] ?? ""}${profile.lastName?.[0] ?? ""}`.toUpperCase();
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
       {/* Banner */}
       <div className="relative h-36 rounded-2xl overflow-hidden">
         {profile.bannerImg ? (
@@ -193,7 +193,7 @@ export default function PublicProfilePage() {
               {posts.map((post) => (
                 <article
                   key={post.id}
-                  className="group border-b border-parchment-dark last:border-0 py-6 flex gap-4"
+                  className="group border-b border-parchment-dark last:border-0 py-5 sm:py-6 flex gap-3 sm:gap-4"
                 >
                   <div className="flex-1 min-w-0">
                     {/* Community badge */}
@@ -250,7 +250,7 @@ export default function PublicProfilePage() {
                   {/* Cover */}
                   {post.coverImage && (
                     <Link href={`/posts/${post.slug}`} className="shrink-0">
-                      <div className="w-24 h-18 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
+                      <div className="w-20 h-16 sm:w-24 sm:h-18 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
                         <img
                           src={post.coverImage}
                           alt={post.title}

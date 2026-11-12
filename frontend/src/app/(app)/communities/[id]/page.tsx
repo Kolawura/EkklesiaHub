@@ -101,7 +101,7 @@ export default function CommunityDetailPage() {
   /* ── Private locked view ── */
   if (community.isPrivate && !isMember) {
     return (
-      <div className="max-w-md mx-auto px-6 py-24 text-center">
+      <div className="max-w-md mx-auto px-4 py-12 sm:px-6 sm:py-24 text-center">
         <div className="w-16 h-16 rounded-2xl bg-gold-bg border border-gold-pale flex items-center justify-center mx-auto mb-5">
           <Lock size={26} className="text-gold" />
         </div>
@@ -145,14 +145,14 @@ export default function CommunityDetailPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
       {/* Cover + header */}
-      <div className="relative h-44 rounded-2xl overflow-hidden mb-6">
+      <div className="relative h-52 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-6">
         {community.coverImage ? (
           <img
             src={community.coverImage}
             alt=""
-            className="w-full object-cover"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full bg-ink" />
@@ -168,8 +168,9 @@ export default function CommunityDetailPage() {
           }}
         />
 
-        {/* Community identity */}
-        <div className="absolute bottom-5 left-6 flex items-end gap-4">
+        {/* Identity (left) + Join/Leave (right) share one row so they can never overlap */}
+        <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="flex min-w-0 items-end gap-3 sm:gap-4">
           <div className="w-14 h-14 rounded-xl bg-gold-bg border-2 border-parchment flex items-center justify-center overflow-hidden shadow-warm-md shrink-0">
             {community.avatar ? (
               <img
@@ -181,9 +182,9 @@ export default function CommunityDetailPage() {
               <Users size={22} className="text-gold" />
             )}
           </div>
-          <div className="pb-0.5">
+          <div className="min-w-0 pb-0.5">
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-2xl font-bold text-parchment">
+              <h1 className="font-display text-xl sm:text-2xl font-bold text-parchment truncate">
                 {community.name}
               </h1>
               {community.isPrivate ? (
@@ -200,7 +201,7 @@ export default function CommunityDetailPage() {
         </div>
 
         {/* Join / Leave button */}
-        <div className="absolute bottom-5 right-6">
+        <div className="shrink-0">
           {isAuthenticated &&
             !isAdmin &&
             (isMember ? (
@@ -221,6 +222,7 @@ export default function CommunityDetailPage() {
               </button>
             ))}
         </div>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -230,7 +232,7 @@ export default function CommunityDetailPage() {
             key={tabId}
             onClick={() => setTab(tabId)}
             className={cn(
-              "inline-flex items-center gap-1.5 px-4 py-2.5 font-body text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap",
+              "inline-flex items-center gap-1.5 px-3 sm:px-4 py-3 sm:py-2.5 font-body text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0",
               tab === tabId
                 ? "border-gold text-gold"
                 : "border-transparent text-ink-faint hover:text-ink",
@@ -302,17 +304,17 @@ export default function CommunityDetailPage() {
           {members?.map((member) => (
             <div
               key={member.id}
-              className="flex items-center justify-between bg-parchment border border-parchment-dark rounded-2xl px-5 py-3.5 hover:border-gold-pale/60 transition-colors"
+              className="flex flex-wrap items-center justify-between gap-2 bg-parchment border border-parchment-dark rounded-2xl px-4 sm:px-5 py-3.5 hover:border-gold-pale/60 transition-colors"
             >
               <Link
                 href={`/profile/${member.id}`}
-                className="flex items-center gap-3"
+                className="flex min-w-0 items-center gap-3"
               >
                 <div className="w-9 h-9 rounded-full bg-gold-bg border border-gold-pale flex items-center justify-center font-display text-xs font-bold text-gold shrink-0">
                   {member.username[0].toUpperCase()}
                 </div>
-                <div>
-                  <p className="font-display text-sm font-semibold text-ink hover:text-gold transition-colors">
+                <div className="min-w-0">
+                  <p className="truncate font-display text-sm font-semibold text-ink hover:text-gold transition-colors">
                     {member.username}
                   </p>
                   <p className="font-body text-xs text-ink-ghost">
@@ -383,7 +385,7 @@ export default function CommunityDetailPage() {
             <h3 className="font-display text-[1.0625rem] font-semibold text-ink mb-4">
               Stats
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 { label: "Members", value: community._count.memberships },
                 { label: "Posts", value: community._count.posts },
@@ -425,7 +427,7 @@ export default function CommunityDetailPage() {
       {/* ── Remove post modal ── */}
       {removeModal && (
         <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-parchment rounded-2xl p-6 w-full max-w-md shadow-warm-lg border border-parchment-dark">
+          <div className="bg-parchment rounded-2xl p-5 sm:p-6 w-full max-w-md max-h-[90dvh] overflow-y-auto shadow-warm-lg border border-parchment-dark">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-display text-lg font-semibold text-ink">
                 Remove post

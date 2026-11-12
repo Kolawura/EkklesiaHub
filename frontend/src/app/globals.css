@@ -4,6 +4,11 @@
 @import "tw-animate-css";
 @import "./mention.css";
 
+/* Pointer-capability variants: `hoverable:` = mouse/trackpad, `touch:` = finger.
+   Used so hover-only controls are always visible on phones/tablets. */
+@custom-variant hoverable (@media (hover: hover));
+@custom-variant touch (@media (hover: none));
+
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, [data-theme="midnight"], [data-theme="midnight"] *, [data-theme="obsidian"], [data-theme="obsidian"] *));
 
 /* ═══════════════════════════════════════
@@ -54,6 +59,12 @@
   --font-body: "Source Serif 4", Georgia, serif;
   --font-sans: "Source Serif 4", Georgia, serif;
   --font-mono: "Courier New", monospace;
+
+  /* Warm elevation scale — referenced as shadow-warm-sm/md/lg across the app.
+     (Previously undefined, so Tailwind silently emitted nothing.) */
+  --shadow-warm-sm: 0 1px 2px rgb(26 18 8 / 0.06), 0 1px 3px rgb(26 18 8 / 0.05);
+  --shadow-warm-md: 0 4px 10px -2px rgb(26 18 8 / 0.10), 0 2px 6px -2px rgb(26 18 8 / 0.06);
+  --shadow-warm-lg: 0 14px 32px -8px rgb(26 18 8 / 0.22), 0 6px 14px -6px rgb(26 18 8 / 0.12);
 
   --radius: 0.625rem;
   --radius-sm: 0.25rem;
@@ -263,6 +274,9 @@
 }
 html {
   scroll-behavior: smooth;
+  /* Stop iOS Safari inflating text after rotation */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -270,6 +284,70 @@ body {
   background-color: var(--color-parchment);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+  /* No sideways scroll if a stray element overflows on a small screen */
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Media should never be wider than its container.
+   (width cap only — NOT height: unlayered rules beat Tailwind utilities, and
+   forcing height:auto would break every h-* / object-cover image.) */
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* Long unbroken strings (URLs, verse refs, usernames) must wrap, not overflow */
+.break-anywhere {
+  overflow-wrap: anywhere;
+}
+
+/* ═══════════════════════════════════════
+   MOBILE ERGONOMICS
+═══════════════════════════════════════ */
+
+/* iOS Safari auto-zooms the page when a focused field is < 16px. Use 16px on
+   touch-sized screens so forms don't jump. (Unlayered, so it intentionally
+   outranks the text-sm / text-xs utilities.) */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  textarea:not([data-keep-size]),
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Respect OS "reduce motion" */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Hide scrollbars on horizontally-scrolling strips (tabs, chips) */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Notch / home-indicator padding for edge-anchored UI */
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 h1,

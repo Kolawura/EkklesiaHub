@@ -97,7 +97,7 @@ function ScriptureNodeView({
         {/* Delete — appears on hover */}
         <button
           onClick={deleteNode}
-          className="shrink-0 p-1 text-ink-ghost hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all rounded"
+          className="shrink-0 p-1 text-ink-ghost hover:text-red-600 hoverable:opacity-0 hoverable:group-hover:opacity-100 transition-all rounded"
           title="Remove scripture block"
         >
           <X size={12} />

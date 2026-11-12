@@ -15,10 +15,10 @@ export default function BookmarksPage() {
   } = useBookmarks() || {};
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-9">
+    <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
           Bookmarks
         </h1>
         <p className="font-body text-sm text-ink-faint mt-1">
@@ -54,12 +54,12 @@ export default function BookmarksPage() {
             return (
               <article
                 key={b.id}
-                className="group flex items-start gap-4 py-6 border-b border-parchment-dark last:border-0"
+                className="group flex items-start gap-3 sm:gap-4 py-5 sm:py-6 border-b border-parchment-dark last:border-0"
               >
                 {/* Cover image */}
                 {post.coverImage && (
                   <Link href={`/posts/${post.slug}`} className="shrink-0">
-                    <div className="w-20 h-16 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
+                    <div className="w-16 h-14 sm:w-20 sm:h-16 rounded-xl overflow-hidden bg-parchment-deep border border-parchment-dark">
                       <img
                         src={post.coverImage}
                         alt={post.title}

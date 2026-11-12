@@ -26,15 +26,17 @@ api.interceptors.response.use(
         useAuthStore.getState().logout();
       }
 
+      // Keep in sync with PUBLIC_EXACT / PUBLIC_PREFIXES in src/proxy.ts.
+      // (/communities is NOT public — it is an app route.)
       const current = window.location.pathname;
       const isPublic =
-        current === "/" ||
-        current.startsWith("/auth") ||
-        current.startsWith("/features") ||
-        current.startsWith("/about");
+        ["/", "/landing", "/features", "/about", "/bible", "/terms", "/privacy", "/login"].includes(
+          current,
+        ) || current.startsWith("/auth");
 
       if (!isPublic) {
-        window.location.href = `/auth?from=${encodeURIComponent(current)}`;
+        const from = current + window.location.search;
+        window.location.href = `/auth?from=${encodeURIComponent(from)}`;
       }
     }
 

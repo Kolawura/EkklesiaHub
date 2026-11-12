@@ -19,11 +19,11 @@ export default function CommunitiesPage() {
   } = useCommunity();
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-9">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-9">
       {/* Header */}
       <div className="flex items-start justify-between mb-7 gap-4">
-        <div>
-          <h1 className="font-display text-[2rem] font-bold text-ink tracking-tight">
+        <div className="min-w-0">
+          <h1 className="font-display text-[1.625rem] sm:text-[2rem] font-bold text-ink tracking-tight">
             Communities
           </h1>
           <p className="font-body text-sm text-ink-faint mt-1">
@@ -33,7 +33,7 @@ export default function CommunitiesPage() {
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
+          className="shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium bg-ink text-parchment px-3 sm:px-4 py-2 rounded-lg hover:bg-ink-medium transition-all hover:-translate-y-px"
         >
           <PlusCircle size={13} /> New community
         </button>
@@ -89,7 +89,7 @@ export default function CommunitiesPage() {
             />
           </div>
 
-          <div className="flex items-center justify-between py-2 border-t border-parchment-dark">
+          <div className="flex items-center justify-between gap-3 py-2 border-t border-parchment-dark">
             <div>
               <p className="font-body text-sm font-medium text-ink">
                 Make private

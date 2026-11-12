@@ -104,7 +104,7 @@ function VerseActionBar({
   };
 
   return (
-    <div className="shrink-0 border-t border-parchment-dark bg-parchment px-6 py-3">
+    <div className="shrink-0 border-t border-parchment-dark bg-parchment px-3 sm:px-6 py-2.5 sm:py-3 pb-[max(0.625rem,env(safe-area-inset-bottom))] sm:pb-3">
       <div className="flex items-center gap-3 flex-wrap">
         {/* Reference label */}
         <div className="flex items-center gap-1.5">
@@ -170,6 +170,20 @@ export default function BiblePage() {
   const [scrollToVerse, setScrollToVerse] = useState<number | null>(null);
   const [showVotd, setShowVotd] = useState(true);
   const [compareVerses, setCompareVerses] = useState<BibleVerse[]>([]);
+  // Book navigator drawer — only used below xl, where the sidebar isn't inline
+  const [booksOpen, setBooksOpen] = useState(false);
+
+  // Escape closes whichever overlay is open
+  useEffect(() => {
+    if (!booksOpen && compareVerses.length === 0) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setBooksOpen(false);
+      setCompareVerses([]);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [booksOpen, compareVerses.length]);
 
   // Multi-verse selection
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -206,6 +220,7 @@ export default function BiblePage() {
       setScrollToVerse(verse ?? null);
       setShowVotd(false);
       setCompareVerses([]);
+      setBooksOpen(false); // picking a chapter in the drawer closes it
 
       if (verse != null) {
         const end = endVerse ?? verse;
@@ -263,104 +278,137 @@ export default function BiblePage() {
   // drill-down) never landed on the right spot.
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
-        {/* LEFT: Sidebar */}
-        <div className="w-56 shrink-0 flex flex-col overflow-hidden">
-          <BibleSidebar
-            translation={prefs.translation}
-            bookName={bookName}
-            chapter={chapter}
-            onTranslationChange={(t) => updatePrefs({ translation: t })}
-            onNavigate={navigate}
-          />
-        </div>
+    /*
+     * Standalone public page (no app shell), so the toolbar carries its own
+     * Back link. Full viewport height via h-dvh.
+     *
+     *   ≥ xl : [book navigator | reader | compare]  — all inline columns
+     *   < xl : reader only; navigator = left drawer ("Books" button),
+     *          compare = bottom sheet (phones) / right panel (tablets)
+     */
+    <div className="relative flex h-dvh overflow-hidden">
+      {/* Backdrop for the book navigator drawer */}
+      <div
+        onClick={() => setBooksOpen(false)}
+        aria-hidden="true"
+        className={cn(
+          "fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-300 xl:hidden",
+          booksOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+      />
 
-        {/* CENTRE: Reading area */}
-        <div className="flex flex-col h-screen overflow-hidden border-x border-parchment-dark">
-          {/* Toolbar */}
-          <BibleToolbar
-            translation={prefs.translation}
-            bookName={bookName}
-            chapter={chapter}
-            fontSize={prefs.fontSize}
-            lineSpacing={prefs.lineSpacing}
-            showNumbers={prefs.showNumbers}
-            versify={prefs.versify}
-            onFontSize={(s) => updatePrefs({ fontSize: s })}
-            onLineSpacing={(s) => updatePrefs({ lineSpacing: s })}
-            onShowNumbers={(v) => updatePrefs({ showNumbers: v })}
-            onVersify={(b) => updatePrefs({ versify: b })}
-            onNavigate={navigate}
-          />
-          <div className="flex-1 overflow-y-auto">
-            {/* Verse of the Day banner */}
-            {showVotd && (
-              <div className="shrink-0 relative border-b border-parchment-dark">
-                <button
-                  onClick={() => setShowVotd(false)}
-                  className="absolute top-2 right-3 text-lg font-bold text-gold hover:text-red-600 transition-colors z-10 cursor-pointer p-0.75"
-                  title="Dismiss"
-                >
-                  <X size={16} />
-                </button>
-                <div className="px-8 py-5">
-                  <VerseOfTheDay
-                    translation={prefs.translation}
-                    onNavigate={navigate}
-                    compact={false}
-                  />
-                </div>
+      {/* LEFT: Book navigator */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-80 max-w-[88vw] shadow-warm-lg",
+          "transition-[transform,visibility] duration-300 ease-out",
+          "xl:visible xl:static xl:z-auto xl:w-60 xl:max-w-none xl:shrink-0 xl:translate-x-0 xl:shadow-none xl:transition-none",
+          booksOpen ? "visible translate-x-0" : "invisible -translate-x-full",
+        )}
+      >
+        <BibleSidebar
+          translation={prefs.translation}
+          bookName={bookName}
+          chapter={chapter}
+          onTranslationChange={(t) => updatePrefs({ translation: t })}
+          onClose={() => setBooksOpen(false)}
+          onNavigate={navigate}
+        />
+      </div>
+
+      {/* CENTRE: Reading area */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden xl:border-x xl:border-parchment-dark">
+        <BibleToolbar
+          translation={prefs.translation}
+          bookName={bookName}
+          chapter={chapter}
+          fontSize={prefs.fontSize}
+          lineSpacing={prefs.lineSpacing}
+          showNumbers={prefs.showNumbers}
+          versify={prefs.versify}
+          onFontSize={(s) => updatePrefs({ fontSize: s })}
+          onLineSpacing={(s) => updatePrefs({ lineSpacing: s })}
+          onShowNumbers={(v) => updatePrefs({ showNumbers: v })}
+          onVersify={(b) => updatePrefs({ versify: b })}
+          onOpenBooks={() => setBooksOpen(true)}
+          onNavigate={navigate}
+        />
+        <div className="flex-1 overflow-y-auto overscroll-y-contain">
+          {/* Verse of the Day banner */}
+          {showVotd && (
+            <div className="shrink-0 relative border-b border-parchment-dark">
+              <button
+                onClick={() => setShowVotd(false)}
+                className="absolute top-1.5 right-2 sm:top-2 sm:right-3 p-2 text-gold hover:text-red-600 transition-colors z-10 cursor-pointer"
+                title="Dismiss"
+                aria-label="Dismiss verse of the day"
+              >
+                <X size={16} />
+              </button>
+              <div className="px-4 py-4 pr-10 sm:px-8 sm:py-5">
+                <VerseOfTheDay
+                  translation={prefs.translation}
+                  onNavigate={navigate}
+                  compact={false}
+                />
               </div>
-            )}
-
-            {/* Reader */}
-            <div className="flex-1 overflow-hidden">
-              <BibleReader
-                translation={prefs.translation}
-                bookName={bookName}
-                chapter={chapter}
-                selectedVerses={selectedVerses}
-                onVerseClick={handleVerseClick}
-                onNavigate={navigate}
-                fontSize={prefs.fontSize}
-                lineSpacing={prefs.lineSpacing}
-                showNumbers={prefs.showNumbers}
-                scrollToVerse={scrollToVerse}
-                versify={prefs.versify}
-              />
             </div>
-          </div>
-          {/* Multi-verse action bar */}
-          {selectedVerses.size > 0 && (
-            <VerseActionBar
+          )}
+
+          {/* Reader */}
+          <div className="flex-1 overflow-hidden">
+            <BibleReader
+              translation={prefs.translation}
               bookName={bookName}
               chapter={chapter}
-              translation={prefs.translation}
               selectedVerses={selectedVerses}
-              onCompare={(verses) => {
-                setCompareVerses(verses);
-              }}
-              onClear={clearSelection}
+              onVerseClick={handleVerseClick}
+              onNavigate={navigate}
+              fontSize={prefs.fontSize}
+              lineSpacing={prefs.lineSpacing}
+              showNumbers={prefs.showNumbers}
+              scrollToVerse={scrollToVerse}
+              versify={prefs.versify}
             />
-          )}
+          </div>
         </div>
+        {/* Multi-verse action bar */}
+        {selectedVerses.size > 0 && (
+          <VerseActionBar
+            bookName={bookName}
+            chapter={chapter}
+            translation={prefs.translation}
+            selectedVerses={selectedVerses}
+            onCompare={(verses) => {
+              setCompareVerses(verses);
+            }}
+            onClear={clearSelection}
+          />
+        )}
+      </div>
 
-        {/* RIGHT: Compare drawer */}
-        <div
-          className={cn(
-            "shrink-0 h-screen overflow-hidden transition-all duration-300",
-            compareVerses.length > 0 ? "w-80" : "w-0",
-          )}
-        >
-          {compareVerses.length > 0 && (
+      {/* RIGHT: Compare — inline column ≥ xl, overlay sheet below */}
+      {compareVerses.length > 0 && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] xl:hidden"
+            onClick={() => setCompareVerses([])}
+            aria-hidden="true"
+          />
+          <div
+            className={cn(
+              "fixed inset-x-0 bottom-0 top-[18dvh] z-50 overflow-hidden rounded-t-2xl shadow-warm-lg",
+              "sm:inset-x-auto sm:right-0 sm:top-0 sm:w-96 sm:rounded-none",
+              "xl:static xl:z-auto xl:h-full xl:w-80 xl:shrink-0 xl:shadow-none",
+            )}
+          >
             <CompareDrawer
               verses={compareVerses}
               onClose={() => setCompareVerses([])}
             />
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
