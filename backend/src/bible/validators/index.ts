@@ -43,6 +43,9 @@ export const compareSchema = z.object({
 // ── GET /bible/votd ───────────────────────────────────────────────
 export const votdSchema = z.object({
   translation: z.string().min(2).max(10).toUpperCase().default("KJV"),
+  // The client's LOCAL calendar date (YYYY-MM-DD) so the verse changes at the
+  // user's own midnight. Validated/clamped in utils.resolveVotdDate().
+  date: z.string().max(10).optional(),
 });
 
 // ── GET /bible/reference ──────────────────────────────────────────

@@ -127,8 +127,8 @@ export const compareVerse = async (req: Request, res: Response) => {
 // ── GET /bible/votd?translation=KJV ──────────────────────────────
 export const getVerseOfTheDay = async (req: Request, res: Response) => {
   try {
-    const { translation } = votdSchema.parse(req.query);
-    const data = await service.getVerseOfTheDay(translation);
+    const { translation, date } = votdSchema.parse(req.query);
+    const data = await service.getVerseOfTheDay(translation, date);
     return res.json({ success: true, data });
   } catch (e: any) {
     return err(res, 500, e.message);

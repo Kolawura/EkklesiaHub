@@ -3282,11 +3282,49 @@ export const VOTD_POOL: Array<{
   },
 ];
 
-export function getTodayVotdEntry() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const diff = now.getTime() - start.getTime();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const dayOfYear = Math.floor(diff / oneDay);
+const DAY_MS = 1000 * 60 * 60 * 24;
+
+/**
+ * Normalises the calendar date a client says it is "today" in (YYYY-MM-DD).
+ *
+ * The client sends ITS local date so the verse rolls over at the user's own
+ * 12:00 AM, not the server's (which may be in another timezone). Anything
+ * malformed, impossible (2026-02-31) or more than 2 days away from the
+ * server's clock falls back to the server's UTC date — the 2-day window
+ * covers every real timezone and stops arbitrary dates from filling the cache.
+ */
+export function resolveVotdDate(input?: string): string {
+  const serverToday = new Date().toISOString().slice(0, 10);
+  if (!input) return serverToday;
+
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(input);
+  if (!m) return serverToday;
+
+  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const t = Date.UTC(y, mo - 1, d);
+  const check = new Date(t);
+  if (
+    check.getUTCFullYear() !== y ||
+    check.getUTCMonth() !== mo - 1 ||
+    check.getUTCDate() !== d
+  ) {
+    return serverToday;
+  }
+  if (Math.abs(t - Date.parse(serverToday)) > 2 * DAY_MS) return serverToday;
+
+  return input;
+}
+
+/** Deterministic verse for a YYYY-MM-DD date (Jan 1 = day 1). Timezone-free. */
+export function getVotdEntryForDate(dateKey: string) {
+  const [y, mo, d] = dateKey.split("-").map(Number);
+  const dayOfYear = Math.round(
+    (Date.UTC(y, mo - 1, d) - Date.UTC(y, 0, 0)) / DAY_MS,
+  );
   return VOTD_POOL[dayOfYear % VOTD_POOL.length];
+}
+
+/** Kept for backwards compatibility — uses the server's UTC date. */
+export function getTodayVotdEntry() {
+  return getVotdEntryForDate(resolveVotdDate());
 }

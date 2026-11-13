@@ -18,7 +18,8 @@ import {
   resolveBookNumber,
   getBookName,
   parseReference,
-  getTodayVotdEntry,
+  getVotdEntryForDate,
+  resolveVotdDate,
 } from "../utils";
 import { FEATURED_TRANSLATIONS } from "../utils/featuredTranslation";
 
@@ -271,12 +272,16 @@ export class BibleService {
   }
 
   // ── Verse of the Day ───────────────────────────────────────────────
-  async getVerseOfTheDay(translation: string): Promise<VerseOfTheDay> {
-    const key = `votd:${translation}:${new Date().toISOString().split("T")[0]}`;
+  async getVerseOfTheDay(
+    translation: string,
+    date?: string, // client-local YYYY-MM-DD
+  ): Promise<VerseOfTheDay> {
+    const day = resolveVotdDate(date);
+    const key = `votd:${translation}:${day}`;
     const hit = cache.get<VerseOfTheDay>(key);
     if (hit) return hit;
 
-    const entry = getTodayVotdEntry();
+    const entry = getVotdEntryForDate(day);
     const verse = await this.repo.getVerse(
       translation,
       entry.book_number,
@@ -304,7 +309,7 @@ export class BibleService {
       text: verseText.text,
       reference: `${verseText.book_name} ${verseText.chapter}:${verseText.verse}`,
       reflection: entry.reflection,
-      date: new Date().toISOString().split("T")[0],
+      date: day,
     };
 
     cache.set(key, result, H24);

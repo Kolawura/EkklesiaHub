@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { getRequest } from "@/lib/service";
@@ -220,28 +220,100 @@ export function useCompareVerse(
     enabled: enabled && !!bookName && !!chapter && !!verse,
   });
 }
-/** get cache time for a specific query */
-function getTimeUntilMidnight() {
+// ─────────────────────────────────────────────────────────────────
+// VERSE OF THE DAY
+//
+// "Today" = the USER'S local calendar day, so the verse changes at their own
+// 12:00 AM. How it stays correct without hammering the API:
+//   • the local date is part of the React Query key (new day ⇒ new entry)
+//   • that date is sent to the API, which picks the verse from it
+//   • each day's verse is also saved in localStorage, so reloads / new tabs
+//     reuse it with ZERO network requests until the date changes
+//   • a timer + tab-visibility check flips the date at midnight even if the
+//     app is left open (or a phone wakes up the next morning)
+// ─────────────────────────────────────────────────────────────────
+
+const VOTD_LS_PREFIX = "ekk:votd:";
+
+/** YYYY-MM-DD in the user's local timezone (not UTC). */
+function localDateKey(d = new Date()): string {
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
+function msUntilLocalMidnight(): number {
   const now = new Date();
+  const next = new Date(now);
+  next.setHours(24, 0, 0, 0); // next local 00:00
+  return next.getTime() - now.getTime();
+}
 
-  const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
+function readVotdCache(translation: string, day: string): VerseOfTheDay | null {
+  try {
+    const raw = localStorage.getItem(`${VOTD_LS_PREFIX}${translation}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { day: string; data: VerseOfTheDay };
+    return parsed.day === day ? parsed.data : null; // yesterday's = miss
+  } catch {
+    return null;
+  }
+}
 
-  return tomorrow.getTime() - now.getTime();
+function writeVotdCache(translation: string, day: string, data: VerseOfTheDay) {
+  try {
+    // one entry per translation → old days are overwritten, never pile up
+    localStorage.setItem(
+      `${VOTD_LS_PREFIX}${translation}`,
+      JSON.stringify({ day, data }),
+    );
+  } catch {
+    /* storage full / blocked (private mode) — just skip caching */
+  }
 }
 
 /** Verse of the Day */
 export function useVerseOfTheDay(translation = "KJV") {
-  const today = new Date().toLocaleDateString("en-CA");
+  const [today, setToday] = useState(() => localDateKey());
+
+  // Roll over at local midnight, and re-check whenever the tab becomes visible
+  // again (timers are throttled/paused while a phone sleeps).
+  useEffect(() => {
+    const sync = () => {
+      const now = localDateKey();
+      setToday((prev) => (prev === now ? prev : now));
+    };
+    const timer = setTimeout(sync, msUntilLocalMidnight() + 1000);
+    const onVisible = () => !document.hidden && sync();
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", sync);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", sync);
+    };
+  }, [today]);
+
   return useQuery<VerseOfTheDay>({
     queryKey: ["bible-votd", translation, today],
     queryFn: async () => {
-      const res = await api.get("/bible/votd", { params: { translation } });
-      return res.data.data;
+      // 1) already have today's verse on this device? no request at all.
+      const cached = readVotdCache(translation, today);
+      if (cached) return cached;
+
+      // 2) otherwise fetch once, then remember it until the date changes
+      const res = await api.get("/bible/votd", {
+        params: { translation, date: today },
+      });
+      const data: VerseOfTheDay = res.data.data;
+      writeVotdCache(translation, today, data);
+      return data;
     },
-    staleTime: getTimeUntilMidnight(), // Cache until midnight
-    gcTime: 24 * 60 * 60 * 1000, // Cache for 24 hours
+    // The key already changes every day, so a given entry never goes stale.
+    staleTime: Infinity,
+    gcTime: 48 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }
 

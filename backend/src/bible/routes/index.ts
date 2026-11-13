@@ -27,6 +27,12 @@ const staticCache =
     next();
   };
 
+// VOTD: with a ?date=YYYY-MM-DD the URL is unique per day, so a 24h cache can
+// never serve yesterday's verse. A request WITHOUT a date (old client) only
+// gets a short cache, otherwise it could be stuck on a stale verse.
+const votdCache = (req: Request, res: Response, next: NextFunction) =>
+  staticCache(req.query.date ? 86400 : 300)(req, res, next);
+
 export function initBibleRoutes(pool: Pool): Router {
   const router = Router();
   const service = new BibleService(pool);
@@ -61,8 +67,8 @@ export function initBibleRoutes(pool: Pool): Router {
     ctrl.compareVerse,
   );
 
-  // ── Verse of the Day (cached until midnight) ───────────────────
-  router.get("/votd", staticCache(86400), ctrl.getVerseOfTheDay);
+  // ── Verse of the Day (per-day URL; see votdCache) ───────────────────
+  router.get("/votd", votdCache, ctrl.getVerseOfTheDay);
 
   // ── Debug / admin ──────────────────────────────────────────────
   if (process.env.NODE_ENV === "development") {

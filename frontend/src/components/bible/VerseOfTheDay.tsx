@@ -22,7 +22,9 @@ export function VerseOfTheDay({
   if (isLoading) return <VerseOfTheDaySkeleton compact={compact} />;
   if (!data) return null;
 
-  const date = new Date(data.date).toLocaleDateString("en-US", {
+  // "YYYY-MM-DD" alone parses as UTC midnight and can show the wrong weekday
+  // west of UTC — pin it to local time instead.
+  const date = new Date(`${data.date}T00:00:00`).toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
