@@ -40,7 +40,7 @@ export default function NavBar() {
     : null;
 
   return (
-    <header className="relative z-30 flex h-13 shrink-0 items-center gap-2 border-b border-parchment-dark bg-parchment px-3 pt-[env(safe-area-inset-top)] sm:gap-4 sm:px-5 lg:px-5">
+    <header className="relative z-40 flex h-13 shrink-0 items-center gap-2 border-b border-parchment-dark bg-parchment px-3 pt-[env(safe-area-inset-top)] sm:gap-4 sm:px-5 lg:px-5">
       {/* Menu button — the sidebar is a drawer below lg */}
       <button
         type="button"

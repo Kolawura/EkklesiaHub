@@ -28,10 +28,11 @@ interface BibleReaderProps {
 }
 
 const FONT_SIZES: Record<string, string> = {
-  sm: "text-[0.9375rem]",
-  md: "text-[1.0625rem]",
-  lg: "text-[1.25rem]",
-  xl: "text-[1.5rem]",
+  // one step smaller on phones; desktop sizes unchanged
+  sm: "text-[0.875rem] sm:text-[0.9375rem]",
+  md: "text-[0.9375rem] sm:text-[1.0625rem]",
+  lg: "text-[1.0625rem] sm:text-[1.25rem]",
+  xl: "text-[1.25rem] sm:text-[1.5rem]",
 };
 
 const LINE_SPACINGS: Record<string, string> = {
@@ -104,10 +105,10 @@ export function BibleReader({
         <p className="font-body text-xs uppercase tracking-[0.2em] text-gold mb-1.5">
           {translation}
         </p>
-        <h1 className="font-display text-[1.75rem] sm:text-[2.25rem] font-bold text-ink tracking-tight leading-tight break-words">
+        <h1 className="font-display text-[1.5rem] sm:text-[2.25rem] font-bold text-ink tracking-tight leading-tight break-words">
           {data.book_name}
         </h1>
-        <p className="font-display text-[1.125rem] text-ink-faint mt-1">
+        <p className="font-display text-base sm:text-[1.125rem] text-ink-faint mt-1">
           Chapter {data.chapter}
         </p>
         <div className="mt-4 w-12 h-0.5 bg-gold/40 rounded-full" />

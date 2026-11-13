@@ -339,13 +339,13 @@ export default function BiblePage() {
             <div className="shrink-0 relative border-b border-parchment-dark">
               <button
                 onClick={() => setShowVotd(false)}
-                className="absolute top-1.5 right-2 sm:top-2 sm:right-3 p-2 text-gold hover:text-red-600 transition-colors z-10 cursor-pointer"
+                className="absolute top-4 right-5 sm:top-5 sm:right-8 p-1.5 text-gold hover:text-red-600 transition-colors z-10 cursor-pointer"
                 title="Dismiss"
                 aria-label="Dismiss verse of the day"
               >
                 <X size={16} />
               </button>
-              <div className="px-4 py-4 pr-10 sm:px-8 sm:py-5">
+              <div className="px-3 py-3 sm:px-6 sm:py-4">
                 <VerseOfTheDay
                   translation={prefs.translation}
                   onNavigate={navigate}
