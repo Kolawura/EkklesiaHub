@@ -98,16 +98,12 @@ export function useBibleChapter(
   chapter: number,
   enabled = true,
 ) {
-  // console.log(bookName, chapter);
   return useQuery<BibleChapter>({
     queryKey: ["bible-chapter", translation, bookName, chapter],
     queryFn: async () => {
       const res = await getRequest(
         `/bible/chapter/${translation}/${encodeURIComponent(bookName)}/${chapter}`,
       );
-      console.log("Full response:", res);
-      console.log("Response data:", res.data);
-      console.log("Nested data:", res.data?.data);
       return res.data;
     },
     staleTime: 1000 * 60 * 60 * 12, // 12h
@@ -134,7 +130,6 @@ export function useBibleBookMeta(
         `/bible/chapter/${translation}/${encodeURIComponent(bookName)}/1`,
       );
       const data: BibleChapter = res.data.data ?? res.data;
-      console.log("book meta", data);
       return { maxChapters: data.max_chapters };
     },
     staleTime: Infinity,
