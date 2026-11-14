@@ -39,16 +39,23 @@ export const useAuth = (
     }
   }, [userQuery.data, userQuery.isError, setUser, logout]);
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = (
+    e: React.FormEvent<HTMLFormElement>,
+    turnstileToken?: string,
+  ) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     loginMutation.mutate({
       email: fd.get("email") as string,
       password: fd.get("password") as string,
+      turnstileToken,
     });
   };
 
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = (
+    e: React.FormEvent<HTMLFormElement>,
+    turnstileToken?: string,
+  ) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const full = (fd.get("name") as string).trim();
@@ -58,6 +65,7 @@ export const useAuth = (
       lastName: rest.join(" ") || "-",
       email: fd.get("email") as string,
       password: fd.get("password") as string,
+      turnstileToken,
     });
   };
 

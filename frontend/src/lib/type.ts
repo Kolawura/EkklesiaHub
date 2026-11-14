@@ -103,6 +103,7 @@ export interface ApiResponse<T> {
 export interface LoginType {
   email: string;
   password: string;
+  turnstileToken?: string;
 }
 
 export interface RegisterType {
@@ -110,6 +111,7 @@ export interface RegisterType {
   lastName: string;
   email: string;
   password: string;
+  turnstileToken?: string;
 }
 
 export interface PostAnalytics {

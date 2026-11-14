@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Mail, User } from "lucide-react";
 import { DEFAULT_POST_LOGIN, useAuth } from "@/hooks/useAuth";
 import { useSearchParams } from "next/navigation";
@@ -9,7 +9,7 @@ import { CrossOrnament } from "@/components/ui/CrossOrnament";
 import { QUOTES } from "@/components/Auth/Quotes";
 import { Field } from "@/components/Auth/Field";
 import { PasswordField } from "@/components/Auth/PasswordField";
-import { Suspense } from "react";
+import { useCaptcha } from "@/hooks/useCaptcha";
 
 export default function AuthPageWrapper() {
   return (
@@ -65,6 +65,11 @@ function AuthPage() {
   // Set initial tab from ?tab=signup query param (used by landing page CTAs)
   const initialTab = searchParams?.get("tab") === "signup" ? "signup" : "login";
   const [tab, setTab] = useState<"login" | "signup">(initialTab);
+
+  const { captcha, captchaToken, captchaBlocked } = useCaptcha({
+    tab,
+    isPending,
+  });
 
   const quoteInx = parseInt((Math.random() * QUOTES.length).toPrecision());
   const quote = QUOTES[quoteInx];
@@ -154,7 +159,10 @@ function AuthPage() {
 
           {/* Login form */}
           {tab === "login" ? (
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form
+              onSubmit={(e) => handleLogin(e, captchaToken)}
+              className="space-y-4"
+            >
               <Field
                 id="email"
                 name="email"
@@ -171,9 +179,10 @@ function AuthPage() {
                 show={showPassword}
                 onToggle={() => setShowPassword(!showPassword)}
               />
+              {captcha}
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || captchaBlocked}
                 className="w-full font-body text-sm font-medium bg-ink text-parchment py-2.5 rounded-lg hover:bg-ink-medium disabled:opacity-50 transition-all mt-1 flex items-center justify-center gap-2"
               >
                 {loginMutation.isPending && (
@@ -194,7 +203,10 @@ function AuthPage() {
             </form>
           ) : (
             /* Register form */
-            <form onSubmit={handleRegister} className="space-y-4">
+            <form
+              onSubmit={(e) => handleRegister(e, captchaToken)}
+              className="space-y-4"
+            >
               <Field
                 id="name"
                 name="name"
@@ -219,9 +231,10 @@ function AuthPage() {
                 show={showPassword}
                 onToggle={() => setShowPassword(!showPassword)}
               />
+              {captcha}
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || captchaBlocked}
                 className="w-full font-body text-sm font-medium bg-ink text-parchment py-2.5 rounded-lg hover:bg-ink-medium disabled:opacity-50 transition-all mt-1 flex items-center justify-center gap-2"
               >
                 {registerMutation.isPending && (
