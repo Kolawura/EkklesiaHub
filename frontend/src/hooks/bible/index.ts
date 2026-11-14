@@ -157,7 +157,6 @@ export function useBibleChapterMeta(
         `/bible/chapter/${translation}/${encodeURIComponent(bookName)}/${chapter}`,
       );
       const data: BibleChapter = res.data.data ?? res.data;
-      console.log("chapter meta", data);
       return { totalVerses: data.total_verses };
     },
     staleTime: Infinity,
@@ -175,7 +174,6 @@ export function useBibleTranslations() {
       const res: { data: TranslationInfo[] } = await getRequest(
         "/bible/translations",
       );
-      console.log("Translations ", res.data);
       return res.data;
     },
     staleTime: Infinity,

@@ -79,9 +79,7 @@ export default function CommunityDetailPage() {
         ]
       : []),
   ];
-  console.log("isAdmin", isAdmin);
   const visibleTab = TABS.filter((t) => isAdmin || !t.adminOnly);
-  console.log("Visible tabs", visibleTab);
 
   /* ── Loading ── */
   if (communityLoading)
@@ -170,58 +168,58 @@ export default function CommunityDetailPage() {
 
         {/* Identity (left) + Join/Leave (right) share one row so they can never overlap */}
         <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-5 flex flex-wrap items-end justify-between gap-3">
-        <div className="flex min-w-0 items-end gap-3 sm:gap-4">
-          <div className="w-14 h-14 rounded-xl bg-gold-bg border-2 border-parchment flex items-center justify-center overflow-hidden shadow-warm-md shrink-0">
-            {community.avatar ? (
-              <img
-                src={community.avatar}
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <Users size={22} className="text-gold" />
-            )}
-          </div>
-          <div className="min-w-0 pb-0.5">
-            <div className="flex items-center gap-2">
-              <h1 className="font-display text-xl sm:text-2xl font-bold text-parchment truncate">
-                {community.name}
-              </h1>
-              {community.isPrivate ? (
-                <Lock size={13} className="text-parchment/70" />
+          <div className="flex min-w-0 items-end gap-3 sm:gap-4">
+            <div className="w-14 h-14 rounded-xl bg-gold-bg border-2 border-parchment flex items-center justify-center overflow-hidden shadow-warm-md shrink-0">
+              {community.avatar ? (
+                <img
+                  src={community.avatar}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <Globe size={13} className="text-parchment/70" />
+                <Users size={22} className="text-gold" />
               )}
             </div>
-            <p className="font-body text-sm text-parchment/65">
-              {community._count.memberships} members · {community._count.posts}{" "}
-              posts
-            </p>
+            <div className="min-w-0 pb-0.5">
+              <div className="flex items-center gap-2">
+                <h1 className="font-display text-xl sm:text-2xl font-bold text-parchment truncate">
+                  {community.name}
+                </h1>
+                {community.isPrivate ? (
+                  <Lock size={13} className="text-parchment/70" />
+                ) : (
+                  <Globe size={13} className="text-parchment/70" />
+                )}
+              </div>
+              <p className="font-body text-sm text-parchment/65">
+                {community._count.memberships} members ·{" "}
+                {community._count.posts} posts
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Join / Leave button */}
-        <div className="shrink-0">
-          {isAuthenticated &&
-            !isAdmin &&
-            (isMember ? (
-              <button
-                onClick={() => leaveMutation.mutate()}
-                disabled={leaveMutation.isPending}
-                className="inline-flex items-center gap-1.5 font-body text-sm text-parchment bg-parchment/15 backdrop-blur-sm border border-parchment/25 px-4 py-2 rounded-lg hover:bg-parchment/25 disabled:opacity-50 transition-colors"
-              >
-                <UserMinus size={13} /> Leave
-              </button>
-            ) : (
-              <button
-                onClick={() => joinMutation.mutate()}
-                disabled={joinMutation.isPending}
-                className="inline-flex items-center gap-1.5 font-body text-sm font-medium bg-parchment text-ink px-4 py-2 rounded-lg hover:bg-parchment-deep disabled:opacity-50 transition-colors"
-              >
-                <UserPlus size={13} /> Join
-              </button>
-            ))}
-        </div>
+          {/* Join / Leave button */}
+          <div className="shrink-0">
+            {isAuthenticated &&
+              !isAdmin &&
+              (isMember ? (
+                <button
+                  onClick={() => leaveMutation.mutate()}
+                  disabled={leaveMutation.isPending}
+                  className="inline-flex items-center gap-1.5 font-body text-sm text-parchment bg-parchment/15 backdrop-blur-sm border border-parchment/25 px-4 py-2 rounded-lg hover:bg-parchment/25 disabled:opacity-50 transition-colors"
+                >
+                  <UserMinus size={13} /> Leave
+                </button>
+              ) : (
+                <button
+                  onClick={() => joinMutation.mutate()}
+                  disabled={joinMutation.isPending}
+                  className="inline-flex items-center gap-1.5 font-body text-sm font-medium bg-parchment text-ink px-4 py-2 rounded-lg hover:bg-parchment-deep disabled:opacity-50 transition-colors"
+                >
+                  <UserPlus size={13} /> Join
+                </button>
+              ))}
+          </div>
         </div>
       </div>
 

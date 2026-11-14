@@ -61,7 +61,6 @@ export function BibleReader({
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const [hoveredVerse, setHoveredVerse] = useState<number | null>(null);
-  console.log("VERSIFY: ", versify);
   // Scroll to a specific verse when requested (e.g. from reference jump or sidebar)
   useEffect(() => {
     if (!scrollToVerse || !contentRef.current) return;
@@ -201,7 +200,8 @@ export function BibleReader({
                 size={16}
                 className="group-hover:-translate-x-0.5 transition-transform"
               />
-              <span className="hidden sm:inline">Chapter&nbsp;</span>{data.prev_chapter}
+              <span className="hidden sm:inline">Chapter&nbsp;</span>
+              {data.prev_chapter}
             </button>
           ) : (
             <div />
@@ -235,7 +235,8 @@ export function BibleReader({
               onClick={() => onNavigate(data.book_name, data.next_chapter!)}
               className="inline-flex items-center gap-1.5 sm:gap-2 py-2 pl-2 font-body text-sm text-ink-faint hover:text-gold transition-colors group"
             >
-              <span className="hidden sm:inline">Chapter&nbsp;</span>{data.next_chapter}
+              <span className="hidden sm:inline">Chapter&nbsp;</span>
+              {data.next_chapter}
               <ChevronRight
                 size={16}
                 className="group-hover:translate-x-0.5 transition-transform"
