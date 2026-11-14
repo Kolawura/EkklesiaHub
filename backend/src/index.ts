@@ -13,7 +13,6 @@ import followRoutes from "./routes/followRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import userRoutes from "./routes/userRoutes";
-import scriptureRoutes from "./routes/scriptureRoutes";
 import seriesRoutes from "./routes/seriesRoutes";
 import readingListRoutes from "./routes/readingListRoutes";
 import tagRoutes from "./routes/tagRoutes";
@@ -90,7 +89,6 @@ app.use("/api/tags", tagRoutes); // replaces existing tagRoutes if any
 app.use("/api/upload", uploadRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/scripture", scriptureRoutes);
 app.use("/api/bible", initBibleRoutes(biblePool));
 
 // Serve locally stored uploads (no-op when using Cloudinary)
