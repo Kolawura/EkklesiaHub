@@ -14,7 +14,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Pool } from "pg";
 import { BibleService } from "../services";
 import * as ctrl from "../controllers";
-// import { optionalAuth } from "../../middlewares/authMiddleware";
+
+import { initConcordanceRoutes } from "./concordance"; // with the other imports
 
 // Cache headers helper — tells browsers and CDNs to cache static Bible content.
 // Chapters and books don't change, so we can cache aggressively.
@@ -37,6 +38,9 @@ export function initBibleRoutes(pool: Pool): Router {
   const router = Router();
   const service = new BibleService(pool);
   ctrl.initControllers(service);
+  // Join the Conncordance routes (Strong's, KJV-tagged, dictionary, reading plans, daily)
+  //  into the main /api/bible router.
+  router.use(initConcordanceRoutes(pool, service));
 
   // ── Static content (cached heavily) ─────────────────────────────
   router.get("/books", staticCache(86400), ctrl.getBooks); // 24h

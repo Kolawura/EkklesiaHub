@@ -7,6 +7,7 @@ import { BibleReader } from "@/components/bible/BibleReader";
 import { BibleToolbar } from "@/components/bible/BibleToolbar";
 import { CompareDrawer } from "@/components/bible/CompareDrawer";
 import { VerseOfTheDay } from "@/components/bible/VerseOfTheDay";
+import { StrongsPanel } from "@/components/bible/StrongsPanel";
 import { useBibleChapter, type BibleVerse } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,10 @@ interface ReaderPrefs {
   lineSpacing: "compact" | "normal" | "relaxed";
   showNumbers: boolean;
   versify: boolean;
+  /** KJV: colour the words of Christ */
+  redLetters: boolean;
+  /** KJV: tap words for Strong's definitions */
+  strongs: boolean;
 }
 const DEFAULT_PREFS: ReaderPrefs = {
   translation: "KJV",
@@ -25,6 +30,8 @@ const DEFAULT_PREFS: ReaderPrefs = {
   lineSpacing: "normal",
   showNumbers: true,
   versify: false,
+  redLetters: true,
+  strongs: false,
 };
 function loadPrefs(): ReaderPrefs {
   if (typeof window === "undefined") return DEFAULT_PREFS;
@@ -170,20 +177,26 @@ export default function BiblePage() {
   const [scrollToVerse, setScrollToVerse] = useState<number | null>(null);
   const [showVotd, setShowVotd] = useState(true);
   const [compareVerses, setCompareVerses] = useState<BibleVerse[]>([]);
+  // Strong's panel: the tapped word and its Strong's numbers
+  const [strongsWord, setStrongsWord] = useState<{
+    word: string;
+    ids: string[];
+  } | null>(null);
   // Book navigator drawer — only used below xl, where the sidebar isn't inline
   const [booksOpen, setBooksOpen] = useState(false);
 
   // Escape closes whichever overlay is open
   useEffect(() => {
-    if (!booksOpen && compareVerses.length === 0) return;
+    if (!booksOpen && compareVerses.length === 0 && !strongsWord) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setBooksOpen(false);
       setCompareVerses([]);
+      setStrongsWord(null);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [booksOpen, compareVerses.length]);
+  }, [booksOpen, compareVerses.length, strongsWord]);
 
   // Multi-verse selection
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -202,6 +215,23 @@ export default function BiblePage() {
     setSelectedVerses(new Set());
     lastClickedVerse.current = null;
   }, []);
+
+  // Tapping a Strong's-tagged word opens the panel in the right-hand slot
+  // (compare and Strong's share it, so opening one closes the other).
+  const handleWordClick = useCallback((word: string, ids: string[]) => {
+    setCompareVerses([]);
+    setStrongsWord({ word, ids });
+  }, []);
+
+  const closeRightPanel = useCallback(() => {
+    setCompareVerses([]);
+    setStrongsWord(null);
+  }, []);
+
+  // Strong's tags exist for the KJV only: close the panel if the user switches away
+  useEffect(() => {
+    if (prefs.translation !== "KJV") setStrongsWord(null);
+  }, [prefs.translation]);
 
   /**
    * navigate() is called from:
@@ -330,6 +360,10 @@ export default function BiblePage() {
           onLineSpacing={(s) => updatePrefs({ lineSpacing: s })}
           onShowNumbers={(v) => updatePrefs({ showNumbers: v })}
           onVersify={(b) => updatePrefs({ versify: b })}
+          redLetters={prefs.redLetters}
+          onRedLetters={(v) => updatePrefs({ redLetters: v })}
+          strongsMode={prefs.strongs}
+          onStrongsMode={(v) => updatePrefs({ strongs: v })}
           onOpenBooks={() => setBooksOpen(true)}
           onNavigate={navigate}
         />
@@ -369,6 +403,9 @@ export default function BiblePage() {
               showNumbers={prefs.showNumbers}
               scrollToVerse={scrollToVerse}
               versify={prefs.versify}
+              redLetters={prefs.redLetters}
+              strongsMode={prefs.strongs}
+              onWordClick={handleWordClick}
             />
           </div>
         </div>
@@ -380,6 +417,7 @@ export default function BiblePage() {
             translation={prefs.translation}
             selectedVerses={selectedVerses}
             onCompare={(verses) => {
+              setStrongsWord(null);
               setCompareVerses(verses);
             }}
             onClear={clearSelection}
@@ -387,12 +425,12 @@ export default function BiblePage() {
         )}
       </div>
 
-      {/* RIGHT: Compare — inline column ≥ xl, overlay sheet below */}
-      {compareVerses.length > 0 && (
+      {/* RIGHT: Compare or Strong's — inline column ≥ xl, overlay sheet below */}
+      {(compareVerses.length > 0 || strongsWord) && (
         <>
           <div
             className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] xl:hidden"
-            onClick={() => setCompareVerses([])}
+            onClick={closeRightPanel}
             aria-hidden="true"
           />
           <div
@@ -402,10 +440,19 @@ export default function BiblePage() {
               "xl:static xl:z-auto xl:h-full xl:w-80 xl:shrink-0 xl:shadow-none",
             )}
           >
-            <CompareDrawer
-              verses={compareVerses}
-              onClose={() => setCompareVerses([])}
-            />
+            {strongsWord ? (
+              <StrongsPanel
+                word={strongsWord.word}
+                ids={strongsWord.ids}
+                onClose={closeRightPanel}
+                onNavigate={navigate}
+              />
+            ) : (
+              <CompareDrawer
+                verses={compareVerses}
+                onClose={() => setCompareVerses([])}
+              />
+            )}
           </div>
         </>
       )}

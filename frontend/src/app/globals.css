@@ -62,9 +62,12 @@
 
   /* Warm elevation scale — referenced as shadow-warm-sm/md/lg across the app.
      (Previously undefined, so Tailwind silently emitted nothing.) */
-  --shadow-warm-sm: 0 1px 2px rgb(26 18 8 / 0.06), 0 1px 3px rgb(26 18 8 / 0.05);
-  --shadow-warm-md: 0 4px 10px -2px rgb(26 18 8 / 0.10), 0 2px 6px -2px rgb(26 18 8 / 0.06);
-  --shadow-warm-lg: 0 14px 32px -8px rgb(26 18 8 / 0.22), 0 6px 14px -6px rgb(26 18 8 / 0.12);
+  --shadow-warm-sm:
+    0 1px 2px rgb(26 18 8 / 0.06), 0 1px 3px rgb(26 18 8 / 0.05);
+  --shadow-warm-md:
+    0 4px 10px -2px rgb(26 18 8 / 0.1), 0 2px 6px -2px rgb(26 18 8 / 0.06);
+  --shadow-warm-lg:
+    0 14px 32px -8px rgb(26 18 8 / 0.22), 0 6px 14px -6px rgb(26 18 8 / 0.12);
 
   --radius: 0.625rem;
   --radius-sm: 0.25rem;
@@ -91,6 +94,7 @@
   --color-gold-light: #d4a255;
   --color-gold-pale: #f0d89a;
   --color-gold-bg: #fbf4e4;
+  --color-woc: #a61e1e;
 }
 
 /* ═══════════════════════════════════════
@@ -110,6 +114,7 @@
   --color-gold-light: #d4941f;
   --color-gold-pale: #f5dfae;
   --color-gold-bg: #fef8ee;
+  --color-woc: #b3261e;
 }
 
 /* ═══════════════════════════════════════
@@ -129,6 +134,7 @@
   --color-gold-light: #b87d2c;
   --color-gold-pale: #4a3210;
   --color-gold-bg: #231b0e;
+  --color-woc: #f08a7e;
 }
 
 /* ═══════════════════════════════════════
@@ -148,6 +154,7 @@
   --color-gold-light: #93c5fd;
   --color-gold-pale: #1e3a5f;
   --color-gold-bg: #172033;
+  --color-woc: #ff8a80;
 }
 
 /* ═══════════════════════════════════════
@@ -167,6 +174,7 @@
   --color-gold-light: #b87d2c;
   --color-gold-pale: #d9b26a;
   --color-gold-bg: #f0dfb8;
+  --color-woc: #9e1c1c;
 }
 
 /* ═══════════════════════════════════════
@@ -186,6 +194,7 @@
   --color-gold-light: #6a9b5a;
   --color-gold-pale: #cfe3c5;
   --color-gold-bg: #eef4ea;
+  --color-woc: #a8201a;
 }
 
 /* ═══════════════════════════════════════
@@ -205,6 +214,7 @@
   --color-gold-light: #d17870;
   --color-gold-pale: #edc0bc;
   --color-gold-bg: #fbe9e7;
+  --color-woc: #8f1230;
 }
 
 /* ═══════════════════════════════════════
@@ -224,6 +234,7 @@
   --color-gold-light: #db7746;
   --color-gold-pale: #e8b28e;
   --color-gold-bg: #f9e1cf;
+  --color-woc: #9b1b1b;
 }
 
 /* ═══════════════════════════════════════
@@ -243,6 +254,7 @@
   --color-gold-light: #f0d089;
   --color-gold-pale: #3a2f14;
   --color-gold-bg: #141005;
+  --color-woc: #ff7a70;
 }
 
 /* ═══════════════════════════════════════
@@ -262,6 +274,27 @@
   --color-gold-light: #a878bc;
   --color-gold-pale: #ddc2e8;
   --color-gold-bg: #f2e6f7;
+  --color-woc: #a3162a;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WORDS OF CHRIST (red letters)
+
+   APPEND THIS TO THE END OF src/app/globals.css
+
+   One colour per theme. Every value meets WCAG AA (≥ 4.5:1) both on the
+   theme's page background and on the 20% gold tint used for selected
+   verses. Light themes get a deep red; dark themes a lighter coral.
+   Rose and Papyrus use a deeper crimson so the red stays distinct from
+   their reddish gold accents.
+
+   The reader's "Words of Christ" toggle just adds/removes the `woc-on`
+   class on the verse container, so switching it off needs no re-render
+   of the text.
+═══════════════════════════════════════════════════════════════ */
+
+.woc-on .woc {
+  color: var(--color-woc);
 }
 
 /* ═══════════════════════════════════════
@@ -311,7 +344,9 @@ canvas {
    touch-sized screens so forms don't jump. (Unlayered, so it intentionally
    outranks the text-sm / text-xs utilities.) */
 @media (max-width: 639px) {
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      [type="file"]
+    ),
   textarea:not([data-keep-size]),
   select {
     font-size: 16px;
@@ -363,20 +398,41 @@ h6 {
    KEYFRAMES
 ═══════════════════════════════════════ */
 @keyframes heroIn {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes marqueeScroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 @keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -415,7 +471,12 @@ h6 {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -440,12 +501,24 @@ h6 {
 .stagger > * {
   animation: fadeUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 90ms; }
-.stagger > *:nth-child(3) { animation-delay: 180ms; }
-.stagger > *:nth-child(4) { animation-delay: 270ms; }
-.stagger > *:nth-child(5) { animation-delay: 360ms; }
-.stagger > *:nth-child(6) { animation-delay: 450ms; }
+.stagger > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 90ms;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 180ms;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 270ms;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 360ms;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 450ms;
+}
 
 .prose-ekk {
   font-family: var(--font-body);

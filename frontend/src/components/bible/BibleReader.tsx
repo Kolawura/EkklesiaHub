@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { useBibleChapter, type BibleVerse } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 import { BibleReaderSkeleton } from "./BibleReaderSkeleton";
+import { useTaggedChapter } from "@/hooks/bible/study";
+import { TaggedVerseText } from "./TaggedVerseText";
+import { taggedToPlain } from "@/lib/taggedText";
 
 interface BibleReaderProps {
   translation: string;
@@ -25,6 +28,12 @@ interface BibleReaderProps {
   versify: boolean;
   /** When set, the reader scrolls to this verse on mount/change */
   scrollToVerse?: number | null;
+  /** KJV only: colour the words of Christ (uses the tagged text) */
+  redLetters?: boolean;
+  /** KJV only: make Strong's-tagged words tappable */
+  strongsMode?: boolean;
+  /** Fired when a Strong's-tagged word is tapped */
+  onWordClick?: (word: string, ids: string[]) => void;
 }
 
 const FONT_SIZES: Record<string, string> = {
@@ -53,12 +62,60 @@ export function BibleReader({
   showNumbers,
   versify,
   scrollToVerse,
+  redLetters = false,
+  strongsMode = false,
+  onWordClick,
 }: BibleReaderProps) {
-  const { data, isLoading, isError } = useBibleChapter(
+  // KJV study features (red letters, Strong's) need the tagged text. If it
+  // can't be loaded, the reader quietly falls back to the plain chapter.
+  const wantsTagged = translation === "KJV" && (redLetters || strongsMode);
+  const tagged = useTaggedChapter(bookName, chapter, wantsTagged);
+  const taggedOk = wantsTagged && !!tagged.data;
+  const taggedFailed = wantsTagged && tagged.isError;
+  const plain = useBibleChapter(
     translation,
     bookName,
     chapter,
+    !wantsTagged || taggedFailed,
   );
+
+  const isLoading = wantsTagged
+    ? tagged.isLoading || (taggedFailed && plain.isLoading)
+    : plain.isLoading;
+  const isError = wantsTagged ? taggedFailed && plain.isError : plain.isError;
+
+  // One shape for rendering, whichever source supplied the chapter.
+  const data = useMemo(() => {
+    const src = taggedOk ? tagged.data : plain.data;
+    if (!src) return null;
+    const verses: Array<{ verse: number; text: string }> = src.verses;
+    return {
+      book_name: src.book_name,
+      book_number: src.book_number,
+      chapter: src.chapter,
+      total_verses: src.total_verses,
+      prev_chapter: src.prev_chapter,
+      next_chapter: src.next_chapter,
+      max_chapters: src.max_chapters,
+      verses: verses.map((v) => ({
+        verse: v.verse,
+        text: v.text,
+        tagged: taggedOk,
+        // onVerseClick expects a BibleVerse; tagged verses get a plain-text one
+        bible: taggedOk
+          ? ({
+              id: 0,
+              translation: "KJV",
+              book_name: src.book_name,
+              book_number: src.book_number,
+              chapter: src.chapter,
+              verse: v.verse,
+              text: taggedToPlain(v.text),
+            } as BibleVerse)
+          : (v as unknown as BibleVerse),
+      })),
+    };
+  }, [taggedOk, tagged.data, plain.data]);
   const contentRef = useRef<HTMLDivElement>(null);
   const [hoveredVerse, setHoveredVerse] = useState<number | null>(null);
   // Scroll to a specific verse when requested (e.g. from reference jump or sidebar)
@@ -124,6 +181,7 @@ export function BibleReader({
               "font-body text-ink-light space",
               FONT_SIZES[fontSize],
               LINE_SPACINGS[lineSpacing],
+              redLetters && "woc-on",
             )}
           >
             {data.verses.map((v) => {
@@ -135,11 +193,11 @@ export function BibleReader({
                   data-verse={v.verse}
                   role="button"
                   tabIndex={0}
-                  onClick={(e) => handleClick(e, v)}
+                  onClick={(e) => handleClick(e, v.bible)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      onVerseClick(v, false);
+                      onVerseClick(v.bible, false);
                     }
                   }}
                   onMouseEnter={() => setHoveredVerse(v.verse)}
@@ -166,7 +224,18 @@ export function BibleReader({
                       {v.verse}
                     </sup>
                   )}
-                  {v.text}{" "}
+                  {v.tagged ? (
+                    // one wrapper so versify's flex layout sees a single child
+                    <span>
+                      <TaggedVerseText
+                        text={v.text}
+                        strongsMode={strongsMode}
+                        onWordClick={onWordClick}
+                      />
+                    </span>
+                  ) : (
+                    v.text
+                  )}{" "}
                 </span>
               );
             })}

@@ -11,6 +11,8 @@ import {
   Loader2,
   Library,
   ArrowLeft,
+  Cross,
+  Languages,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../ui/ThemeToggle";
@@ -23,12 +25,18 @@ interface BibleToolbarProps {
   chapter: number;
   fontSize: "sm" | "md" | "lg" | "xl";
   lineSpacing: "compact" | "normal" | "relaxed";
-  showNumbers: boolean; 
+  showNumbers: boolean;
   versify: boolean;
   onFontSize: (s: "sm" | "md" | "lg" | "xl") => void;
   onLineSpacing: (s: "compact" | "normal" | "relaxed") => void;
   onShowNumbers: (v: boolean) => void;
-  onVersify: (b:boolean) => void;
+  onVersify: (b: boolean) => void;
+  /** KJV only: words of Christ in red */
+  redLetters?: boolean;
+  onRedLetters?: (v: boolean) => void;
+  /** KJV only: tap a word for its Strong's entry */
+  strongsMode?: boolean;
+  onStrongsMode?: (v: boolean) => void;
   /** Opens the book navigator drawer (shown below xl, where the sidebar is hidden). */
   onOpenBooks?: () => void;
   onNavigate: (
@@ -51,10 +59,16 @@ export function BibleToolbar({
   onLineSpacing,
   onShowNumbers,
   onVersify,
+  redLetters = false,
+  onRedLetters,
+  strongsMode = false,
+  onStrongsMode,
   onOpenBooks,
   onNavigate,
 }: BibleToolbarProps) {
   const router = useRouter();
+  // Red letters and Strong's tags exist for the KJV only
+  const isKjv = translation === "KJV";
   const [showSettings, setShowSettings] = useState(false);
   const [showJump, setShowJump] = useState(false);
   const [jumpInput, setJumpInput] = useState("");
@@ -297,8 +311,8 @@ export function BibleToolbar({
               </button>
             </div>
 
-             {/* Versify Text */}
-             <div className="flex items-center justify-between pt-1 border-t border-parchment-dark">
+            {/* Versify Text */}
+            <div className="flex items-center justify-between pt-1 border-t border-parchment-dark">
               <div className="flex items-center gap-1.5">
                 <Hash size={12} className="text-ink-ghost" />
                 <p className="font-body text-xs text-ink-faint font-medium">
@@ -316,6 +330,80 @@ export function BibleToolbar({
                   className={cn(
                     "absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-parchment shadow-sm transition-transform",
                     versify ? "translate-x-4.5" : "",
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Words of Christ */}
+            <div
+              className={cn(
+                "flex items-center justify-between pt-1 border-t border-parchment-dark",
+                !isKjv && "opacity-50",
+              )}
+            >
+              <div className="flex items-center gap-1.5">
+                <Cross size={12} className="text-ink-ghost" />
+                <div>
+                  <p className="font-body text-xs text-ink-faint font-medium">
+                    Words of Christ
+                  </p>
+                  <p className="font-body text-[10px] text-ink-ghost">
+                    {isKjv ? "Red letters" : "KJV only"}
+                  </p>
+                </div>
+              </div>
+              <button
+                role="switch"
+                aria-checked={redLetters && isKjv}
+                disabled={!isKjv}
+                onClick={() => onRedLetters?.(!redLetters)}
+                className={cn(
+                  "relative w-9 h-5 rounded-full transition-colors disabled:cursor-not-allowed",
+                  redLetters && isKjv ? "bg-gold" : "bg-parchment-dark",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-parchment shadow-sm transition-transform",
+                    redLetters && isKjv ? "translate-x-4.5" : "",
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Strong's numbers */}
+            <div
+              className={cn(
+                "flex items-center justify-between pt-1 border-t border-parchment-dark",
+                !isKjv && "opacity-50",
+              )}
+            >
+              <div className="flex items-center gap-1.5">
+                <Languages size={12} className="text-ink-ghost" />
+                <div>
+                  <p className="font-body text-xs text-ink-faint font-medium">
+                    Strong's numbers
+                  </p>
+                  <p className="font-body text-[10px] text-ink-ghost">
+                    {isKjv ? "Tap a word for Hebrew or Greek" : "KJV only"}
+                  </p>
+                </div>
+              </div>
+              <button
+                role="switch"
+                aria-checked={strongsMode && isKjv}
+                disabled={!isKjv}
+                onClick={() => onStrongsMode?.(!strongsMode)}
+                className={cn(
+                  "relative w-9 h-5 rounded-full transition-colors disabled:cursor-not-allowed",
+                  strongsMode && isKjv ? "bg-gold" : "bg-parchment-dark",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-parchment shadow-sm transition-transform",
+                    strongsMode && isKjv ? "translate-x-4.5" : "",
                   )}
                 />
               </button>
