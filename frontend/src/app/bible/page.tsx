@@ -8,6 +8,9 @@ import { BibleToolbar } from "@/components/bible/BibleToolbar";
 import { CompareDrawer } from "@/components/bible/CompareDrawer";
 import { VerseOfTheDay } from "@/components/bible/VerseOfTheDay";
 import { StrongsPanel } from "@/components/bible/StrongsPanel";
+import { TodayPanel } from "@/components/bible/TodayPanel";
+import { DictionaryPanel } from "@/components/bible/DictionaryPanel";
+import { PlansPanel } from "@/components/bible/PlansPanel";
 import { useBibleChapter, type BibleVerse } from "@/hooks/bible";
 import { cn } from "@/lib/utils";
 
@@ -182,21 +185,28 @@ export default function BiblePage() {
     word: string;
     ids: string[];
   } | null>(null);
+  // Right-hand study panel: today's readings or the dictionary
+  // (shares the slot with compare and Strong's — opening one closes the others)
+  const [sidePanel, setSidePanel] = useState<"today" | "dictionary" | "plans" | null>(
+    null,
+  );
   // Book navigator drawer — only used below xl, where the sidebar isn't inline
   const [booksOpen, setBooksOpen] = useState(false);
 
   // Escape closes whichever overlay is open
   useEffect(() => {
-    if (!booksOpen && compareVerses.length === 0 && !strongsWord) return;
+    if (!booksOpen && compareVerses.length === 0 && !strongsWord && !sidePanel)
+      return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setBooksOpen(false);
       setCompareVerses([]);
       setStrongsWord(null);
+      setSidePanel(null);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [booksOpen, compareVerses.length, strongsWord]);
+  }, [booksOpen, compareVerses.length, strongsWord, sidePanel]);
 
   // Multi-verse selection
   const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -220,12 +230,20 @@ export default function BiblePage() {
   // (compare and Strong's share it, so opening one closes the other).
   const handleWordClick = useCallback((word: string, ids: string[]) => {
     setCompareVerses([]);
+    setSidePanel(null);
     setStrongsWord({ word, ids });
   }, []);
 
   const closeRightPanel = useCallback(() => {
     setCompareVerses([]);
     setStrongsWord(null);
+    setSidePanel(null);
+  }, []);
+
+  const toggleSidePanel = useCallback((which: "today" | "dictionary" | "plans") => {
+    setCompareVerses([]);
+    setStrongsWord(null);
+    setSidePanel((p) => (p === which ? null : which));
   }, []);
 
   // Strong's tags exist for the KJV only: close the panel if the user switches away
@@ -365,6 +383,8 @@ export default function BiblePage() {
           strongsMode={prefs.strongs}
           onStrongsMode={(v) => updatePrefs({ strongs: v })}
           onOpenBooks={() => setBooksOpen(true)}
+          sidePanel={sidePanel}
+          onToggleSidePanel={toggleSidePanel}
           onNavigate={navigate}
         />
         <div className="flex-1 overflow-y-auto overscroll-y-contain">
@@ -418,6 +438,7 @@ export default function BiblePage() {
             selectedVerses={selectedVerses}
             onCompare={(verses) => {
               setStrongsWord(null);
+              setSidePanel(null);
               setCompareVerses(verses);
             }}
             onClear={clearSelection}
@@ -426,7 +447,7 @@ export default function BiblePage() {
       </div>
 
       {/* RIGHT: Compare or Strong's — inline column ≥ xl, overlay sheet below */}
-      {(compareVerses.length > 0 || strongsWord) && (
+      {(compareVerses.length > 0 || strongsWord || sidePanel) && (
         <>
           <div
             className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-[2px] xl:hidden"
@@ -440,7 +461,29 @@ export default function BiblePage() {
               "xl:static xl:z-auto xl:h-full xl:w-80 xl:shrink-0 xl:shadow-none",
             )}
           >
-            {strongsWord ? (
+            {sidePanel === "today" ? (
+              <TodayPanel
+                onClose={closeRightPanel}
+                onNavigate={(book, ch, verse, end) => {
+                  navigate(book, ch, verse, end);
+                  setSidePanel(null);
+                }}
+              />
+            ) : sidePanel === "dictionary" ? (
+              <DictionaryPanel onClose={closeRightPanel} />
+            ) : sidePanel === "plans" ? (
+              <PlansPanel
+                onClose={closeRightPanel}
+                onNavigate={(book, ch) => {
+                  navigate(book, ch);
+                  // On wide screens the panel sits beside the reader, so keep
+                  // it open; below xl it covers the reader, so close it.
+                  if (!window.matchMedia("(min-width: 1280px)").matches) {
+                    setSidePanel(null);
+                  }
+                }}
+              />
+            ) : strongsWord ? (
               <StrongsPanel
                 word={strongsWord.word}
                 ids={strongsWord.ids}

@@ -9,29 +9,30 @@ datasource db {
 }
 
 model User {
-  id            String                @id @default(uuid())
-  firstName     String
-  lastName      String
-  username      String                @unique
-  email         String                @unique
-  password      String
-  bio           String?
-  profileImg    String?
-  bannerImg     String?
-  posts         Post[]
-  comments      Comment[]
-  reactions     Reaction[]
-  memberships   CommunityMembership[]
-  followers     Follow[]              @relation("Followers")
-  following     Follow[]              @relation("Following")
-  bookmarks     Bookmark[]
-  notifications Notification[]
-  postViews     PostView[]
-  series        Series[]
-  readingList   ReadingListItem[]
-  followedTags  UserTagFollow[]
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
+  id              String                @id @default(uuid())
+  firstName       String
+  lastName        String
+  username        String                @unique
+  email           String                @unique
+  password        String
+  bio             String?
+  profileImg      String?
+  bannerImg       String?
+  posts           Post[]
+  comments        Comment[]
+  reactions       Reaction[]
+  memberships     CommunityMembership[]
+  followers       Follow[]              @relation("Followers")
+  following       Follow[]              @relation("Following")
+  bookmarks       Bookmark[]
+  notifications   Notification[]
+  postViews       PostView[]
+  series          Series[]
+  readingList     ReadingListItem[]
+  followedTags    UserTagFollow[]
+  planEnrollments UserPlanEnrollment[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 }
 
 model Community {
@@ -260,6 +261,32 @@ model ReadingListItem {
 
   @@unique([userId, postId])
   @@index([userId, readAt])
+}
+
+// Bible reading-plan progress. The schedule lives in the Bible DB; the
+// current day is computed from startDate, not stored.
+model UserPlanEnrollment {
+  id           String                  @id @default(uuid())
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  planSlug     String // canonical | chronological | historical
+  durationDays Int // 90 | 180 | 365
+  startDate    DateTime                @db.Date
+  createdAt    DateTime                @default(now())
+  completions  UserPlanDayCompletion[]
+
+  @@unique([userId, planSlug, durationDays])
+  @@index([userId])
+}
+
+model UserPlanDayCompletion {
+  id           String             @id @default(uuid())
+  enrollment   UserPlanEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  enrollmentId String
+  day          Int // 1-based day number within the plan
+  completedAt  DateTime           @default(now())
+
+  @@unique([enrollmentId, day])
 }
 
 model UserTagFollow {

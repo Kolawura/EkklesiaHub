@@ -13,6 +13,9 @@ import {
   ArrowLeft,
   Cross,
   Languages,
+  CalendarDays,
+  BookText,
+  ListChecks,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../ui/ThemeToggle";
@@ -39,6 +42,9 @@ interface BibleToolbarProps {
   onStrongsMode?: (v: boolean) => void;
   /** Opens the book navigator drawer (shown below xl, where the sidebar is hidden). */
   onOpenBooks?: () => void;
+  /** Which right-hand study panel is open (Today / Dictionary) */
+  sidePanel?: "today" | "dictionary" | "plans" | null;
+  onToggleSidePanel?: (which: "today" | "dictionary" | "plans") => void;
   onNavigate: (
     book: string,
     chapter: number,
@@ -64,6 +70,8 @@ export function BibleToolbar({
   strongsMode = false,
   onStrongsMode,
   onOpenBooks,
+  sidePanel = null,
+  onToggleSidePanel,
   onNavigate,
 }: BibleToolbarProps) {
   const router = useRouter();
@@ -155,6 +163,59 @@ export function BibleToolbar({
       </div>
 
       <div className="flex-1" />
+
+      {onToggleSidePanel && (
+        <>
+          <button
+            type="button"
+            onClick={() => onToggleSidePanel("today")}
+            aria-label="Today's readings"
+            aria-pressed={sidePanel === "today"}
+            title="Today"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-2 sm:py-1.5 font-body text-xs transition-all",
+              sidePanel === "today"
+                ? "border-gold-pale bg-gold-bg text-gold"
+                : "border-parchment-dark text-ink-faint hover:bg-parchment-deep hover:text-ink",
+            )}
+          >
+            <CalendarDays size={14} />
+            <span className="hidden md:inline">Today</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onToggleSidePanel("dictionary")}
+            aria-label="Dictionary"
+            aria-pressed={sidePanel === "dictionary"}
+            title="Dictionary"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-2 sm:py-1.5 font-body text-xs transition-all",
+              sidePanel === "dictionary"
+                ? "border-gold-pale bg-gold-bg text-gold"
+                : "border-parchment-dark text-ink-faint hover:bg-parchment-deep hover:text-ink",
+            )}
+          >
+            <BookText size={14} />
+            <span className="hidden md:inline">Dictionary</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onToggleSidePanel("plans")}
+            aria-label="Reading plans"
+            aria-pressed={sidePanel === "plans"}
+            title="Reading plans"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-2 sm:py-1.5 font-body text-xs transition-all",
+              sidePanel === "plans"
+                ? "border-gold-pale bg-gold-bg text-gold"
+                : "border-parchment-dark text-ink-faint hover:bg-parchment-deep hover:text-ink",
+            )}
+          >
+            <ListChecks size={14} />
+            <span className="hidden md:inline">Plans</span>
+          </button>
+        </>
+      )}
 
       <ThemeToggle />
 

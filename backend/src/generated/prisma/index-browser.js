@@ -259,6 +259,22 @@ exports.Prisma.ReadingListItemScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.UserPlanEnrollmentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planSlug: 'planSlug',
+  durationDays: 'durationDays',
+  startDate: 'startDate',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserPlanDayCompletionScalarFieldEnum = {
+  id: 'id',
+  enrollmentId: 'enrollmentId',
+  day: 'day',
+  completedAt: 'completedAt'
+};
+
 exports.Prisma.UserTagFollowScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -335,6 +351,8 @@ exports.Prisma.ModelName = {
   Series: 'Series',
   SeriesPost: 'SeriesPost',
   ReadingListItem: 'ReadingListItem',
+  UserPlanEnrollment: 'UserPlanEnrollment',
+  UserPlanDayCompletion: 'UserPlanDayCompletion',
   UserTagFollow: 'UserTagFollow'
 };
 

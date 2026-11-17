@@ -16,10 +16,15 @@ import userRoutes from "./routes/userRoutes";
 import seriesRoutes from "./routes/seriesRoutes";
 import readingListRoutes from "./routes/readingListRoutes";
 import tagRoutes from "./routes/tagRoutes";
+import readingPlanRoutes from "./routes/readingPlanRoutes";
 import { initBibleRoutes } from "./bible/routes";
 import { prisma } from "./db/prisma";
 import { Pool } from "pg";
-import { authLimiter, generalLimiter } from "./middlewares/rateLimiter";
+import {
+  authLimiter,
+  bibleLimiter,
+  generalLimiter,
+} from "./middlewares/rateLimiter";
 import path from "path";
 
 const app = express();
@@ -85,11 +90,12 @@ app.use("/api/posts", postRoutes);
 app.use("/api/reactions", reactionRoutes);
 app.use("/api/series", seriesRoutes);
 app.use("/api/reading-list", readingListRoutes);
+app.use("/api/reading-plans", readingPlanRoutes);
 app.use("/api/tags", tagRoutes); // replaces existing tagRoutes if any
 app.use("/api/upload", uploadRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/bible", initBibleRoutes(biblePool));
+app.use("/api/bible", bibleLimiter, initBibleRoutes(biblePool));
 
 // Serve locally stored uploads (no-op when using Cloudinary)
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

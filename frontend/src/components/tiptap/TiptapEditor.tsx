@@ -39,6 +39,8 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
       onChange,
       editable = true,
       placeholder = "Begin writing… (type / for commands)",
+      initialScripture,
+      onInitialScriptureInserted,
     },
     ref,
   ) {
@@ -122,6 +124,31 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
         titleRef.current.style.height = `${titleRef.current.scrollHeight}px`;
       }
     }, []);
+
+    // Insert a scripture block handed over from another page (once only)
+    const insertedInitialRef = useRef(false);
+    useEffect(() => {
+      if (!editor || !initialScripture || insertedInitialRef.current) return;
+      insertedInitialRef.current = true;
+      // Deferred to a microtask: the scripture node view renders through
+      // React (flushSync), which is not allowed inside an effect.
+      queueMicrotask(() => {
+        if (editor.isDestroyed) return;
+        editor
+          .chain()
+          .insertContent({
+            type: "scripture",
+            attrs: {
+              reference: initialScripture.reference,
+              text: initialScripture.text,
+              version: initialScripture.version,
+            },
+          })
+          .run();
+        onInitialScriptureInserted?.();
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [editor, initialScripture]);
 
     // Expose insertScripture to parent (new/edit page)
     useImperativeHandle(

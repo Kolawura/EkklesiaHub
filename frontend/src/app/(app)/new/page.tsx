@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import TiptapEditor from "@/components/tiptap/TiptapEditor";
 import { BibleDrawer } from "@/components/bible/BibleDrawer";
@@ -10,11 +10,24 @@ import { Users, Tag, ChevronRight, Send, FileEdit, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MetaPanel } from "@/components/tiptap/MetaPanel";
 import { useCreatePost } from "@/hooks/useCreatePost";
+import {
+  peekPendingScripture,
+  clearPendingScripture,
+  type PendingScripture,
+} from "@/lib/pendingScripture";
 
 /* ── Main Page ── */
 export default function CreatePostPage() {
   const router = useRouter();
   const editorRef = useRef<TiptapEditorRef>(null);
+
+  // Passage sent from the Bible page ("Write a reflection"), read after mount
+  // so server and client first renders match.
+  const [pendingScripture, setPendingScripture] =
+    useState<PendingScripture | null>(null);
+  useEffect(() => {
+    setPendingScripture(peekPendingScripture());
+  }, []);
   const {
     setEditorData,
     coverImage,
@@ -126,6 +139,8 @@ export default function CreatePostPage() {
             <TiptapEditor
               ref={editorRef}
               onChange={setEditorData}
+              initialScripture={pendingScripture ?? undefined}
+              onInitialScriptureInserted={clearPendingScripture}
               placeholder="Begin writing your article…"
             />
           </div>

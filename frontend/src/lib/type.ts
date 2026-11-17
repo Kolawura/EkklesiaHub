@@ -200,6 +200,10 @@ export interface TiptapEditorProps {
   onChange?: (data: { title: string; content: string }) => void;
   editable?: boolean;
   placeholder?: string;
+  /** Scripture block to insert once, when the editor is ready (Today handoff). */
+  initialScripture?: { text: string; reference: string; version: string };
+  /** Called after initialScripture has been inserted. */
+  onInitialScriptureInserted?: () => void;
 }
 
 export type EditorData = {

@@ -14,6 +14,7 @@ import {
   BookMarked,
   Library,
   BookOpen,
+  CalendarDays,
   Rss,
   X,
 } from "lucide-react";
@@ -42,6 +43,7 @@ const NAV = [
 
   // Separator — discover
   { id: "sep-discover", label: "Discover", separator: true },
+  { id: "today", label: "Today", icon: CalendarDays, href: "/today" },
   { id: "bible", label: "Bible", icon: BookOpen, href: "/bible" },
   { id: "feed", label: "Tag Feed", icon: Rss, href: "/feed" },
   {

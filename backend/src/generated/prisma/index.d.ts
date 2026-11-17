@@ -84,6 +84,16 @@ export type SeriesPost = $Result.DefaultSelection<Prisma.$SeriesPostPayload>
  */
 export type ReadingListItem = $Result.DefaultSelection<Prisma.$ReadingListItemPayload>
 /**
+ * Model UserPlanEnrollment
+ * 
+ */
+export type UserPlanEnrollment = $Result.DefaultSelection<Prisma.$UserPlanEnrollmentPayload>
+/**
+ * Model UserPlanDayCompletion
+ * 
+ */
+export type UserPlanDayCompletion = $Result.DefaultSelection<Prisma.$UserPlanDayCompletionPayload>
+/**
  * Model UserTagFollow
  * 
  */
@@ -408,6 +418,26 @@ export class PrismaClient<
     * ```
     */
   get readingListItem(): Prisma.ReadingListItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userPlanEnrollment`: Exposes CRUD operations for the **UserPlanEnrollment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserPlanEnrollments
+    * const userPlanEnrollments = await prisma.userPlanEnrollment.findMany()
+    * ```
+    */
+  get userPlanEnrollment(): Prisma.UserPlanEnrollmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userPlanDayCompletion`: Exposes CRUD operations for the **UserPlanDayCompletion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserPlanDayCompletions
+    * const userPlanDayCompletions = await prisma.userPlanDayCompletion.findMany()
+    * ```
+    */
+  get userPlanDayCompletion(): Prisma.UserPlanDayCompletionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.userTagFollow`: Exposes CRUD operations for the **UserTagFollow** model.
@@ -872,6 +902,8 @@ export namespace Prisma {
     Series: 'Series',
     SeriesPost: 'SeriesPost',
     ReadingListItem: 'ReadingListItem',
+    UserPlanEnrollment: 'UserPlanEnrollment',
+    UserPlanDayCompletion: 'UserPlanDayCompletion',
     UserTagFollow: 'UserTagFollow'
   };
 
@@ -891,7 +923,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "community" | "communityMembership" | "post" | "postView" | "tag" | "comment" | "reaction" | "follow" | "bookmark" | "notification" | "series" | "seriesPost" | "readingListItem" | "userTagFollow"
+      modelProps: "user" | "community" | "communityMembership" | "post" | "postView" | "tag" | "comment" | "reaction" | "follow" | "bookmark" | "notification" | "series" | "seriesPost" | "readingListItem" | "userPlanEnrollment" | "userPlanDayCompletion" | "userTagFollow"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1931,6 +1963,154 @@ export namespace Prisma {
           }
         }
       }
+      UserPlanEnrollment: {
+        payload: Prisma.$UserPlanEnrollmentPayload<ExtArgs>
+        fields: Prisma.UserPlanEnrollmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserPlanEnrollmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserPlanEnrollmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          findFirst: {
+            args: Prisma.UserPlanEnrollmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserPlanEnrollmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          findMany: {
+            args: Prisma.UserPlanEnrollmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>[]
+          }
+          create: {
+            args: Prisma.UserPlanEnrollmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          createMany: {
+            args: Prisma.UserPlanEnrollmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserPlanEnrollmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>[]
+          }
+          delete: {
+            args: Prisma.UserPlanEnrollmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          update: {
+            args: Prisma.UserPlanEnrollmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserPlanEnrollmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserPlanEnrollmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserPlanEnrollmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserPlanEnrollmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanEnrollmentPayload>
+          }
+          aggregate: {
+            args: Prisma.UserPlanEnrollmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserPlanEnrollment>
+          }
+          groupBy: {
+            args: Prisma.UserPlanEnrollmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserPlanEnrollmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserPlanEnrollmentCountArgs<ExtArgs>
+            result: $Utils.Optional<UserPlanEnrollmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserPlanDayCompletion: {
+        payload: Prisma.$UserPlanDayCompletionPayload<ExtArgs>
+        fields: Prisma.UserPlanDayCompletionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserPlanDayCompletionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserPlanDayCompletionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          findFirst: {
+            args: Prisma.UserPlanDayCompletionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserPlanDayCompletionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          findMany: {
+            args: Prisma.UserPlanDayCompletionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>[]
+          }
+          create: {
+            args: Prisma.UserPlanDayCompletionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          createMany: {
+            args: Prisma.UserPlanDayCompletionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserPlanDayCompletionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>[]
+          }
+          delete: {
+            args: Prisma.UserPlanDayCompletionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          update: {
+            args: Prisma.UserPlanDayCompletionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserPlanDayCompletionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserPlanDayCompletionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserPlanDayCompletionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserPlanDayCompletionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPlanDayCompletionPayload>
+          }
+          aggregate: {
+            args: Prisma.UserPlanDayCompletionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserPlanDayCompletion>
+          }
+          groupBy: {
+            args: Prisma.UserPlanDayCompletionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserPlanDayCompletionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserPlanDayCompletionCountArgs<ExtArgs>
+            result: $Utils.Optional<UserPlanDayCompletionCountAggregateOutputType> | number
+          }
+        }
+      }
       UserTagFollow: {
         payload: Prisma.$UserTagFollowPayload<ExtArgs>
         fields: Prisma.UserTagFollowFieldRefs
@@ -2115,6 +2295,8 @@ export namespace Prisma {
     series?: SeriesOmit
     seriesPost?: SeriesPostOmit
     readingListItem?: ReadingListItemOmit
+    userPlanEnrollment?: UserPlanEnrollmentOmit
+    userPlanDayCompletion?: UserPlanDayCompletionOmit
     userTagFollow?: UserTagFollowOmit
   }
 
@@ -2208,6 +2390,7 @@ export namespace Prisma {
     series: number
     readingList: number
     followedTags: number
+    planEnrollments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2223,6 +2406,7 @@ export namespace Prisma {
     series?: boolean | UserCountOutputTypeCountSeriesArgs
     readingList?: boolean | UserCountOutputTypeCountReadingListArgs
     followedTags?: boolean | UserCountOutputTypeCountFollowedTagsArgs
+    planEnrollments?: boolean | UserCountOutputTypeCountPlanEnrollmentsArgs
   }
 
   // Custom InputTypes
@@ -2318,6 +2502,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFollowedTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserTagFollowWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPlanEnrollmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPlanEnrollmentWhereInput
   }
 
 
@@ -2567,6 +2758,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserPlanEnrollmentCountOutputType
+   */
+
+  export type UserPlanEnrollmentCountOutputType = {
+    completions: number
+  }
+
+  export type UserPlanEnrollmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    completions?: boolean | UserPlanEnrollmentCountOutputTypeCountCompletionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserPlanEnrollmentCountOutputType without action
+   */
+  export type UserPlanEnrollmentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollmentCountOutputType
+     */
+    select?: UserPlanEnrollmentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserPlanEnrollmentCountOutputType without action
+   */
+  export type UserPlanEnrollmentCountOutputTypeCountCompletionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPlanDayCompletionWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -2794,6 +3016,7 @@ export namespace Prisma {
     series?: boolean | User$seriesArgs<ExtArgs>
     readingList?: boolean | User$readingListArgs<ExtArgs>
     followedTags?: boolean | User$followedTagsArgs<ExtArgs>
+    planEnrollments?: boolean | User$planEnrollmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2853,6 +3076,7 @@ export namespace Prisma {
     series?: boolean | User$seriesArgs<ExtArgs>
     readingList?: boolean | User$readingListArgs<ExtArgs>
     followedTags?: boolean | User$followedTagsArgs<ExtArgs>
+    planEnrollments?: boolean | User$planEnrollmentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2873,6 +3097,7 @@ export namespace Prisma {
       series: Prisma.$SeriesPayload<ExtArgs>[]
       readingList: Prisma.$ReadingListItemPayload<ExtArgs>[]
       followedTags: Prisma.$UserTagFollowPayload<ExtArgs>[]
+      planEnrollments: Prisma.$UserPlanEnrollmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3292,6 +3517,7 @@ export namespace Prisma {
     series<T extends User$seriesArgs<ExtArgs> = {}>(args?: Subset<T, User$seriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     readingList<T extends User$readingListArgs<ExtArgs> = {}>(args?: Subset<T, User$readingListArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReadingListItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     followedTags<T extends User$followedTagsArgs<ExtArgs> = {}>(args?: Subset<T, User$followedTagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTagFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    planEnrollments<T extends User$planEnrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$planEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4005,6 +4231,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserTagFollowScalarFieldEnum | UserTagFollowScalarFieldEnum[]
+  }
+
+  /**
+   * User.planEnrollments
+   */
+  export type User$planEnrollmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    where?: UserPlanEnrollmentWhereInput
+    orderBy?: UserPlanEnrollmentOrderByWithRelationInput | UserPlanEnrollmentOrderByWithRelationInput[]
+    cursor?: UserPlanEnrollmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserPlanEnrollmentScalarFieldEnum | UserPlanEnrollmentScalarFieldEnum[]
   }
 
   /**
@@ -18767,6 +19017,2220 @@ export namespace Prisma {
 
 
   /**
+   * Model UserPlanEnrollment
+   */
+
+  export type AggregateUserPlanEnrollment = {
+    _count: UserPlanEnrollmentCountAggregateOutputType | null
+    _avg: UserPlanEnrollmentAvgAggregateOutputType | null
+    _sum: UserPlanEnrollmentSumAggregateOutputType | null
+    _min: UserPlanEnrollmentMinAggregateOutputType | null
+    _max: UserPlanEnrollmentMaxAggregateOutputType | null
+  }
+
+  export type UserPlanEnrollmentAvgAggregateOutputType = {
+    durationDays: number | null
+  }
+
+  export type UserPlanEnrollmentSumAggregateOutputType = {
+    durationDays: number | null
+  }
+
+  export type UserPlanEnrollmentMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    planSlug: string | null
+    durationDays: number | null
+    startDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type UserPlanEnrollmentMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    planSlug: string | null
+    durationDays: number | null
+    startDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type UserPlanEnrollmentCountAggregateOutputType = {
+    id: number
+    userId: number
+    planSlug: number
+    durationDays: number
+    startDate: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserPlanEnrollmentAvgAggregateInputType = {
+    durationDays?: true
+  }
+
+  export type UserPlanEnrollmentSumAggregateInputType = {
+    durationDays?: true
+  }
+
+  export type UserPlanEnrollmentMinAggregateInputType = {
+    id?: true
+    userId?: true
+    planSlug?: true
+    durationDays?: true
+    startDate?: true
+    createdAt?: true
+  }
+
+  export type UserPlanEnrollmentMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    planSlug?: true
+    durationDays?: true
+    startDate?: true
+    createdAt?: true
+  }
+
+  export type UserPlanEnrollmentCountAggregateInputType = {
+    id?: true
+    userId?: true
+    planSlug?: true
+    durationDays?: true
+    startDate?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserPlanEnrollmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPlanEnrollment to aggregate.
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanEnrollments to fetch.
+     */
+    orderBy?: UserPlanEnrollmentOrderByWithRelationInput | UserPlanEnrollmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserPlanEnrollmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanEnrollments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanEnrollments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserPlanEnrollments
+    **/
+    _count?: true | UserPlanEnrollmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserPlanEnrollmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserPlanEnrollmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserPlanEnrollmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserPlanEnrollmentMaxAggregateInputType
+  }
+
+  export type GetUserPlanEnrollmentAggregateType<T extends UserPlanEnrollmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserPlanEnrollment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserPlanEnrollment[P]>
+      : GetScalarType<T[P], AggregateUserPlanEnrollment[P]>
+  }
+
+
+
+
+  export type UserPlanEnrollmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPlanEnrollmentWhereInput
+    orderBy?: UserPlanEnrollmentOrderByWithAggregationInput | UserPlanEnrollmentOrderByWithAggregationInput[]
+    by: UserPlanEnrollmentScalarFieldEnum[] | UserPlanEnrollmentScalarFieldEnum
+    having?: UserPlanEnrollmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserPlanEnrollmentCountAggregateInputType | true
+    _avg?: UserPlanEnrollmentAvgAggregateInputType
+    _sum?: UserPlanEnrollmentSumAggregateInputType
+    _min?: UserPlanEnrollmentMinAggregateInputType
+    _max?: UserPlanEnrollmentMaxAggregateInputType
+  }
+
+  export type UserPlanEnrollmentGroupByOutputType = {
+    id: string
+    userId: string
+    planSlug: string
+    durationDays: number
+    startDate: Date
+    createdAt: Date
+    _count: UserPlanEnrollmentCountAggregateOutputType | null
+    _avg: UserPlanEnrollmentAvgAggregateOutputType | null
+    _sum: UserPlanEnrollmentSumAggregateOutputType | null
+    _min: UserPlanEnrollmentMinAggregateOutputType | null
+    _max: UserPlanEnrollmentMaxAggregateOutputType | null
+  }
+
+  type GetUserPlanEnrollmentGroupByPayload<T extends UserPlanEnrollmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserPlanEnrollmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserPlanEnrollmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserPlanEnrollmentGroupByOutputType[P]>
+            : GetScalarType<T[P], UserPlanEnrollmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserPlanEnrollmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    planSlug?: boolean
+    durationDays?: boolean
+    startDate?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    completions?: boolean | UserPlanEnrollment$completionsArgs<ExtArgs>
+    _count?: boolean | UserPlanEnrollmentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanEnrollment"]>
+
+  export type UserPlanEnrollmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    planSlug?: boolean
+    durationDays?: boolean
+    startDate?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanEnrollment"]>
+
+  export type UserPlanEnrollmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    planSlug?: boolean
+    durationDays?: boolean
+    startDate?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanEnrollment"]>
+
+  export type UserPlanEnrollmentSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    planSlug?: boolean
+    durationDays?: boolean
+    startDate?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserPlanEnrollmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "planSlug" | "durationDays" | "startDate" | "createdAt", ExtArgs["result"]["userPlanEnrollment"]>
+  export type UserPlanEnrollmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    completions?: boolean | UserPlanEnrollment$completionsArgs<ExtArgs>
+    _count?: boolean | UserPlanEnrollmentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserPlanEnrollmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserPlanEnrollmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserPlanEnrollmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserPlanEnrollment"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      completions: Prisma.$UserPlanDayCompletionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      planSlug: string
+      durationDays: number
+      startDate: Date
+      createdAt: Date
+    }, ExtArgs["result"]["userPlanEnrollment"]>
+    composites: {}
+  }
+
+  type UserPlanEnrollmentGetPayload<S extends boolean | null | undefined | UserPlanEnrollmentDefaultArgs> = $Result.GetResult<Prisma.$UserPlanEnrollmentPayload, S>
+
+  type UserPlanEnrollmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserPlanEnrollmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserPlanEnrollmentCountAggregateInputType | true
+    }
+
+  export interface UserPlanEnrollmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserPlanEnrollment'], meta: { name: 'UserPlanEnrollment' } }
+    /**
+     * Find zero or one UserPlanEnrollment that matches the filter.
+     * @param {UserPlanEnrollmentFindUniqueArgs} args - Arguments to find a UserPlanEnrollment
+     * @example
+     * // Get one UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserPlanEnrollmentFindUniqueArgs>(args: SelectSubset<T, UserPlanEnrollmentFindUniqueArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserPlanEnrollment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserPlanEnrollmentFindUniqueOrThrowArgs} args - Arguments to find a UserPlanEnrollment
+     * @example
+     * // Get one UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserPlanEnrollmentFindUniqueOrThrowArgs>(args: SelectSubset<T, UserPlanEnrollmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPlanEnrollment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentFindFirstArgs} args - Arguments to find a UserPlanEnrollment
+     * @example
+     * // Get one UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserPlanEnrollmentFindFirstArgs>(args?: SelectSubset<T, UserPlanEnrollmentFindFirstArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPlanEnrollment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentFindFirstOrThrowArgs} args - Arguments to find a UserPlanEnrollment
+     * @example
+     * // Get one UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserPlanEnrollmentFindFirstOrThrowArgs>(args?: SelectSubset<T, UserPlanEnrollmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserPlanEnrollments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserPlanEnrollments
+     * const userPlanEnrollments = await prisma.userPlanEnrollment.findMany()
+     * 
+     * // Get first 10 UserPlanEnrollments
+     * const userPlanEnrollments = await prisma.userPlanEnrollment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userPlanEnrollmentWithIdOnly = await prisma.userPlanEnrollment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserPlanEnrollmentFindManyArgs>(args?: SelectSubset<T, UserPlanEnrollmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserPlanEnrollment.
+     * @param {UserPlanEnrollmentCreateArgs} args - Arguments to create a UserPlanEnrollment.
+     * @example
+     * // Create one UserPlanEnrollment
+     * const UserPlanEnrollment = await prisma.userPlanEnrollment.create({
+     *   data: {
+     *     // ... data to create a UserPlanEnrollment
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserPlanEnrollmentCreateArgs>(args: SelectSubset<T, UserPlanEnrollmentCreateArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserPlanEnrollments.
+     * @param {UserPlanEnrollmentCreateManyArgs} args - Arguments to create many UserPlanEnrollments.
+     * @example
+     * // Create many UserPlanEnrollments
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserPlanEnrollmentCreateManyArgs>(args?: SelectSubset<T, UserPlanEnrollmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserPlanEnrollments and returns the data saved in the database.
+     * @param {UserPlanEnrollmentCreateManyAndReturnArgs} args - Arguments to create many UserPlanEnrollments.
+     * @example
+     * // Create many UserPlanEnrollments
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserPlanEnrollments and only return the `id`
+     * const userPlanEnrollmentWithIdOnly = await prisma.userPlanEnrollment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserPlanEnrollmentCreateManyAndReturnArgs>(args?: SelectSubset<T, UserPlanEnrollmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserPlanEnrollment.
+     * @param {UserPlanEnrollmentDeleteArgs} args - Arguments to delete one UserPlanEnrollment.
+     * @example
+     * // Delete one UserPlanEnrollment
+     * const UserPlanEnrollment = await prisma.userPlanEnrollment.delete({
+     *   where: {
+     *     // ... filter to delete one UserPlanEnrollment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserPlanEnrollmentDeleteArgs>(args: SelectSubset<T, UserPlanEnrollmentDeleteArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserPlanEnrollment.
+     * @param {UserPlanEnrollmentUpdateArgs} args - Arguments to update one UserPlanEnrollment.
+     * @example
+     * // Update one UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserPlanEnrollmentUpdateArgs>(args: SelectSubset<T, UserPlanEnrollmentUpdateArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserPlanEnrollments.
+     * @param {UserPlanEnrollmentDeleteManyArgs} args - Arguments to filter UserPlanEnrollments to delete.
+     * @example
+     * // Delete a few UserPlanEnrollments
+     * const { count } = await prisma.userPlanEnrollment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserPlanEnrollmentDeleteManyArgs>(args?: SelectSubset<T, UserPlanEnrollmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPlanEnrollments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserPlanEnrollments
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserPlanEnrollmentUpdateManyArgs>(args: SelectSubset<T, UserPlanEnrollmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPlanEnrollments and returns the data updated in the database.
+     * @param {UserPlanEnrollmentUpdateManyAndReturnArgs} args - Arguments to update many UserPlanEnrollments.
+     * @example
+     * // Update many UserPlanEnrollments
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserPlanEnrollments and only return the `id`
+     * const userPlanEnrollmentWithIdOnly = await prisma.userPlanEnrollment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserPlanEnrollmentUpdateManyAndReturnArgs>(args: SelectSubset<T, UserPlanEnrollmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserPlanEnrollment.
+     * @param {UserPlanEnrollmentUpsertArgs} args - Arguments to update or create a UserPlanEnrollment.
+     * @example
+     * // Update or create a UserPlanEnrollment
+     * const userPlanEnrollment = await prisma.userPlanEnrollment.upsert({
+     *   create: {
+     *     // ... data to create a UserPlanEnrollment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserPlanEnrollment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserPlanEnrollmentUpsertArgs>(args: SelectSubset<T, UserPlanEnrollmentUpsertArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserPlanEnrollments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentCountArgs} args - Arguments to filter UserPlanEnrollments to count.
+     * @example
+     * // Count the number of UserPlanEnrollments
+     * const count = await prisma.userPlanEnrollment.count({
+     *   where: {
+     *     // ... the filter for the UserPlanEnrollments we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserPlanEnrollmentCountArgs>(
+      args?: Subset<T, UserPlanEnrollmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserPlanEnrollmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserPlanEnrollment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserPlanEnrollmentAggregateArgs>(args: Subset<T, UserPlanEnrollmentAggregateArgs>): Prisma.PrismaPromise<GetUserPlanEnrollmentAggregateType<T>>
+
+    /**
+     * Group by UserPlanEnrollment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanEnrollmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserPlanEnrollmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserPlanEnrollmentGroupByArgs['orderBy'] }
+        : { orderBy?: UserPlanEnrollmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserPlanEnrollmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserPlanEnrollmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserPlanEnrollment model
+   */
+  readonly fields: UserPlanEnrollmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserPlanEnrollment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserPlanEnrollmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    completions<T extends UserPlanEnrollment$completionsArgs<ExtArgs> = {}>(args?: Subset<T, UserPlanEnrollment$completionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserPlanEnrollment model
+   */
+  interface UserPlanEnrollmentFieldRefs {
+    readonly id: FieldRef<"UserPlanEnrollment", 'String'>
+    readonly userId: FieldRef<"UserPlanEnrollment", 'String'>
+    readonly planSlug: FieldRef<"UserPlanEnrollment", 'String'>
+    readonly durationDays: FieldRef<"UserPlanEnrollment", 'Int'>
+    readonly startDate: FieldRef<"UserPlanEnrollment", 'DateTime'>
+    readonly createdAt: FieldRef<"UserPlanEnrollment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserPlanEnrollment findUnique
+   */
+  export type UserPlanEnrollmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanEnrollment to fetch.
+     */
+    where: UserPlanEnrollmentWhereUniqueInput
+  }
+
+  /**
+   * UserPlanEnrollment findUniqueOrThrow
+   */
+  export type UserPlanEnrollmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanEnrollment to fetch.
+     */
+    where: UserPlanEnrollmentWhereUniqueInput
+  }
+
+  /**
+   * UserPlanEnrollment findFirst
+   */
+  export type UserPlanEnrollmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanEnrollment to fetch.
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanEnrollments to fetch.
+     */
+    orderBy?: UserPlanEnrollmentOrderByWithRelationInput | UserPlanEnrollmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPlanEnrollments.
+     */
+    cursor?: UserPlanEnrollmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanEnrollments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanEnrollments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPlanEnrollments.
+     */
+    distinct?: UserPlanEnrollmentScalarFieldEnum | UserPlanEnrollmentScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanEnrollment findFirstOrThrow
+   */
+  export type UserPlanEnrollmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanEnrollment to fetch.
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanEnrollments to fetch.
+     */
+    orderBy?: UserPlanEnrollmentOrderByWithRelationInput | UserPlanEnrollmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPlanEnrollments.
+     */
+    cursor?: UserPlanEnrollmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanEnrollments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanEnrollments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPlanEnrollments.
+     */
+    distinct?: UserPlanEnrollmentScalarFieldEnum | UserPlanEnrollmentScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanEnrollment findMany
+   */
+  export type UserPlanEnrollmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanEnrollments to fetch.
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanEnrollments to fetch.
+     */
+    orderBy?: UserPlanEnrollmentOrderByWithRelationInput | UserPlanEnrollmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserPlanEnrollments.
+     */
+    cursor?: UserPlanEnrollmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanEnrollments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanEnrollments.
+     */
+    skip?: number
+    distinct?: UserPlanEnrollmentScalarFieldEnum | UserPlanEnrollmentScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanEnrollment create
+   */
+  export type UserPlanEnrollmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserPlanEnrollment.
+     */
+    data: XOR<UserPlanEnrollmentCreateInput, UserPlanEnrollmentUncheckedCreateInput>
+  }
+
+  /**
+   * UserPlanEnrollment createMany
+   */
+  export type UserPlanEnrollmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserPlanEnrollments.
+     */
+    data: UserPlanEnrollmentCreateManyInput | UserPlanEnrollmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserPlanEnrollment createManyAndReturn
+   */
+  export type UserPlanEnrollmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserPlanEnrollments.
+     */
+    data: UserPlanEnrollmentCreateManyInput | UserPlanEnrollmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPlanEnrollment update
+   */
+  export type UserPlanEnrollmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserPlanEnrollment.
+     */
+    data: XOR<UserPlanEnrollmentUpdateInput, UserPlanEnrollmentUncheckedUpdateInput>
+    /**
+     * Choose, which UserPlanEnrollment to update.
+     */
+    where: UserPlanEnrollmentWhereUniqueInput
+  }
+
+  /**
+   * UserPlanEnrollment updateMany
+   */
+  export type UserPlanEnrollmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserPlanEnrollments.
+     */
+    data: XOR<UserPlanEnrollmentUpdateManyMutationInput, UserPlanEnrollmentUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPlanEnrollments to update
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * Limit how many UserPlanEnrollments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPlanEnrollment updateManyAndReturn
+   */
+  export type UserPlanEnrollmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * The data used to update UserPlanEnrollments.
+     */
+    data: XOR<UserPlanEnrollmentUpdateManyMutationInput, UserPlanEnrollmentUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPlanEnrollments to update
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * Limit how many UserPlanEnrollments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPlanEnrollment upsert
+   */
+  export type UserPlanEnrollmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserPlanEnrollment to update in case it exists.
+     */
+    where: UserPlanEnrollmentWhereUniqueInput
+    /**
+     * In case the UserPlanEnrollment found by the `where` argument doesn't exist, create a new UserPlanEnrollment with this data.
+     */
+    create: XOR<UserPlanEnrollmentCreateInput, UserPlanEnrollmentUncheckedCreateInput>
+    /**
+     * In case the UserPlanEnrollment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserPlanEnrollmentUpdateInput, UserPlanEnrollmentUncheckedUpdateInput>
+  }
+
+  /**
+   * UserPlanEnrollment delete
+   */
+  export type UserPlanEnrollmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+    /**
+     * Filter which UserPlanEnrollment to delete.
+     */
+    where: UserPlanEnrollmentWhereUniqueInput
+  }
+
+  /**
+   * UserPlanEnrollment deleteMany
+   */
+  export type UserPlanEnrollmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPlanEnrollments to delete
+     */
+    where?: UserPlanEnrollmentWhereInput
+    /**
+     * Limit how many UserPlanEnrollments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPlanEnrollment.completions
+   */
+  export type UserPlanEnrollment$completionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    where?: UserPlanDayCompletionWhereInput
+    orderBy?: UserPlanDayCompletionOrderByWithRelationInput | UserPlanDayCompletionOrderByWithRelationInput[]
+    cursor?: UserPlanDayCompletionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserPlanDayCompletionScalarFieldEnum | UserPlanDayCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanEnrollment without action
+   */
+  export type UserPlanEnrollmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanEnrollment
+     */
+    select?: UserPlanEnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanEnrollment
+     */
+    omit?: UserPlanEnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanEnrollmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserPlanDayCompletion
+   */
+
+  export type AggregateUserPlanDayCompletion = {
+    _count: UserPlanDayCompletionCountAggregateOutputType | null
+    _avg: UserPlanDayCompletionAvgAggregateOutputType | null
+    _sum: UserPlanDayCompletionSumAggregateOutputType | null
+    _min: UserPlanDayCompletionMinAggregateOutputType | null
+    _max: UserPlanDayCompletionMaxAggregateOutputType | null
+  }
+
+  export type UserPlanDayCompletionAvgAggregateOutputType = {
+    day: number | null
+  }
+
+  export type UserPlanDayCompletionSumAggregateOutputType = {
+    day: number | null
+  }
+
+  export type UserPlanDayCompletionMinAggregateOutputType = {
+    id: string | null
+    enrollmentId: string | null
+    day: number | null
+    completedAt: Date | null
+  }
+
+  export type UserPlanDayCompletionMaxAggregateOutputType = {
+    id: string | null
+    enrollmentId: string | null
+    day: number | null
+    completedAt: Date | null
+  }
+
+  export type UserPlanDayCompletionCountAggregateOutputType = {
+    id: number
+    enrollmentId: number
+    day: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type UserPlanDayCompletionAvgAggregateInputType = {
+    day?: true
+  }
+
+  export type UserPlanDayCompletionSumAggregateInputType = {
+    day?: true
+  }
+
+  export type UserPlanDayCompletionMinAggregateInputType = {
+    id?: true
+    enrollmentId?: true
+    day?: true
+    completedAt?: true
+  }
+
+  export type UserPlanDayCompletionMaxAggregateInputType = {
+    id?: true
+    enrollmentId?: true
+    day?: true
+    completedAt?: true
+  }
+
+  export type UserPlanDayCompletionCountAggregateInputType = {
+    id?: true
+    enrollmentId?: true
+    day?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type UserPlanDayCompletionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPlanDayCompletion to aggregate.
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanDayCompletions to fetch.
+     */
+    orderBy?: UserPlanDayCompletionOrderByWithRelationInput | UserPlanDayCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserPlanDayCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanDayCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanDayCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserPlanDayCompletions
+    **/
+    _count?: true | UserPlanDayCompletionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserPlanDayCompletionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserPlanDayCompletionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserPlanDayCompletionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserPlanDayCompletionMaxAggregateInputType
+  }
+
+  export type GetUserPlanDayCompletionAggregateType<T extends UserPlanDayCompletionAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserPlanDayCompletion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserPlanDayCompletion[P]>
+      : GetScalarType<T[P], AggregateUserPlanDayCompletion[P]>
+  }
+
+
+
+
+  export type UserPlanDayCompletionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPlanDayCompletionWhereInput
+    orderBy?: UserPlanDayCompletionOrderByWithAggregationInput | UserPlanDayCompletionOrderByWithAggregationInput[]
+    by: UserPlanDayCompletionScalarFieldEnum[] | UserPlanDayCompletionScalarFieldEnum
+    having?: UserPlanDayCompletionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserPlanDayCompletionCountAggregateInputType | true
+    _avg?: UserPlanDayCompletionAvgAggregateInputType
+    _sum?: UserPlanDayCompletionSumAggregateInputType
+    _min?: UserPlanDayCompletionMinAggregateInputType
+    _max?: UserPlanDayCompletionMaxAggregateInputType
+  }
+
+  export type UserPlanDayCompletionGroupByOutputType = {
+    id: string
+    enrollmentId: string
+    day: number
+    completedAt: Date
+    _count: UserPlanDayCompletionCountAggregateOutputType | null
+    _avg: UserPlanDayCompletionAvgAggregateOutputType | null
+    _sum: UserPlanDayCompletionSumAggregateOutputType | null
+    _min: UserPlanDayCompletionMinAggregateOutputType | null
+    _max: UserPlanDayCompletionMaxAggregateOutputType | null
+  }
+
+  type GetUserPlanDayCompletionGroupByPayload<T extends UserPlanDayCompletionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserPlanDayCompletionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserPlanDayCompletionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserPlanDayCompletionGroupByOutputType[P]>
+            : GetScalarType<T[P], UserPlanDayCompletionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserPlanDayCompletionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    enrollmentId?: boolean
+    day?: boolean
+    completedAt?: boolean
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanDayCompletion"]>
+
+  export type UserPlanDayCompletionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    enrollmentId?: boolean
+    day?: boolean
+    completedAt?: boolean
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanDayCompletion"]>
+
+  export type UserPlanDayCompletionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    enrollmentId?: boolean
+    day?: boolean
+    completedAt?: boolean
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPlanDayCompletion"]>
+
+  export type UserPlanDayCompletionSelectScalar = {
+    id?: boolean
+    enrollmentId?: boolean
+    day?: boolean
+    completedAt?: boolean
+  }
+
+  export type UserPlanDayCompletionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "enrollmentId" | "day" | "completedAt", ExtArgs["result"]["userPlanDayCompletion"]>
+  export type UserPlanDayCompletionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }
+  export type UserPlanDayCompletionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }
+  export type UserPlanDayCompletionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    enrollment?: boolean | UserPlanEnrollmentDefaultArgs<ExtArgs>
+  }
+
+  export type $UserPlanDayCompletionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserPlanDayCompletion"
+    objects: {
+      enrollment: Prisma.$UserPlanEnrollmentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      enrollmentId: string
+      day: number
+      completedAt: Date
+    }, ExtArgs["result"]["userPlanDayCompletion"]>
+    composites: {}
+  }
+
+  type UserPlanDayCompletionGetPayload<S extends boolean | null | undefined | UserPlanDayCompletionDefaultArgs> = $Result.GetResult<Prisma.$UserPlanDayCompletionPayload, S>
+
+  type UserPlanDayCompletionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserPlanDayCompletionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserPlanDayCompletionCountAggregateInputType | true
+    }
+
+  export interface UserPlanDayCompletionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserPlanDayCompletion'], meta: { name: 'UserPlanDayCompletion' } }
+    /**
+     * Find zero or one UserPlanDayCompletion that matches the filter.
+     * @param {UserPlanDayCompletionFindUniqueArgs} args - Arguments to find a UserPlanDayCompletion
+     * @example
+     * // Get one UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserPlanDayCompletionFindUniqueArgs>(args: SelectSubset<T, UserPlanDayCompletionFindUniqueArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserPlanDayCompletion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserPlanDayCompletionFindUniqueOrThrowArgs} args - Arguments to find a UserPlanDayCompletion
+     * @example
+     * // Get one UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserPlanDayCompletionFindUniqueOrThrowArgs>(args: SelectSubset<T, UserPlanDayCompletionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPlanDayCompletion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionFindFirstArgs} args - Arguments to find a UserPlanDayCompletion
+     * @example
+     * // Get one UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserPlanDayCompletionFindFirstArgs>(args?: SelectSubset<T, UserPlanDayCompletionFindFirstArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPlanDayCompletion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionFindFirstOrThrowArgs} args - Arguments to find a UserPlanDayCompletion
+     * @example
+     * // Get one UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserPlanDayCompletionFindFirstOrThrowArgs>(args?: SelectSubset<T, UserPlanDayCompletionFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserPlanDayCompletions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserPlanDayCompletions
+     * const userPlanDayCompletions = await prisma.userPlanDayCompletion.findMany()
+     * 
+     * // Get first 10 UserPlanDayCompletions
+     * const userPlanDayCompletions = await prisma.userPlanDayCompletion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userPlanDayCompletionWithIdOnly = await prisma.userPlanDayCompletion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserPlanDayCompletionFindManyArgs>(args?: SelectSubset<T, UserPlanDayCompletionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserPlanDayCompletion.
+     * @param {UserPlanDayCompletionCreateArgs} args - Arguments to create a UserPlanDayCompletion.
+     * @example
+     * // Create one UserPlanDayCompletion
+     * const UserPlanDayCompletion = await prisma.userPlanDayCompletion.create({
+     *   data: {
+     *     // ... data to create a UserPlanDayCompletion
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserPlanDayCompletionCreateArgs>(args: SelectSubset<T, UserPlanDayCompletionCreateArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserPlanDayCompletions.
+     * @param {UserPlanDayCompletionCreateManyArgs} args - Arguments to create many UserPlanDayCompletions.
+     * @example
+     * // Create many UserPlanDayCompletions
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserPlanDayCompletionCreateManyArgs>(args?: SelectSubset<T, UserPlanDayCompletionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserPlanDayCompletions and returns the data saved in the database.
+     * @param {UserPlanDayCompletionCreateManyAndReturnArgs} args - Arguments to create many UserPlanDayCompletions.
+     * @example
+     * // Create many UserPlanDayCompletions
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserPlanDayCompletions and only return the `id`
+     * const userPlanDayCompletionWithIdOnly = await prisma.userPlanDayCompletion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserPlanDayCompletionCreateManyAndReturnArgs>(args?: SelectSubset<T, UserPlanDayCompletionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserPlanDayCompletion.
+     * @param {UserPlanDayCompletionDeleteArgs} args - Arguments to delete one UserPlanDayCompletion.
+     * @example
+     * // Delete one UserPlanDayCompletion
+     * const UserPlanDayCompletion = await prisma.userPlanDayCompletion.delete({
+     *   where: {
+     *     // ... filter to delete one UserPlanDayCompletion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserPlanDayCompletionDeleteArgs>(args: SelectSubset<T, UserPlanDayCompletionDeleteArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserPlanDayCompletion.
+     * @param {UserPlanDayCompletionUpdateArgs} args - Arguments to update one UserPlanDayCompletion.
+     * @example
+     * // Update one UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserPlanDayCompletionUpdateArgs>(args: SelectSubset<T, UserPlanDayCompletionUpdateArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserPlanDayCompletions.
+     * @param {UserPlanDayCompletionDeleteManyArgs} args - Arguments to filter UserPlanDayCompletions to delete.
+     * @example
+     * // Delete a few UserPlanDayCompletions
+     * const { count } = await prisma.userPlanDayCompletion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserPlanDayCompletionDeleteManyArgs>(args?: SelectSubset<T, UserPlanDayCompletionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPlanDayCompletions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserPlanDayCompletions
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserPlanDayCompletionUpdateManyArgs>(args: SelectSubset<T, UserPlanDayCompletionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPlanDayCompletions and returns the data updated in the database.
+     * @param {UserPlanDayCompletionUpdateManyAndReturnArgs} args - Arguments to update many UserPlanDayCompletions.
+     * @example
+     * // Update many UserPlanDayCompletions
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserPlanDayCompletions and only return the `id`
+     * const userPlanDayCompletionWithIdOnly = await prisma.userPlanDayCompletion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserPlanDayCompletionUpdateManyAndReturnArgs>(args: SelectSubset<T, UserPlanDayCompletionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserPlanDayCompletion.
+     * @param {UserPlanDayCompletionUpsertArgs} args - Arguments to update or create a UserPlanDayCompletion.
+     * @example
+     * // Update or create a UserPlanDayCompletion
+     * const userPlanDayCompletion = await prisma.userPlanDayCompletion.upsert({
+     *   create: {
+     *     // ... data to create a UserPlanDayCompletion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserPlanDayCompletion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserPlanDayCompletionUpsertArgs>(args: SelectSubset<T, UserPlanDayCompletionUpsertArgs<ExtArgs>>): Prisma__UserPlanDayCompletionClient<$Result.GetResult<Prisma.$UserPlanDayCompletionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserPlanDayCompletions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionCountArgs} args - Arguments to filter UserPlanDayCompletions to count.
+     * @example
+     * // Count the number of UserPlanDayCompletions
+     * const count = await prisma.userPlanDayCompletion.count({
+     *   where: {
+     *     // ... the filter for the UserPlanDayCompletions we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserPlanDayCompletionCountArgs>(
+      args?: Subset<T, UserPlanDayCompletionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserPlanDayCompletionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserPlanDayCompletion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserPlanDayCompletionAggregateArgs>(args: Subset<T, UserPlanDayCompletionAggregateArgs>): Prisma.PrismaPromise<GetUserPlanDayCompletionAggregateType<T>>
+
+    /**
+     * Group by UserPlanDayCompletion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPlanDayCompletionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserPlanDayCompletionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserPlanDayCompletionGroupByArgs['orderBy'] }
+        : { orderBy?: UserPlanDayCompletionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserPlanDayCompletionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserPlanDayCompletionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserPlanDayCompletion model
+   */
+  readonly fields: UserPlanDayCompletionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserPlanDayCompletion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserPlanDayCompletionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    enrollment<T extends UserPlanEnrollmentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserPlanEnrollmentDefaultArgs<ExtArgs>>): Prisma__UserPlanEnrollmentClient<$Result.GetResult<Prisma.$UserPlanEnrollmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserPlanDayCompletion model
+   */
+  interface UserPlanDayCompletionFieldRefs {
+    readonly id: FieldRef<"UserPlanDayCompletion", 'String'>
+    readonly enrollmentId: FieldRef<"UserPlanDayCompletion", 'String'>
+    readonly day: FieldRef<"UserPlanDayCompletion", 'Int'>
+    readonly completedAt: FieldRef<"UserPlanDayCompletion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserPlanDayCompletion findUnique
+   */
+  export type UserPlanDayCompletionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanDayCompletion to fetch.
+     */
+    where: UserPlanDayCompletionWhereUniqueInput
+  }
+
+  /**
+   * UserPlanDayCompletion findUniqueOrThrow
+   */
+  export type UserPlanDayCompletionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanDayCompletion to fetch.
+     */
+    where: UserPlanDayCompletionWhereUniqueInput
+  }
+
+  /**
+   * UserPlanDayCompletion findFirst
+   */
+  export type UserPlanDayCompletionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanDayCompletion to fetch.
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanDayCompletions to fetch.
+     */
+    orderBy?: UserPlanDayCompletionOrderByWithRelationInput | UserPlanDayCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPlanDayCompletions.
+     */
+    cursor?: UserPlanDayCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanDayCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanDayCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPlanDayCompletions.
+     */
+    distinct?: UserPlanDayCompletionScalarFieldEnum | UserPlanDayCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanDayCompletion findFirstOrThrow
+   */
+  export type UserPlanDayCompletionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanDayCompletion to fetch.
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanDayCompletions to fetch.
+     */
+    orderBy?: UserPlanDayCompletionOrderByWithRelationInput | UserPlanDayCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPlanDayCompletions.
+     */
+    cursor?: UserPlanDayCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanDayCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanDayCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPlanDayCompletions.
+     */
+    distinct?: UserPlanDayCompletionScalarFieldEnum | UserPlanDayCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanDayCompletion findMany
+   */
+  export type UserPlanDayCompletionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPlanDayCompletions to fetch.
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPlanDayCompletions to fetch.
+     */
+    orderBy?: UserPlanDayCompletionOrderByWithRelationInput | UserPlanDayCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserPlanDayCompletions.
+     */
+    cursor?: UserPlanDayCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPlanDayCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPlanDayCompletions.
+     */
+    skip?: number
+    distinct?: UserPlanDayCompletionScalarFieldEnum | UserPlanDayCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * UserPlanDayCompletion create
+   */
+  export type UserPlanDayCompletionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserPlanDayCompletion.
+     */
+    data: XOR<UserPlanDayCompletionCreateInput, UserPlanDayCompletionUncheckedCreateInput>
+  }
+
+  /**
+   * UserPlanDayCompletion createMany
+   */
+  export type UserPlanDayCompletionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserPlanDayCompletions.
+     */
+    data: UserPlanDayCompletionCreateManyInput | UserPlanDayCompletionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserPlanDayCompletion createManyAndReturn
+   */
+  export type UserPlanDayCompletionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserPlanDayCompletions.
+     */
+    data: UserPlanDayCompletionCreateManyInput | UserPlanDayCompletionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPlanDayCompletion update
+   */
+  export type UserPlanDayCompletionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserPlanDayCompletion.
+     */
+    data: XOR<UserPlanDayCompletionUpdateInput, UserPlanDayCompletionUncheckedUpdateInput>
+    /**
+     * Choose, which UserPlanDayCompletion to update.
+     */
+    where: UserPlanDayCompletionWhereUniqueInput
+  }
+
+  /**
+   * UserPlanDayCompletion updateMany
+   */
+  export type UserPlanDayCompletionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserPlanDayCompletions.
+     */
+    data: XOR<UserPlanDayCompletionUpdateManyMutationInput, UserPlanDayCompletionUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPlanDayCompletions to update
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * Limit how many UserPlanDayCompletions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPlanDayCompletion updateManyAndReturn
+   */
+  export type UserPlanDayCompletionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * The data used to update UserPlanDayCompletions.
+     */
+    data: XOR<UserPlanDayCompletionUpdateManyMutationInput, UserPlanDayCompletionUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPlanDayCompletions to update
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * Limit how many UserPlanDayCompletions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPlanDayCompletion upsert
+   */
+  export type UserPlanDayCompletionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserPlanDayCompletion to update in case it exists.
+     */
+    where: UserPlanDayCompletionWhereUniqueInput
+    /**
+     * In case the UserPlanDayCompletion found by the `where` argument doesn't exist, create a new UserPlanDayCompletion with this data.
+     */
+    create: XOR<UserPlanDayCompletionCreateInput, UserPlanDayCompletionUncheckedCreateInput>
+    /**
+     * In case the UserPlanDayCompletion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserPlanDayCompletionUpdateInput, UserPlanDayCompletionUncheckedUpdateInput>
+  }
+
+  /**
+   * UserPlanDayCompletion delete
+   */
+  export type UserPlanDayCompletionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+    /**
+     * Filter which UserPlanDayCompletion to delete.
+     */
+    where: UserPlanDayCompletionWhereUniqueInput
+  }
+
+  /**
+   * UserPlanDayCompletion deleteMany
+   */
+  export type UserPlanDayCompletionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPlanDayCompletions to delete
+     */
+    where?: UserPlanDayCompletionWhereInput
+    /**
+     * Limit how many UserPlanDayCompletions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPlanDayCompletion without action
+   */
+  export type UserPlanDayCompletionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPlanDayCompletion
+     */
+    select?: UserPlanDayCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPlanDayCompletion
+     */
+    omit?: UserPlanDayCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPlanDayCompletionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model UserTagFollow
    */
 
@@ -20014,6 +22478,28 @@ export namespace Prisma {
   export type ReadingListItemScalarFieldEnum = (typeof ReadingListItemScalarFieldEnum)[keyof typeof ReadingListItemScalarFieldEnum]
 
 
+  export const UserPlanEnrollmentScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    planSlug: 'planSlug',
+    durationDays: 'durationDays',
+    startDate: 'startDate',
+    createdAt: 'createdAt'
+  };
+
+  export type UserPlanEnrollmentScalarFieldEnum = (typeof UserPlanEnrollmentScalarFieldEnum)[keyof typeof UserPlanEnrollmentScalarFieldEnum]
+
+
+  export const UserPlanDayCompletionScalarFieldEnum: {
+    id: 'id',
+    enrollmentId: 'enrollmentId',
+    day: 'day',
+    completedAt: 'completedAt'
+  };
+
+  export type UserPlanDayCompletionScalarFieldEnum = (typeof UserPlanDayCompletionScalarFieldEnum)[keyof typeof UserPlanDayCompletionScalarFieldEnum]
+
+
   export const UserTagFollowScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -20233,6 +22719,7 @@ export namespace Prisma {
     series?: SeriesListRelationFilter
     readingList?: ReadingListItemListRelationFilter
     followedTags?: UserTagFollowListRelationFilter
+    planEnrollments?: UserPlanEnrollmentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -20259,6 +22746,7 @@ export namespace Prisma {
     series?: SeriesOrderByRelationAggregateInput
     readingList?: ReadingListItemOrderByRelationAggregateInput
     followedTags?: UserTagFollowOrderByRelationAggregateInput
+    planEnrollments?: UserPlanEnrollmentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -20288,6 +22776,7 @@ export namespace Prisma {
     series?: SeriesListRelationFilter
     readingList?: ReadingListItemListRelationFilter
     followedTags?: UserTagFollowListRelationFilter
+    planEnrollments?: UserPlanEnrollmentListRelationFilter
   }, "id" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -21232,6 +23721,125 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ReadingListItem"> | Date | string
   }
 
+  export type UserPlanEnrollmentWhereInput = {
+    AND?: UserPlanEnrollmentWhereInput | UserPlanEnrollmentWhereInput[]
+    OR?: UserPlanEnrollmentWhereInput[]
+    NOT?: UserPlanEnrollmentWhereInput | UserPlanEnrollmentWhereInput[]
+    id?: StringFilter<"UserPlanEnrollment"> | string
+    userId?: StringFilter<"UserPlanEnrollment"> | string
+    planSlug?: StringFilter<"UserPlanEnrollment"> | string
+    durationDays?: IntFilter<"UserPlanEnrollment"> | number
+    startDate?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+    createdAt?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    completions?: UserPlanDayCompletionListRelationFilter
+  }
+
+  export type UserPlanEnrollmentOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    planSlug?: SortOrder
+    durationDays?: SortOrder
+    startDate?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    completions?: UserPlanDayCompletionOrderByRelationAggregateInput
+  }
+
+  export type UserPlanEnrollmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_planSlug_durationDays?: UserPlanEnrollmentUserIdPlanSlugDurationDaysCompoundUniqueInput
+    AND?: UserPlanEnrollmentWhereInput | UserPlanEnrollmentWhereInput[]
+    OR?: UserPlanEnrollmentWhereInput[]
+    NOT?: UserPlanEnrollmentWhereInput | UserPlanEnrollmentWhereInput[]
+    userId?: StringFilter<"UserPlanEnrollment"> | string
+    planSlug?: StringFilter<"UserPlanEnrollment"> | string
+    durationDays?: IntFilter<"UserPlanEnrollment"> | number
+    startDate?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+    createdAt?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    completions?: UserPlanDayCompletionListRelationFilter
+  }, "id" | "userId_planSlug_durationDays">
+
+  export type UserPlanEnrollmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    planSlug?: SortOrder
+    durationDays?: SortOrder
+    startDate?: SortOrder
+    createdAt?: SortOrder
+    _count?: UserPlanEnrollmentCountOrderByAggregateInput
+    _avg?: UserPlanEnrollmentAvgOrderByAggregateInput
+    _max?: UserPlanEnrollmentMaxOrderByAggregateInput
+    _min?: UserPlanEnrollmentMinOrderByAggregateInput
+    _sum?: UserPlanEnrollmentSumOrderByAggregateInput
+  }
+
+  export type UserPlanEnrollmentScalarWhereWithAggregatesInput = {
+    AND?: UserPlanEnrollmentScalarWhereWithAggregatesInput | UserPlanEnrollmentScalarWhereWithAggregatesInput[]
+    OR?: UserPlanEnrollmentScalarWhereWithAggregatesInput[]
+    NOT?: UserPlanEnrollmentScalarWhereWithAggregatesInput | UserPlanEnrollmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserPlanEnrollment"> | string
+    userId?: StringWithAggregatesFilter<"UserPlanEnrollment"> | string
+    planSlug?: StringWithAggregatesFilter<"UserPlanEnrollment"> | string
+    durationDays?: IntWithAggregatesFilter<"UserPlanEnrollment"> | number
+    startDate?: DateTimeWithAggregatesFilter<"UserPlanEnrollment"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"UserPlanEnrollment"> | Date | string
+  }
+
+  export type UserPlanDayCompletionWhereInput = {
+    AND?: UserPlanDayCompletionWhereInput | UserPlanDayCompletionWhereInput[]
+    OR?: UserPlanDayCompletionWhereInput[]
+    NOT?: UserPlanDayCompletionWhereInput | UserPlanDayCompletionWhereInput[]
+    id?: StringFilter<"UserPlanDayCompletion"> | string
+    enrollmentId?: StringFilter<"UserPlanDayCompletion"> | string
+    day?: IntFilter<"UserPlanDayCompletion"> | number
+    completedAt?: DateTimeFilter<"UserPlanDayCompletion"> | Date | string
+    enrollment?: XOR<UserPlanEnrollmentScalarRelationFilter, UserPlanEnrollmentWhereInput>
+  }
+
+  export type UserPlanDayCompletionOrderByWithRelationInput = {
+    id?: SortOrder
+    enrollmentId?: SortOrder
+    day?: SortOrder
+    completedAt?: SortOrder
+    enrollment?: UserPlanEnrollmentOrderByWithRelationInput
+  }
+
+  export type UserPlanDayCompletionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    enrollmentId_day?: UserPlanDayCompletionEnrollmentIdDayCompoundUniqueInput
+    AND?: UserPlanDayCompletionWhereInput | UserPlanDayCompletionWhereInput[]
+    OR?: UserPlanDayCompletionWhereInput[]
+    NOT?: UserPlanDayCompletionWhereInput | UserPlanDayCompletionWhereInput[]
+    enrollmentId?: StringFilter<"UserPlanDayCompletion"> | string
+    day?: IntFilter<"UserPlanDayCompletion"> | number
+    completedAt?: DateTimeFilter<"UserPlanDayCompletion"> | Date | string
+    enrollment?: XOR<UserPlanEnrollmentScalarRelationFilter, UserPlanEnrollmentWhereInput>
+  }, "id" | "enrollmentId_day">
+
+  export type UserPlanDayCompletionOrderByWithAggregationInput = {
+    id?: SortOrder
+    enrollmentId?: SortOrder
+    day?: SortOrder
+    completedAt?: SortOrder
+    _count?: UserPlanDayCompletionCountOrderByAggregateInput
+    _avg?: UserPlanDayCompletionAvgOrderByAggregateInput
+    _max?: UserPlanDayCompletionMaxOrderByAggregateInput
+    _min?: UserPlanDayCompletionMinOrderByAggregateInput
+    _sum?: UserPlanDayCompletionSumOrderByAggregateInput
+  }
+
+  export type UserPlanDayCompletionScalarWhereWithAggregatesInput = {
+    AND?: UserPlanDayCompletionScalarWhereWithAggregatesInput | UserPlanDayCompletionScalarWhereWithAggregatesInput[]
+    OR?: UserPlanDayCompletionScalarWhereWithAggregatesInput[]
+    NOT?: UserPlanDayCompletionScalarWhereWithAggregatesInput | UserPlanDayCompletionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserPlanDayCompletion"> | string
+    enrollmentId?: StringWithAggregatesFilter<"UserPlanDayCompletion"> | string
+    day?: IntWithAggregatesFilter<"UserPlanDayCompletion"> | number
+    completedAt?: DateTimeWithAggregatesFilter<"UserPlanDayCompletion"> | Date | string
+  }
+
   export type UserTagFollowWhereInput = {
     AND?: UserTagFollowWhereInput | UserTagFollowWhereInput[]
     OR?: UserTagFollowWhereInput[]
@@ -21310,6 +23918,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -21336,6 +23945,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -21362,6 +23972,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -21388,6 +23999,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -22341,6 +24953,120 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserPlanEnrollmentCreateInput = {
+    id?: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPlanEnrollmentsInput
+    completions?: UserPlanDayCompletionCreateNestedManyWithoutEnrollmentInput
+  }
+
+  export type UserPlanEnrollmentUncheckedCreateInput = {
+    id?: string
+    userId: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+    completions?: UserPlanDayCompletionUncheckedCreateNestedManyWithoutEnrollmentInput
+  }
+
+  export type UserPlanEnrollmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPlanEnrollmentsNestedInput
+    completions?: UserPlanDayCompletionUpdateManyWithoutEnrollmentNestedInput
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completions?: UserPlanDayCompletionUncheckedUpdateManyWithoutEnrollmentNestedInput
+  }
+
+  export type UserPlanEnrollmentCreateManyInput = {
+    id?: string
+    userId: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UserPlanEnrollmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanDayCompletionCreateInput = {
+    id?: string
+    day: number
+    completedAt?: Date | string
+    enrollment: UserPlanEnrollmentCreateNestedOneWithoutCompletionsInput
+  }
+
+  export type UserPlanDayCompletionUncheckedCreateInput = {
+    id?: string
+    enrollmentId: string
+    day: number
+    completedAt?: Date | string
+  }
+
+  export type UserPlanDayCompletionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    enrollment?: UserPlanEnrollmentUpdateOneRequiredWithoutCompletionsNestedInput
+  }
+
+  export type UserPlanDayCompletionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanDayCompletionCreateManyInput = {
+    id?: string
+    enrollmentId: string
+    day: number
+    completedAt?: Date | string
+  }
+
+  export type UserPlanDayCompletionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanDayCompletionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserTagFollowCreateInput = {
     id?: string
     createdAt?: Date | string
@@ -22495,6 +25221,12 @@ export namespace Prisma {
     none?: UserTagFollowWhereInput
   }
 
+  export type UserPlanEnrollmentListRelationFilter = {
+    every?: UserPlanEnrollmentWhereInput
+    some?: UserPlanEnrollmentWhereInput
+    none?: UserPlanEnrollmentWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -22541,6 +25273,10 @@ export namespace Prisma {
   }
 
   export type UserTagFollowOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserPlanEnrollmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23313,6 +26049,96 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type UserPlanDayCompletionListRelationFilter = {
+    every?: UserPlanDayCompletionWhereInput
+    some?: UserPlanDayCompletionWhereInput
+    none?: UserPlanDayCompletionWhereInput
+  }
+
+  export type UserPlanDayCompletionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserPlanEnrollmentUserIdPlanSlugDurationDaysCompoundUniqueInput = {
+    userId: string
+    planSlug: string
+    durationDays: number
+  }
+
+  export type UserPlanEnrollmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    planSlug?: SortOrder
+    durationDays?: SortOrder
+    startDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserPlanEnrollmentAvgOrderByAggregateInput = {
+    durationDays?: SortOrder
+  }
+
+  export type UserPlanEnrollmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    planSlug?: SortOrder
+    durationDays?: SortOrder
+    startDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserPlanEnrollmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    planSlug?: SortOrder
+    durationDays?: SortOrder
+    startDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserPlanEnrollmentSumOrderByAggregateInput = {
+    durationDays?: SortOrder
+  }
+
+  export type UserPlanEnrollmentScalarRelationFilter = {
+    is?: UserPlanEnrollmentWhereInput
+    isNot?: UserPlanEnrollmentWhereInput
+  }
+
+  export type UserPlanDayCompletionEnrollmentIdDayCompoundUniqueInput = {
+    enrollmentId: string
+    day: number
+  }
+
+  export type UserPlanDayCompletionCountOrderByAggregateInput = {
+    id?: SortOrder
+    enrollmentId?: SortOrder
+    day?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type UserPlanDayCompletionAvgOrderByAggregateInput = {
+    day?: SortOrder
+  }
+
+  export type UserPlanDayCompletionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    enrollmentId?: SortOrder
+    day?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type UserPlanDayCompletionMinOrderByAggregateInput = {
+    id?: SortOrder
+    enrollmentId?: SortOrder
+    day?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type UserPlanDayCompletionSumOrderByAggregateInput = {
+    day?: SortOrder
+  }
+
   export type TagScalarRelationFilter = {
     is?: TagWhereInput
     isNot?: TagWhereInput
@@ -23428,6 +26254,13 @@ export namespace Prisma {
     connect?: UserTagFollowWhereUniqueInput | UserTagFollowWhereUniqueInput[]
   }
 
+  export type UserPlanEnrollmentCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput> | UserPlanEnrollmentCreateWithoutUserInput[] | UserPlanEnrollmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutUserInput | UserPlanEnrollmentCreateOrConnectWithoutUserInput[]
+    createMany?: UserPlanEnrollmentCreateManyUserInputEnvelope
+    connect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+  }
+
   export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
     create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
     connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
@@ -23510,6 +26343,13 @@ export namespace Prisma {
     connectOrCreate?: UserTagFollowCreateOrConnectWithoutUserInput | UserTagFollowCreateOrConnectWithoutUserInput[]
     createMany?: UserTagFollowCreateManyUserInputEnvelope
     connect?: UserTagFollowWhereUniqueInput | UserTagFollowWhereUniqueInput[]
+  }
+
+  export type UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput> | UserPlanEnrollmentCreateWithoutUserInput[] | UserPlanEnrollmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutUserInput | UserPlanEnrollmentCreateOrConnectWithoutUserInput[]
+    createMany?: UserPlanEnrollmentCreateManyUserInputEnvelope
+    connect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -23692,6 +26532,20 @@ export namespace Prisma {
     deleteMany?: UserTagFollowScalarWhereInput | UserTagFollowScalarWhereInput[]
   }
 
+  export type UserPlanEnrollmentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput> | UserPlanEnrollmentCreateWithoutUserInput[] | UserPlanEnrollmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutUserInput | UserPlanEnrollmentCreateOrConnectWithoutUserInput[]
+    upsert?: UserPlanEnrollmentUpsertWithWhereUniqueWithoutUserInput | UserPlanEnrollmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserPlanEnrollmentCreateManyUserInputEnvelope
+    set?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    disconnect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    delete?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    connect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    update?: UserPlanEnrollmentUpdateWithWhereUniqueWithoutUserInput | UserPlanEnrollmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserPlanEnrollmentUpdateManyWithWhereWithoutUserInput | UserPlanEnrollmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserPlanEnrollmentScalarWhereInput | UserPlanEnrollmentScalarWhereInput[]
+  }
+
   export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
     create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
     connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
@@ -23858,6 +26712,20 @@ export namespace Prisma {
     update?: UserTagFollowUpdateWithWhereUniqueWithoutUserInput | UserTagFollowUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserTagFollowUpdateManyWithWhereWithoutUserInput | UserTagFollowUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserTagFollowScalarWhereInput | UserTagFollowScalarWhereInput[]
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput> | UserPlanEnrollmentCreateWithoutUserInput[] | UserPlanEnrollmentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutUserInput | UserPlanEnrollmentCreateOrConnectWithoutUserInput[]
+    upsert?: UserPlanEnrollmentUpsertWithWhereUniqueWithoutUserInput | UserPlanEnrollmentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserPlanEnrollmentCreateManyUserInputEnvelope
+    set?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    disconnect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    delete?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    connect?: UserPlanEnrollmentWhereUniqueInput | UserPlanEnrollmentWhereUniqueInput[]
+    update?: UserPlanEnrollmentUpdateWithWhereUniqueWithoutUserInput | UserPlanEnrollmentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserPlanEnrollmentUpdateManyWithWhereWithoutUserInput | UserPlanEnrollmentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserPlanEnrollmentScalarWhereInput | UserPlanEnrollmentScalarWhereInput[]
   }
 
   export type CommunityMembershipCreateNestedManyWithoutCommunityInput = {
@@ -24848,6 +27716,76 @@ export namespace Prisma {
     update?: XOR<XOR<PostUpdateToOneWithWhereWithoutReadingListItemsInput, PostUpdateWithoutReadingListItemsInput>, PostUncheckedUpdateWithoutReadingListItemsInput>
   }
 
+  export type UserCreateNestedOneWithoutPlanEnrollmentsInput = {
+    create?: XOR<UserCreateWithoutPlanEnrollmentsInput, UserUncheckedCreateWithoutPlanEnrollmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanEnrollmentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserPlanDayCompletionCreateNestedManyWithoutEnrollmentInput = {
+    create?: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput> | UserPlanDayCompletionCreateWithoutEnrollmentInput[] | UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput[]
+    connectOrCreate?: UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput | UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput[]
+    createMany?: UserPlanDayCompletionCreateManyEnrollmentInputEnvelope
+    connect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+  }
+
+  export type UserPlanDayCompletionUncheckedCreateNestedManyWithoutEnrollmentInput = {
+    create?: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput> | UserPlanDayCompletionCreateWithoutEnrollmentInput[] | UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput[]
+    connectOrCreate?: UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput | UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput[]
+    createMany?: UserPlanDayCompletionCreateManyEnrollmentInputEnvelope
+    connect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutPlanEnrollmentsNestedInput = {
+    create?: XOR<UserCreateWithoutPlanEnrollmentsInput, UserUncheckedCreateWithoutPlanEnrollmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanEnrollmentsInput
+    upsert?: UserUpsertWithoutPlanEnrollmentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlanEnrollmentsInput, UserUpdateWithoutPlanEnrollmentsInput>, UserUncheckedUpdateWithoutPlanEnrollmentsInput>
+  }
+
+  export type UserPlanDayCompletionUpdateManyWithoutEnrollmentNestedInput = {
+    create?: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput> | UserPlanDayCompletionCreateWithoutEnrollmentInput[] | UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput[]
+    connectOrCreate?: UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput | UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput[]
+    upsert?: UserPlanDayCompletionUpsertWithWhereUniqueWithoutEnrollmentInput | UserPlanDayCompletionUpsertWithWhereUniqueWithoutEnrollmentInput[]
+    createMany?: UserPlanDayCompletionCreateManyEnrollmentInputEnvelope
+    set?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    disconnect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    delete?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    connect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    update?: UserPlanDayCompletionUpdateWithWhereUniqueWithoutEnrollmentInput | UserPlanDayCompletionUpdateWithWhereUniqueWithoutEnrollmentInput[]
+    updateMany?: UserPlanDayCompletionUpdateManyWithWhereWithoutEnrollmentInput | UserPlanDayCompletionUpdateManyWithWhereWithoutEnrollmentInput[]
+    deleteMany?: UserPlanDayCompletionScalarWhereInput | UserPlanDayCompletionScalarWhereInput[]
+  }
+
+  export type UserPlanDayCompletionUncheckedUpdateManyWithoutEnrollmentNestedInput = {
+    create?: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput> | UserPlanDayCompletionCreateWithoutEnrollmentInput[] | UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput[]
+    connectOrCreate?: UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput | UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput[]
+    upsert?: UserPlanDayCompletionUpsertWithWhereUniqueWithoutEnrollmentInput | UserPlanDayCompletionUpsertWithWhereUniqueWithoutEnrollmentInput[]
+    createMany?: UserPlanDayCompletionCreateManyEnrollmentInputEnvelope
+    set?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    disconnect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    delete?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    connect?: UserPlanDayCompletionWhereUniqueInput | UserPlanDayCompletionWhereUniqueInput[]
+    update?: UserPlanDayCompletionUpdateWithWhereUniqueWithoutEnrollmentInput | UserPlanDayCompletionUpdateWithWhereUniqueWithoutEnrollmentInput[]
+    updateMany?: UserPlanDayCompletionUpdateManyWithWhereWithoutEnrollmentInput | UserPlanDayCompletionUpdateManyWithWhereWithoutEnrollmentInput[]
+    deleteMany?: UserPlanDayCompletionScalarWhereInput | UserPlanDayCompletionScalarWhereInput[]
+  }
+
+  export type UserPlanEnrollmentCreateNestedOneWithoutCompletionsInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutCompletionsInput, UserPlanEnrollmentUncheckedCreateWithoutCompletionsInput>
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutCompletionsInput
+    connect?: UserPlanEnrollmentWhereUniqueInput
+  }
+
+  export type UserPlanEnrollmentUpdateOneRequiredWithoutCompletionsNestedInput = {
+    create?: XOR<UserPlanEnrollmentCreateWithoutCompletionsInput, UserPlanEnrollmentUncheckedCreateWithoutCompletionsInput>
+    connectOrCreate?: UserPlanEnrollmentCreateOrConnectWithoutCompletionsInput
+    upsert?: UserPlanEnrollmentUpsertWithoutCompletionsInput
+    connect?: UserPlanEnrollmentWhereUniqueInput
+    update?: XOR<XOR<UserPlanEnrollmentUpdateToOneWithWhereWithoutCompletionsInput, UserPlanEnrollmentUpdateWithoutCompletionsInput>, UserPlanEnrollmentUncheckedUpdateWithoutCompletionsInput>
+  }
+
   export type UserCreateNestedOneWithoutFollowedTagsInput = {
     create?: XOR<UserCreateWithoutFollowedTagsInput, UserUncheckedCreateWithoutFollowedTagsInput>
     connectOrCreate?: UserCreateOrConnectWithoutFollowedTagsInput
@@ -25486,6 +28424,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserPlanEnrollmentCreateWithoutUserInput = {
+    id?: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+    completions?: UserPlanDayCompletionCreateNestedManyWithoutEnrollmentInput
+  }
+
+  export type UserPlanEnrollmentUncheckedCreateWithoutUserInput = {
+    id?: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+    completions?: UserPlanDayCompletionUncheckedCreateNestedManyWithoutEnrollmentInput
+  }
+
+  export type UserPlanEnrollmentCreateOrConnectWithoutUserInput = {
+    where: UserPlanEnrollmentWhereUniqueInput
+    create: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserPlanEnrollmentCreateManyUserInputEnvelope = {
+    data: UserPlanEnrollmentCreateManyUserInput | UserPlanEnrollmentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
     where: PostWhereUniqueInput
     update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
@@ -25819,6 +28785,34 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"UserTagFollow"> | Date | string
   }
 
+  export type UserPlanEnrollmentUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserPlanEnrollmentWhereUniqueInput
+    update: XOR<UserPlanEnrollmentUpdateWithoutUserInput, UserPlanEnrollmentUncheckedUpdateWithoutUserInput>
+    create: XOR<UserPlanEnrollmentCreateWithoutUserInput, UserPlanEnrollmentUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserPlanEnrollmentUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserPlanEnrollmentWhereUniqueInput
+    data: XOR<UserPlanEnrollmentUpdateWithoutUserInput, UserPlanEnrollmentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserPlanEnrollmentUpdateManyWithWhereWithoutUserInput = {
+    where: UserPlanEnrollmentScalarWhereInput
+    data: XOR<UserPlanEnrollmentUpdateManyMutationInput, UserPlanEnrollmentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserPlanEnrollmentScalarWhereInput = {
+    AND?: UserPlanEnrollmentScalarWhereInput | UserPlanEnrollmentScalarWhereInput[]
+    OR?: UserPlanEnrollmentScalarWhereInput[]
+    NOT?: UserPlanEnrollmentScalarWhereInput | UserPlanEnrollmentScalarWhereInput[]
+    id?: StringFilter<"UserPlanEnrollment"> | string
+    userId?: StringFilter<"UserPlanEnrollment"> | string
+    planSlug?: StringFilter<"UserPlanEnrollment"> | string
+    durationDays?: IntFilter<"UserPlanEnrollment"> | number
+    startDate?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+    createdAt?: DateTimeFilter<"UserPlanEnrollment"> | Date | string
+  }
+
   export type CommunityMembershipCreateWithoutCommunityInput = {
     role?: $Enums.Role
     joinedAt?: Date | string
@@ -26011,6 +29005,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -26036,6 +29031,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -26110,6 +29106,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -26135,6 +29132,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutMembershipsInput = {
@@ -26199,6 +29197,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -26224,6 +29223,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -26467,6 +29467,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -26492,6 +29493,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutPostsInput = {
@@ -26743,6 +29745,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostViewsInput = {
@@ -26768,6 +29771,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostViewsInput = {
@@ -26872,6 +29876,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostViewsInput = {
@@ -26897,6 +29902,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PostCreateWithoutTagsInput = {
@@ -27033,6 +30039,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommentsInput = {
@@ -27058,6 +30065,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommentsInput = {
@@ -27245,6 +30253,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -27270,6 +30279,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PostUpsertWithoutCommentsInput = {
@@ -27425,6 +30435,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReactionsInput = {
@@ -27450,6 +30461,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReactionsInput = {
@@ -27577,6 +30589,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReactionsInput = {
@@ -27602,6 +30615,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PostUpsertWithoutReactionsInput = {
@@ -27725,6 +30739,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFollowingInput = {
@@ -27750,6 +30765,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFollowingInput = {
@@ -27780,6 +30796,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFollowersInput = {
@@ -27805,6 +30822,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFollowersInput = {
@@ -27846,6 +30864,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowingInput = {
@@ -27871,6 +30890,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutFollowersInput = {
@@ -27907,6 +30927,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -27932,6 +30953,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutBookmarksInput = {
@@ -27957,6 +30979,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBookmarksInput = {
@@ -27982,6 +31005,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBookmarksInput = {
@@ -28080,6 +31104,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBookmarksInput = {
@@ -28105,6 +31130,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PostUpsertWithoutBookmarksInput = {
@@ -28193,6 +31219,7 @@ export namespace Prisma {
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -28218,6 +31245,7 @@ export namespace Prisma {
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -28259,6 +31287,7 @@ export namespace Prisma {
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -28284,6 +31313,7 @@ export namespace Prisma {
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSeriesInput = {
@@ -28309,6 +31339,7 @@ export namespace Prisma {
     postViews?: PostViewCreateNestedManyWithoutUserInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSeriesInput = {
@@ -28334,6 +31365,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedCreateNestedManyWithoutUserInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSeriesInput = {
@@ -28430,6 +31462,7 @@ export namespace Prisma {
     postViews?: PostViewUpdateManyWithoutUserNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSeriesInput = {
@@ -28455,6 +31488,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedUpdateManyWithoutUserNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutSeriesInput = {
@@ -28723,6 +31757,7 @@ export namespace Prisma {
     postViews?: PostViewCreateNestedManyWithoutUserInput
     series?: SeriesCreateNestedManyWithoutAuthorInput
     followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReadingListInput = {
@@ -28748,6 +31783,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedCreateNestedManyWithoutUserInput
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReadingListInput = {
@@ -28846,6 +31882,7 @@ export namespace Prisma {
     postViews?: PostViewUpdateManyWithoutUserNestedInput
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReadingListInput = {
@@ -28871,6 +31908,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedUpdateManyWithoutUserNestedInput
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PostUpsertWithoutReadingListItemsInput = {
@@ -28936,6 +31974,226 @@ export namespace Prisma {
     seriesPosts?: SeriesPostUncheckedUpdateManyWithoutPostNestedInput
   }
 
+  export type UserCreateWithoutPlanEnrollmentsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    username: string
+    email: string
+    password: string
+    bio?: string | null
+    profileImg?: string | null
+    bannerImg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    reactions?: ReactionCreateNestedManyWithoutUserInput
+    memberships?: CommunityMembershipCreateNestedManyWithoutUserInput
+    followers?: FollowCreateNestedManyWithoutFollowingInput
+    following?: FollowCreateNestedManyWithoutFollowerInput
+    bookmarks?: BookmarkCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    postViews?: PostViewCreateNestedManyWithoutUserInput
+    series?: SeriesCreateNestedManyWithoutAuthorInput
+    readingList?: ReadingListItemCreateNestedManyWithoutUserInput
+    followedTags?: UserTagFollowCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlanEnrollmentsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    username: string
+    email: string
+    password: string
+    bio?: string | null
+    profileImg?: string | null
+    bannerImg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    reactions?: ReactionUncheckedCreateNestedManyWithoutUserInput
+    memberships?: CommunityMembershipUncheckedCreateNestedManyWithoutUserInput
+    followers?: FollowUncheckedCreateNestedManyWithoutFollowingInput
+    following?: FollowUncheckedCreateNestedManyWithoutFollowerInput
+    bookmarks?: BookmarkUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    postViews?: PostViewUncheckedCreateNestedManyWithoutUserInput
+    series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
+    readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
+    followedTags?: UserTagFollowUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlanEnrollmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlanEnrollmentsInput, UserUncheckedCreateWithoutPlanEnrollmentsInput>
+  }
+
+  export type UserPlanDayCompletionCreateWithoutEnrollmentInput = {
+    id?: string
+    day: number
+    completedAt?: Date | string
+  }
+
+  export type UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput = {
+    id?: string
+    day: number
+    completedAt?: Date | string
+  }
+
+  export type UserPlanDayCompletionCreateOrConnectWithoutEnrollmentInput = {
+    where: UserPlanDayCompletionWhereUniqueInput
+    create: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput>
+  }
+
+  export type UserPlanDayCompletionCreateManyEnrollmentInputEnvelope = {
+    data: UserPlanDayCompletionCreateManyEnrollmentInput | UserPlanDayCompletionCreateManyEnrollmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutPlanEnrollmentsInput = {
+    update: XOR<UserUpdateWithoutPlanEnrollmentsInput, UserUncheckedUpdateWithoutPlanEnrollmentsInput>
+    create: XOR<UserCreateWithoutPlanEnrollmentsInput, UserUncheckedCreateWithoutPlanEnrollmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlanEnrollmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlanEnrollmentsInput, UserUncheckedUpdateWithoutPlanEnrollmentsInput>
+  }
+
+  export type UserUpdateWithoutPlanEnrollmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    reactions?: ReactionUpdateManyWithoutUserNestedInput
+    memberships?: CommunityMembershipUpdateManyWithoutUserNestedInput
+    followers?: FollowUpdateManyWithoutFollowingNestedInput
+    following?: FollowUpdateManyWithoutFollowerNestedInput
+    bookmarks?: BookmarkUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    postViews?: PostViewUpdateManyWithoutUserNestedInput
+    series?: SeriesUpdateManyWithoutAuthorNestedInput
+    readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
+    followedTags?: UserTagFollowUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlanEnrollmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    bannerImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    reactions?: ReactionUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: CommunityMembershipUncheckedUpdateManyWithoutUserNestedInput
+    followers?: FollowUncheckedUpdateManyWithoutFollowingNestedInput
+    following?: FollowUncheckedUpdateManyWithoutFollowerNestedInput
+    bookmarks?: BookmarkUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    postViews?: PostViewUncheckedUpdateManyWithoutUserNestedInput
+    series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
+    readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
+    followedTags?: UserTagFollowUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserPlanDayCompletionUpsertWithWhereUniqueWithoutEnrollmentInput = {
+    where: UserPlanDayCompletionWhereUniqueInput
+    update: XOR<UserPlanDayCompletionUpdateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedUpdateWithoutEnrollmentInput>
+    create: XOR<UserPlanDayCompletionCreateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedCreateWithoutEnrollmentInput>
+  }
+
+  export type UserPlanDayCompletionUpdateWithWhereUniqueWithoutEnrollmentInput = {
+    where: UserPlanDayCompletionWhereUniqueInput
+    data: XOR<UserPlanDayCompletionUpdateWithoutEnrollmentInput, UserPlanDayCompletionUncheckedUpdateWithoutEnrollmentInput>
+  }
+
+  export type UserPlanDayCompletionUpdateManyWithWhereWithoutEnrollmentInput = {
+    where: UserPlanDayCompletionScalarWhereInput
+    data: XOR<UserPlanDayCompletionUpdateManyMutationInput, UserPlanDayCompletionUncheckedUpdateManyWithoutEnrollmentInput>
+  }
+
+  export type UserPlanDayCompletionScalarWhereInput = {
+    AND?: UserPlanDayCompletionScalarWhereInput | UserPlanDayCompletionScalarWhereInput[]
+    OR?: UserPlanDayCompletionScalarWhereInput[]
+    NOT?: UserPlanDayCompletionScalarWhereInput | UserPlanDayCompletionScalarWhereInput[]
+    id?: StringFilter<"UserPlanDayCompletion"> | string
+    enrollmentId?: StringFilter<"UserPlanDayCompletion"> | string
+    day?: IntFilter<"UserPlanDayCompletion"> | number
+    completedAt?: DateTimeFilter<"UserPlanDayCompletion"> | Date | string
+  }
+
+  export type UserPlanEnrollmentCreateWithoutCompletionsInput = {
+    id?: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPlanEnrollmentsInput
+  }
+
+  export type UserPlanEnrollmentUncheckedCreateWithoutCompletionsInput = {
+    id?: string
+    userId: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type UserPlanEnrollmentCreateOrConnectWithoutCompletionsInput = {
+    where: UserPlanEnrollmentWhereUniqueInput
+    create: XOR<UserPlanEnrollmentCreateWithoutCompletionsInput, UserPlanEnrollmentUncheckedCreateWithoutCompletionsInput>
+  }
+
+  export type UserPlanEnrollmentUpsertWithoutCompletionsInput = {
+    update: XOR<UserPlanEnrollmentUpdateWithoutCompletionsInput, UserPlanEnrollmentUncheckedUpdateWithoutCompletionsInput>
+    create: XOR<UserPlanEnrollmentCreateWithoutCompletionsInput, UserPlanEnrollmentUncheckedCreateWithoutCompletionsInput>
+    where?: UserPlanEnrollmentWhereInput
+  }
+
+  export type UserPlanEnrollmentUpdateToOneWithWhereWithoutCompletionsInput = {
+    where?: UserPlanEnrollmentWhereInput
+    data: XOR<UserPlanEnrollmentUpdateWithoutCompletionsInput, UserPlanEnrollmentUncheckedUpdateWithoutCompletionsInput>
+  }
+
+  export type UserPlanEnrollmentUpdateWithoutCompletionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPlanEnrollmentsNestedInput
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateWithoutCompletionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutFollowedTagsInput = {
     id?: string
     firstName: string
@@ -28959,6 +32217,7 @@ export namespace Prisma {
     postViews?: PostViewCreateNestedManyWithoutUserInput
     series?: SeriesCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFollowedTagsInput = {
@@ -28984,6 +32243,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedCreateNestedManyWithoutUserInput
     series?: SeriesUncheckedCreateNestedManyWithoutAuthorInput
     readingList?: ReadingListItemUncheckedCreateNestedManyWithoutUserInput
+    planEnrollments?: UserPlanEnrollmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFollowedTagsInput = {
@@ -29042,6 +32302,7 @@ export namespace Prisma {
     postViews?: PostViewUpdateManyWithoutUserNestedInput
     series?: SeriesUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowedTagsInput = {
@@ -29067,6 +32328,7 @@ export namespace Prisma {
     postViews?: PostViewUncheckedUpdateManyWithoutUserNestedInput
     series?: SeriesUncheckedUpdateManyWithoutAuthorNestedInput
     readingList?: ReadingListItemUncheckedUpdateManyWithoutUserNestedInput
+    planEnrollments?: UserPlanEnrollmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TagUpsertWithoutFollowersInput = {
@@ -29192,6 +32454,14 @@ export namespace Prisma {
   export type UserTagFollowCreateManyUserInput = {
     id?: string
     tagId: string
+    createdAt?: Date | string
+  }
+
+  export type UserPlanEnrollmentCreateManyUserInput = {
+    id?: string
+    planSlug: string
+    durationDays: number
+    startDate: Date | string
     createdAt?: Date | string
   }
 
@@ -29520,6 +32790,32 @@ export namespace Prisma {
   export type UserTagFollowUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     tagId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanEnrollmentUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completions?: UserPlanDayCompletionUpdateManyWithoutEnrollmentNestedInput
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completions?: UserPlanDayCompletionUncheckedUpdateManyWithoutEnrollmentNestedInput
+  }
+
+  export type UserPlanEnrollmentUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    planSlug?: StringFieldUpdateOperationsInput | string
+    durationDays?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -30081,6 +33377,30 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     position?: IntFieldUpdateOperationsInput | number
     postId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPlanDayCompletionCreateManyEnrollmentInput = {
+    id?: string
+    day: number
+    completedAt?: Date | string
+  }
+
+  export type UserPlanDayCompletionUpdateWithoutEnrollmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanDayCompletionUncheckedUpdateWithoutEnrollmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPlanDayCompletionUncheckedUpdateManyWithoutEnrollmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    day?: IntFieldUpdateOperationsInput | number
+    completedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
