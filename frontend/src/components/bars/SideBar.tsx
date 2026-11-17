@@ -43,7 +43,6 @@ const NAV = [
 
   // Separator — discover
   { id: "sep-discover", label: "Discover", separator: true },
-  { id: "today", label: "Today", icon: CalendarDays, href: "/today" },
   { id: "bible", label: "Bible", icon: BookOpen, href: "/bible" },
   { id: "feed", label: "Tag Feed", icon: Rss, href: "/feed" },
   {
@@ -215,7 +214,7 @@ export const SideBar = () => {
             </button>
           </div>
         </div>
-    </aside>
+      </aside>
     </>
   );
 };
