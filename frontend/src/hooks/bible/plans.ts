@@ -40,6 +40,7 @@ export interface PlanEnrollment {
   planSlug: string;
   durationDays: number;
   startDate: string;
+  /** Days whose chapters are ALL read (derived on the server from chapter reads) */
   completedDays: number[];
   started: boolean;
   currentDay: number;
@@ -88,17 +89,6 @@ export function useStartPlan() {
           startDate: localDateKey(),
         })
       ).data as { id: string },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ENROLLMENTS_KEY }),
-  });
-}
-
-export function useSetPlanDay() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (v: { id: string; day: number; done: boolean }) => {
-      const url = `/reading-plans/${v.id}/days/${v.day}/complete`;
-      return v.done ? postRequest(url, {}) : deleteRequest(url);
-    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ENROLLMENTS_KEY }),
   });
 }

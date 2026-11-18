@@ -7,7 +7,7 @@ const API_ORIGIN = (process.env.API_ORIGIN ?? "http://localhost:5000")
   .trim()
   .replace(/\/+$/, "")
   .replace(/\/api$/i, "");
-
+console.log(API_ORIGIN);
 if (process.env.NODE_ENV === "production" && !process.env.API_ORIGIN) {
   // Fail the build loudly instead of shipping a site whose API calls 404.
   throw new Error(

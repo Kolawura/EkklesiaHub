@@ -1,12 +1,17 @@
 // ═══════════════════════════════════════════════════════════════
 // readingPlanService.ts
-// Per-user progress through the Bible reading plans (main DB).
-// The schedule itself (which chapters on which day) lives in the Bible DB
-// and is served by /api/bible/plans — this only tracks who is on which plan
-// and which days they have finished. The current day is COMPUTED from
+// Per-user reading-plan enrolment (main DB). Progress is DERIVED from the
+// chapters the user has read (readingProgressService): a plan day is complete
+// when every chapter scheduled for that day has been read — whenever it was
+// read, even before the user joined the plan. The schedule itself comes from
+// the Bible DB (readingPlanSchedule). The current day is computed from
 // startDate, never stored.
 // ═══════════════════════════════════════════════════════════════
 import { prisma } from "../db/prisma";
+import {
+  getPlanSchedule,
+  type PlanSchedule,
+} from "./readingPlanSchedule";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -27,6 +32,23 @@ export function daysBetween(a: Date | string, b: Date | string): number {
   const toMs = (v: Date | string) =>
     typeof v === "string" ? utcDayStart(v) : v.getTime();
   return Math.round((toMs(b) - toMs(a)) / DAY_MS);
+}
+
+/** Days whose every scheduled chapter is in the read set. */
+export function completedDaysFrom(
+  schedule: PlanSchedule,
+  readSet: Set<string>,
+): number[] {
+  const done: number[] = [];
+  for (const [day, chapters] of schedule) {
+    if (
+      chapters.length > 0 &&
+      chapters.every((c) => readSet.has(`${c.bookNumber}:${c.chapter}`))
+    ) {
+      done.push(day);
+    }
+  }
+  return done.sort((a, b) => a - b);
 }
 
 export function computeProgress(
@@ -52,21 +74,34 @@ export function computeProgress(
 
 export async function listEnrollments(userId: string, today?: string) {
   const day = today ?? todayUtc();
-  const rows = await prisma.userPlanEnrollment.findMany({
-    where: { userId },
-    orderBy: { createdAt: "asc" },
-    include: {
-      completions: { select: { day: true }, orderBy: { day: "asc" } },
-    },
-  });
-  return rows.map((r) => ({
-    id: r.id,
-    planSlug: r.planSlug,
-    durationDays: r.durationDays,
-    startDate: r.startDate.toISOString().slice(0, 10),
-    completedDays: r.completions.map((c) => c.day),
-    ...computeProgress(r.startDate, r.durationDays, r.completions.length, day),
-  }));
+  const [rows, reads] = await Promise.all([
+    prisma.userPlanEnrollment.findMany({
+      where: { userId },
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.userChapterRead.findMany({
+      where: { userId },
+      select: { bookNumber: true, chapter: true },
+    }),
+  ]);
+  const readSet = new Set<string>(
+    reads.map((r: { bookNumber: number; chapter: number }) => `${r.bookNumber}:${r.chapter}`),
+  );
+
+  return Promise.all(
+    rows.map(async (r) => {
+      const schedule = await getPlanSchedule(r.planSlug, r.durationDays);
+      const completedDays = completedDaysFrom(schedule, readSet);
+      return {
+        id: r.id,
+        planSlug: r.planSlug,
+        durationDays: r.durationDays,
+        startDate: r.startDate.toISOString().slice(0, 10),
+        completedDays,
+        ...computeProgress(r.startDate, r.durationDays, completedDays.length, day),
+      };
+    }),
+  );
 }
 
 export async function startPlan(
@@ -90,39 +125,8 @@ export async function startPlan(
   }
 }
 
-async function ownedEnrollment(userId: string, id: string) {
-  const e = await prisma.userPlanEnrollment.findFirst({
-    where: { id, userId },
-    select: { id: true, durationDays: true },
-  });
-  if (!e) fail(404, "Plan not found.");
-  return e;
-}
-
-export async function setDayCompleted(
-  userId: string,
-  enrollmentId: string,
-  day: number,
-  done: boolean,
-) {
-  const e = await ownedEnrollment(userId, enrollmentId);
-  if (!Number.isInteger(day) || day < 1 || day > e.durationDays) {
-    fail(400, `Day must be between 1 and ${e.durationDays}.`);
-  }
-  if (done) {
-    await prisma.userPlanDayCompletion.upsert({
-      where: { enrollmentId_day: { enrollmentId, day } },
-      create: { enrollmentId, day },
-      update: {},
-    });
-  } else {
-    await prisma.userPlanDayCompletion.deleteMany({
-      where: { enrollmentId, day },
-    });
-  }
-}
-
 export async function leavePlan(userId: string, enrollmentId: string) {
+  // Leaving removes the enrolment only; chapters already read stay read.
   const { count } = await prisma.userPlanEnrollment.deleteMany({
     where: { id: enrollmentId, userId },
   });

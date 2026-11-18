@@ -31,6 +31,7 @@ model User {
   readingList     ReadingListItem[]
   followedTags    UserTagFollow[]
   planEnrollments UserPlanEnrollment[]
+  chapterReads    UserChapterRead[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
 }
@@ -263,30 +264,36 @@ model ReadingListItem {
   @@index([userId, readAt])
 }
 
-// Bible reading-plan progress. The schedule lives in the Bible DB; the
-// current day is computed from startDate, not stored.
+// Bible reading-plan enrolment. The schedule lives in the Bible DB; the current
+// day is computed from startDate and completed days are derived from
+// UserChapterRead — neither is stored here.
 model UserPlanEnrollment {
-  id           String                  @id @default(uuid())
-  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   planSlug     String // canonical | chronological | historical
   durationDays Int // 90 | 180 | 365
-  startDate    DateTime                @db.Date
-  createdAt    DateTime                @default(now())
-  completions  UserPlanDayCompletion[]
+  startDate    DateTime @db.Date
+  createdAt    DateTime @default(now())
 
   @@unique([userId, planSlug, durationDays])
   @@index([userId])
 }
 
-model UserPlanDayCompletion {
-  id           String             @id @default(uuid())
-  enrollment   UserPlanEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-  enrollmentId String
-  day          Int // 1-based day number within the plan
-  completedAt  DateTime           @default(now())
+// Chapters a user has read — the single source of truth for reading progress.
+// Reading-plan days are derived from this (a day is done when all of its
+// chapters are read); plan progress is never ticked separately.
+model UserChapterRead {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  bookNumber  Int // canonical 1-66, matches the Bible DB
+  chapter     Int
+  firstReadAt DateTime @default(now())
+  lastReadAt  DateTime @default(now())
 
-  @@unique([enrollmentId, day])
+  @@unique([userId, bookNumber, chapter])
+  @@index([userId])
 }
 
 model UserTagFollow {

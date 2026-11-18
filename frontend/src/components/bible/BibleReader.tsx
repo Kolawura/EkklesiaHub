@@ -8,6 +8,7 @@ import { BibleReaderSkeleton } from "./BibleReaderSkeleton";
 import { useTaggedChapter } from "@/hooks/bible/study";
 import { TaggedVerseText } from "./TaggedVerseText";
 import { taggedToPlain } from "@/lib/taggedText";
+import { ChapterReadMarker } from "./ChapterReadMarker";
 
 interface BibleReaderProps {
   translation: string;
@@ -255,6 +256,14 @@ export function BibleReader({
             </p>
           )}
         </div>
+
+        {/* Auto-marks the chapter read once the end has been reached */}
+        <ChapterReadMarker
+          key={`${data.book_number}-${data.chapter}`}
+          bookNumber={data.book_number}
+          chapter={data.chapter}
+          rootRef={contentRef}
+        />
       </div>
 
       {/* Chapter navigation */}

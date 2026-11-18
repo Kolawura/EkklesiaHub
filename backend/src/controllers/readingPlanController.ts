@@ -38,24 +38,6 @@ export const start = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const completeDay = async (req: AuthRequest, res: Response) => {
-  try {
-    await svc.setDayCompleted(req.userId!, String(req.params.id), Number(req.params.day), true);
-    return res.json({ success: true });
-  } catch (err) {
-    return handle(res, err);
-  }
-};
-
-export const uncompleteDay = async (req: AuthRequest, res: Response) => {
-  try {
-    await svc.setDayCompleted(req.userId!, String(req.params.id), Number(req.params.day), false);
-    return res.json({ success: true });
-  } catch (err) {
-    return handle(res, err);
-  }
-};
-
 export const leave = async (req: AuthRequest, res: Response) => {
   try {
     await svc.leavePlan(req.userId!, String(req.params.id));

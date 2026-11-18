@@ -17,6 +17,8 @@ import seriesRoutes from "./routes/seriesRoutes";
 import readingListRoutes from "./routes/readingListRoutes";
 import tagRoutes from "./routes/tagRoutes";
 import readingPlanRoutes from "./routes/readingPlanRoutes";
+import readingProgressRoutes from "./routes/readingProgressRoutes";
+import { initReadingPlanSchedule } from "./services/readingPlanSchedule";
 import { initBibleRoutes } from "./bible/routes";
 import { prisma } from "./db/prisma";
 import { Pool } from "pg";
@@ -56,6 +58,9 @@ biblePool.on("error", (err) => {
   console.error("❌ Unexpected error on idle Bible DB client:", err.message);
 });
 
+// Reading-plan progress needs the (static) plan schedule from the Bible DB.
+initReadingPlanSchedule(biblePool);
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
   "http://localhost:3000",
 ];
@@ -91,6 +96,7 @@ app.use("/api/reactions", reactionRoutes);
 app.use("/api/series", seriesRoutes);
 app.use("/api/reading-list", readingListRoutes);
 app.use("/api/reading-plans", readingPlanRoutes);
+app.use("/api/reading-progress", readingProgressRoutes);
 app.use("/api/tags", tagRoutes); // replaces existing tagRoutes if any
 app.use("/api/upload", uploadRoutes);
 app.use("/api/notifications", notificationRoutes);

@@ -21,12 +21,18 @@ import {
   usePlanDay,
   usePlanEnrollments,
   useStartPlan,
-  useSetPlanDay,
   useLeavePlan,
   errorMessage,
   type PlanEnrollment,
   type PlanSummary,
 } from "@/hooks/bible/plans";
+import {
+  isChapterRead,
+  useReadChapters,
+  useMarkChapters,
+  useUnmarkChapters,
+  type ChapterRef,
+} from "@/hooks/bible/progress";
 import { cn } from "@/lib/utils";
 
 interface PlansPanelProps {
@@ -73,12 +79,27 @@ function PlanView({
   const [day, setDay] = useState(enrollment.currentDay);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const dayQuery = usePlanDay(enrollment.planSlug, enrollment.durationDays, day);
-  const setDayDone = useSetPlanDay();
+  const readMap = useReadChapters(true).data;
+  const markChapters = useMarkChapters();
+  const unmarkChapters = useUnmarkChapters();
   const leave = useLeavePlan();
 
   const done = enrollment.completedDays.includes(day);
   const total = enrollment.durationDays;
   const d = dayQuery.data;
+
+  // Every chapter scheduled for this day (passages can span several chapters)
+  const dayChapters: ChapterRef[] = (d?.passages ?? []).flatMap((p) =>
+    Array.from(
+      { length: p.chapter_end - p.chapter_start + 1 },
+      (_, i): ChapterRef => ({
+        bookNumber: p.book_number,
+        chapter: p.chapter_start + i,
+      }),
+    ),
+  );
+  const readCount = dayChapters.filter((c) => isChapterRead(readMap, c)).length;
+  const busy = markChapters.isPending || unmarkChapters.isPending;
 
   return (
     <div className="flex-1 overflow-y-auto overscroll-y-contain">
@@ -156,24 +177,42 @@ function PlanView({
         )}
         {d && (
           <ul className="space-y-2">
-            {d.passages.map((p) => (
-              <li key={`${p.book_number}-${p.chapter_start}`}>
-                <button
-                  onClick={() => onNavigate(p.book_name, p.chapter_start)}
-                  className="w-full text-left rounded-lg border border-parchment-dark px-3 py-2.5 font-body text-sm text-ink hover:bg-parchment-deep transition-colors"
-                >
-                  {p.reference}
-                </button>
-              </li>
-            ))}
+            {d.passages.map((p) => {
+              const total = p.chapter_end - p.chapter_start + 1;
+              const done = Array.from({ length: total }).filter((_, i) =>
+                isChapterRead(readMap, {
+                  bookNumber: p.book_number,
+                  chapter: p.chapter_start + i,
+                }),
+              ).length;
+              return (
+                <li key={`${p.book_number}-${p.chapter_start}`}>
+                  <button
+                    onClick={() => onNavigate(p.book_name, p.chapter_start)}
+                    className="w-full flex items-center justify-between gap-2 text-left rounded-lg border border-parchment-dark px-3 py-2.5 font-body text-sm text-ink hover:bg-parchment-deep transition-colors"
+                  >
+                    <span>{p.reference}</span>
+                    {done === total ? (
+                      <Check size={14} className="shrink-0 text-gold" />
+                    ) : done > 0 ? (
+                      <span className="shrink-0 text-xs text-ink-faint">
+                        {done}/{total}
+                      </span>
+                    ) : null}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
 
         <button
           onClick={() =>
-            setDayDone.mutate({ id: enrollment.id, day, done: !done })
+            done
+              ? unmarkChapters.mutate({ chapters: dayChapters })
+              : markChapters.mutate({ chapters: dayChapters })
           }
-          disabled={setDayDone.isPending}
+          disabled={busy || dayChapters.length === 0}
           className={cn(
             "mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 font-body text-sm transition-all disabled:opacity-60",
             done
@@ -183,15 +222,21 @@ function PlanView({
         >
           {done ? (
             <>
-              <Check size={14} /> Done — tap to undo
+              <Check size={14} /> Done — tap to unmark
             </>
           ) : (
             "Mark day complete"
           )}
         </button>
-        {setDayDone.isError && (
+        <p className="font-body text-[11px] text-ink-faint mt-2">
+          {dayChapters.length > 0
+            ? `${readCount} of ${dayChapters.length} chapters read. `
+            : ""}
+          Days complete on their own as you read each chapter to its end.
+        </p>
+        {(markChapters.isError || unmarkChapters.isError) && (
           <p className="font-body text-xs text-ink-faint mt-2">
-            {errorMessage(setDayDone.error)}
+            {errorMessage(markChapters.error ?? unmarkChapters.error)}
           </p>
         )}
       </div>
