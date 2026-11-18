@@ -16,6 +16,8 @@ interface BibleReaderProps {
   chapter: number;
   /** Set of currently selected verse numbers — drives highlighting */
   selectedVerses: Set<number>;
+  /** Verses briefly highlighted after a jump (cleared by the page after a few seconds) */
+  flashVerses?: Set<number>;
   /**
    * Fired when the user clicks a verse.
    * - Plain click: toggle that single verse
@@ -56,6 +58,7 @@ export function BibleReader({
   bookName,
   chapter,
   selectedVerses,
+  flashVerses,
   onVerseClick,
   onNavigate,
   fontSize,
@@ -171,93 +174,82 @@ export function BibleReader({
         <div className="mt-4 w-12 h-0.5 bg-gold/40 rounded-full" />
       </div>
 
-      {/* Verses */}
-      <div
-        ref={contentRef}
-        className="flex-1 overflow-y-auto px-4 sm:px-8 pb-16 scroll-smooth"
-      >
-        <div className="max-w-2xl">
-          <p
-            className={cn(
-              "font-body text-ink-light space",
-              FONT_SIZES[fontSize],
-              LINE_SPACINGS[lineSpacing],
-              redLetters && "woc-on",
-            )}
-          >
-            {data.verses.map((v) => {
-              const isSelected = selectedVerses.has(v.verse);
-              const isHovered = hoveredVerse === v.verse;
-              return (
-                <span
-                  key={v.verse}
-                  data-verse={v.verse}
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => handleClick(e, v.bible)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      onVerseClick(v.bible, false);
-                    }
-                  }}
-                  onMouseEnter={() => setHoveredVerse(v.verse)}
-                  onMouseLeave={() => setHoveredVerse(null)}
-                  className={cn(
-                    "cursor-pointer transition-colors duration-100 rounded px-0.5 -mx-0.5",
-                    isSelected
-                      ? "bg-gold/20 text-ink"
-                      : isHovered
-                        ? "bg-parchment-deep"
-                        : "",
-                    versify ? "flex gap-1" : "",
-                  )}
-                >
-                  {showNumbers && (
-                    <sup
-                      className={cn(
-                        "font-display font-bold mr-0.5 select-none transition-colors",
-                        "text-[0.6em] relative top-[-0.15em]",
-                        isSelected ? "text-gold" : "text-gold/50",
-                        versify ? "flex items-start pt-4" : "",
-                      )}
-                    >
-                      {v.verse}
-                    </sup>
-                  )}
-                  {v.tagged ? (
-                    // one wrapper so versify's flex layout sees a single child
-                    <span>
-                      <TaggedVerseText
-                        text={v.text}
-                        strongsMode={strongsMode}
-                        onWordClick={onWordClick}
-                      />
-                    </span>
-                  ) : (
-                    v.text
-                  )}{" "}
-                </span>
-              );
-            })}
-          </p>
-        </div>
-
-        {/* Bottom metadata */}
-        <div className="max-w-2xl mt-12 pt-6 border-t border-parchment-dark flex items-center justify-between">
-          <p className="font-body text-xs text-ink-ghost">
-            {data.book_name} {data.chapter} · {data.total_verses} verses ·{" "}
-            {translation}
-          </p>
-          {selectedVerses.size > 0 && (
-            <p className="font-body text-[11px] text-gold">
-              {selectedVerses.size} verse{selectedVerses.size !== 1 ? "s" : ""}{" "}
-              selected
+      {/* Verses (the read circle floats over this box) */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-y-auto px-4 sm:px-8 pb-10 scroll-smooth"
+        >
+          <div className="max-w-2xl">
+            <p
+              className={cn(
+                "font-body text-ink-light space",
+                FONT_SIZES[fontSize],
+                LINE_SPACINGS[lineSpacing],
+                redLetters && "woc-on",
+              )}
+            >
+              {data.verses.map((v) => {
+                const isSelected =
+                  selectedVerses.has(v.verse) || !!flashVerses?.has(v.verse);
+                const isHovered = hoveredVerse === v.verse;
+                return (
+                  <span
+                    key={v.verse}
+                    data-verse={v.verse}
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => handleClick(e, v.bible)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onVerseClick(v.bible, false);
+                      }
+                    }}
+                    onMouseEnter={() => setHoveredVerse(v.verse)}
+                    onMouseLeave={() => setHoveredVerse(null)}
+                    className={cn(
+                      "cursor-pointer transition-colors duration-100 rounded px-0.5 -mx-0.5",
+                      isSelected
+                        ? "bg-gold/20 text-ink"
+                        : isHovered
+                          ? "bg-parchment-deep"
+                          : "",
+                      versify ? "flex gap-1" : "",
+                    )}
+                  >
+                    {showNumbers && (
+                      <sup
+                        className={cn(
+                          "font-display font-bold mr-0.5 select-none transition-colors",
+                          "text-[0.6em] relative top-[-0.15em]",
+                          isSelected ? "text-gold" : "text-gold/50",
+                          versify ? "flex items-start pt-4" : "",
+                        )}
+                      >
+                        {v.verse}
+                      </sup>
+                    )}
+                    {v.tagged ? (
+                      // one wrapper so versify's flex layout sees a single child
+                      <span>
+                        <TaggedVerseText
+                          text={v.text}
+                          strongsMode={strongsMode}
+                          onWordClick={onWordClick}
+                        />
+                      </span>
+                    ) : (
+                      v.text
+                    )}{" "}
+                  </span>
+                );
+              })}
             </p>
-          )}
+          </div>
         </div>
 
-        {/* Auto-marks the chapter read once the end has been reached */}
+        {/* Read circle: bottom-right, fades in near the end, auto-marks at the end */}
         <ChapterReadMarker
           key={`${data.book_number}-${data.chapter}`}
           bookNumber={data.book_number}

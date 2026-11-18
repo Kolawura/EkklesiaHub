@@ -51,6 +51,24 @@ function savePrefs(p: ReaderPrefs) {
   } catch {}
 }
 
+// Last place read, so a reload lands where the reader was
+const POS_KEY = "ekk-bible-pos";
+function loadPos(): { bookName: string; chapter: number } | null {
+  try {
+    const raw = localStorage.getItem(POS_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw);
+    if (
+      typeof v?.bookName === "string" &&
+      v.bookName &&
+      Number.isInteger(v.chapter) &&
+      v.chapter > 0
+    )
+      return { bookName: v.bookName, chapter: v.chapter };
+  } catch {}
+  return null;
+}
+
 // ─── Verse action bar ──────────────────────────────────────────────
 /**
  * The text used for the compare drawer must match BibleVerse, but we only
@@ -171,14 +189,32 @@ function VerseActionBar({
 // ─── Main page ────────────────────────────────────────────────────
 export default function BiblePage() {
   const [prefs, setPrefs] = useState<ReaderPrefs>(DEFAULT_PREFS);
-  useEffect(() => {
-    setPrefs(loadPrefs());
-  }, []);
-
   const [bookName, setBookName] = useState("Genesis");
   const [chapter, setChapter] = useState(1);
+  // False until saved prefs + position are read, so the reader never fetches
+  // Genesis 1 first and then jumps.
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    setPrefs(loadPrefs());
+    const pos = loadPos();
+    if (pos) {
+      setBookName(pos.bookName);
+      setChapter(pos.chapter);
+      setShowVotd(false); // returning reader: go straight to the text
+    }
+    setReady(true);
+  }, []);
+  useEffect(() => {
+    if (!ready) return;
+    try {
+      localStorage.setItem(POS_KEY, JSON.stringify({ bookName, chapter }));
+    } catch {}
+  }, [ready, bookName, chapter]);
   const [scrollToVerse, setScrollToVerse] = useState<number | null>(null);
   const [showVotd, setShowVotd] = useState(true);
+  // Verses briefly highlighted after a jump (not a selection)
+  const [flashVerses, setFlashVerses] = useState<Set<number>>(new Set());
+  const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [compareVerses, setCompareVerses] = useState<BibleVerse[]>([]);
   // Strong's panel: the tapped word and its Strong's numbers
   const [strongsWord, setStrongsWord] = useState<{
@@ -187,9 +223,9 @@ export default function BiblePage() {
   } | null>(null);
   // Right-hand study panel: today's readings or the dictionary
   // (shares the slot with compare and Strong's — opening one closes the others)
-  const [sidePanel, setSidePanel] = useState<"today" | "dictionary" | "plans" | null>(
-    null,
-  );
+  const [sidePanel, setSidePanel] = useState<
+    "today" | "dictionary" | "plans" | null
+  >(null);
   // Book navigator drawer — only used below xl, where the sidebar isn't inline
   const [booksOpen, setBooksOpen] = useState(false);
 
@@ -240,11 +276,14 @@ export default function BiblePage() {
     setSidePanel(null);
   }, []);
 
-  const toggleSidePanel = useCallback((which: "today" | "dictionary" | "plans") => {
-    setCompareVerses([]);
-    setStrongsWord(null);
-    setSidePanel((p) => (p === which ? null : which));
-  }, []);
+  const toggleSidePanel = useCallback(
+    (which: "today" | "dictionary" | "plans") => {
+      setCompareVerses([]);
+      setStrongsWord(null);
+      setSidePanel((p) => (p === which ? null : which));
+    },
+    [],
+  );
 
   // Strong's tags exist for the KJV only: close the panel if the user switches away
   useEffect(() => {
@@ -270,14 +309,17 @@ export default function BiblePage() {
       setCompareVerses([]);
       setBooksOpen(false); // picking a chapter in the drawer closes it
 
+      clearSelection();
+      if (flashTimer.current) clearTimeout(flashTimer.current);
       if (verse != null) {
+        // Highlight the target for a few seconds, then let it fade back
         const end = endVerse ?? verse;
         const range = new Set<number>();
         for (let v = verse; v <= end; v++) range.add(v);
-        setSelectedVerses(range);
-        lastClickedVerse.current = verse;
+        setFlashVerses(range);
+        flashTimer.current = setTimeout(() => setFlashVerses(new Set()), 3500);
       } else {
-        clearSelection();
+        setFlashVerses(new Set());
       }
     },
     [clearSelection],
@@ -411,22 +453,25 @@ export default function BiblePage() {
 
           {/* Reader */}
           <div className="flex-1 overflow-hidden">
-            <BibleReader
-              translation={prefs.translation}
-              bookName={bookName}
-              chapter={chapter}
-              selectedVerses={selectedVerses}
-              onVerseClick={handleVerseClick}
-              onNavigate={navigate}
-              fontSize={prefs.fontSize}
-              lineSpacing={prefs.lineSpacing}
-              showNumbers={prefs.showNumbers}
-              scrollToVerse={scrollToVerse}
-              versify={prefs.versify}
-              redLetters={prefs.redLetters}
-              strongsMode={prefs.strongs}
-              onWordClick={handleWordClick}
-            />
+            {ready && (
+              <BibleReader
+                translation={prefs.translation}
+                bookName={bookName}
+                chapter={chapter}
+                selectedVerses={selectedVerses}
+                onVerseClick={handleVerseClick}
+                onNavigate={navigate}
+                fontSize={prefs.fontSize}
+                lineSpacing={prefs.lineSpacing}
+                showNumbers={prefs.showNumbers}
+                scrollToVerse={scrollToVerse}
+                versify={prefs.versify}
+                redLetters={prefs.redLetters}
+                strongsMode={prefs.strongs}
+                onWordClick={handleWordClick}
+                flashVerses={flashVerses}
+              />
+            )}
           </div>
         </div>
         {/* Multi-verse action bar */}
